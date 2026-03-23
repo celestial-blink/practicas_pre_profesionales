@@ -1,0 +1,12 @@
+[package]
+name = "rs-backend"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+actix-web = "4.13.0"
+dotenvy = "0.15.7"
+serde = "1.0.228"
+sqlx = { version = "0.8.6", features = ["runtime-tokio-native-tls", "mysql", "macros", "time"] }
+time = "0.3.47"
+
