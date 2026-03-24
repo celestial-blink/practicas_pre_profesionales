@@ -8,5 +8,9 @@ actix-web = "4.13.0"
 dotenvy = "0.15.7"
 serde = "1.0.228"
 sqlx = { version = "0.8.6", features = ["runtime-tokio-native-tls", "mysql", "macros", "time"] }
-time = "0.3.47"
+time = { version = "0.3.47", features = ["formatting", "local-offset", "macros"] }
+tracing = "0.1.44"
+tracing-actix-web = "0.7.21"
+tracing-log = "0.2.0"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "tracing-log", "time", "local-time"] }
 
