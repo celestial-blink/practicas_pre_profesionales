@@ -7,25 +7,15 @@ mod t_logs;
 mod helpers;
 
 use crate::maud::pages::home::home_index;
+use crate::modules::organizaciones::presentation::router::find_by_search::find_by_search;
 use crate::{general_types::State};
 use crate::middleware::api_auth_middleware::api_auth_middleware;
 
 use actix_web::{App, HttpServer, middleware::from_fn, web};
 use dotenvy::dotenv;
 use sqlx::MySqlPool;
-use actix_files::Directory;
 
-use time::{
-    OffsetDateTime, UtcOffset,
-    format_description::{self, well_known::Rfc3339},
-};
 use tracing_actix_web::TracingLogger;
-use tracing_subscriber::{
-    EnvFilter,
-    fmt::{self, time::OffsetTime},
-    layer::SubscriberExt,
-    util::SubscriberInitExt,
-};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -60,7 +50,10 @@ async fn main() -> std::io::Result<()> {
                     .route("/test", web::get().to(|| async { "Test" }))
                     .service(web::scope("/pre-ofertas").service(
                         modules::pre_ofertas::presentation::router::insert_many::insert_many,
-                    )),
+                    ))
+                    .service(web::scope("/organizaciones").service(
+                        find_by_search,
+                    ))
             )
             .service(home_index)
     })
