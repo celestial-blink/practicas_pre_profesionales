@@ -166,3 +166,6 @@ rust-project.json
 
 .env
 logs/
+
+*.prod.css
+*.prod.js
