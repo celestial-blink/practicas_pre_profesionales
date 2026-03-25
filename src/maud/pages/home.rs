@@ -1,7 +1,7 @@
 use actix_web::{Result as AwResult, get};
 use maud::{Markup, html};
 
-use crate::{config::IS_DEV, maud::{components::{head::head_component, left_home::left_home, right_home::right_home}, layouts::home_layout::home_layout}};
+use crate::{config::IS_DEV, helpers, maud::{components::{head::head_component, left_home::left_home, menu_home::{Departamento, FormacionAcademica, menu_home}, right_home::right_home}, layouts::home_layout::home_layout}};
 
 #[get("/")]
 pub async fn home_index() -> AwResult<Markup> {
@@ -15,10 +15,15 @@ pub async fn home_index() -> AwResult<Markup> {
         None
     };
 
+    let departamentos = helpers::t_json::file_to_json::<Vec<Departamento>, _>("./assets/json/departamentos.json");
+    let formacion_academica = helpers::t_json::file_to_json::<Vec<FormacionAcademica>, _>("./assets/json/formacion_academica.json");
+
+    let menu = html!(br; (menu_home(departamentos, formacion_academica)));
+
     Ok(html! {
         (head_component("Practicas Pre y Profesionales Peru", css_version))
         body class="bg-dark-background" {
-            (home_layout(left_home(None), right_home() ))
+            (home_layout(left_home(Some(menu)), right_home() ))
         }
     })
 }

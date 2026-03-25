@@ -2,7 +2,7 @@ use maud::{html, Markup};
 use time::OffsetDateTime;
 
 use crate::maud::components::convocatoria_section::convocatoria_section;
-use crate::maud::components::convocatoria_item::ConvocatoriaItem;
+use crate::maud::components::convocatoria_item::{ConvocatoriaItem, convocatoria_item};
 
 pub fn right_home() -> Markup {
 
@@ -69,11 +69,20 @@ pub fn right_home() -> Markup {
         },
     ];
 
+    let convocatorias_markup = html! {
+        @for (index, prop) in convocatorias.into_iter().enumerate() {
+            (convocatoria_item(prop, index))
+            br;
+            hr class="border-slate-700";
+            br;
+        }
+    };
 
 
     html! {
         div class="flex flex-col gap-4" {
-            (convocatoria_section(convocatorias, "Últimas convocatorias"))
+            (convocatoria_section(convocatorias_markup.clone(), "Últimas convocatorias"))
+            (convocatoria_section(convocatorias_markup, "Convocatorias por departamento"))
         }
     }
 }

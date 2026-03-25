@@ -1,0 +1,177 @@
+[
+    {
+        "id": 15,
+        "nombre": "LIMA",
+        "alias": "lima",
+        "f_nombre": "Lima",
+        "capital": "Lima"
+    },
+    {
+        "id": 1,
+        "nombre": "AMAZONAS",
+        "alias": "amazonas",
+        "f_nombre": "Amazonas",
+        "capital": "Chachapoyas"
+    },
+    {
+        "id": 2,
+        "nombre": "ANCASH",
+        "alias": "ancash",
+        "f_nombre": "Ancash",
+        "capital": "Huaraz"
+    },
+    {
+        "id": 3,
+        "nombre": "APURIMAC",
+        "alias": "apurimac",
+        "f_nombre": "Apurímac",
+        "capital": "Abancay"
+    },
+    {
+        "id": 4,
+        "nombre": "AREQUIPA",
+        "alias": "arequipa",
+        "f_nombre": "Arequipa",
+        "capital": "Arequipa"
+    },
+    {
+        "id": 5,
+        "nombre": "AYACUCHO",
+        "alias": "ayacucho",
+        "f_nombre": "Ayacucho",
+        "capital": "Ayacucho"
+    },
+    {
+        "id": 6,
+        "nombre": "CAJAMARCA",
+        "alias": "cajamarca",
+        "f_nombre": "Cajamarca",
+        "capital": "Cajamarca"
+    },
+    {
+        "id": 7,
+        "nombre": "CALLAO",
+        "alias": "callao",
+        "f_nombre": "Callao",
+        "capital": "Callao"
+    },
+    {
+        "id": 8,
+        "nombre": "CUSCO",
+        "alias": "cusco",
+        "f_nombre": "Cusco",
+        "capital": "Cusco"
+    },
+    {
+        "id": 9,
+        "nombre": "HUANCAVELICA",
+        "alias": "huancavelica",
+        "f_nombre": "Huancavelica",
+        "capital": "Huancavelica"
+    },
+    {
+        "id": 10,
+        "nombre": "HUANUCO",
+        "alias": "huanuco",
+        "f_nombre": "Huánuco",
+        "capital": "Huánuco"
+    },
+    {
+        "id": 11,
+        "nombre": "ICA",
+        "alias": "ica",
+        "f_nombre": "Ica",
+        "capital": "Ica"
+    },
+    {
+        "id": 12,
+        "nombre": "JUNIN",
+        "alias": "junin",
+        "f_nombre": "Junín",
+        "capital": "Huancayo"
+    },
+    {
+        "id": 13,
+        "nombre": "LA LIBERTAD",
+        "alias": "la-libertad",
+        "f_nombre": "La Libertad",
+        "capital": "Trujillo"
+    },
+    {
+        "id": 14,
+        "nombre": "LAMBAYEQUE",
+        "alias": "lambayeque",
+        "f_nombre": "Lambayeque",
+        "capital": "Chiclayo"
+    },
+    {
+        "id": 16,
+        "nombre": "LORETO",
+        "alias": "loreto",
+        "f_nombre": "Loreto",
+        "capital": "Iquitos"
+    },
+    {
+        "id": 17,
+        "nombre": "MADRE DE DIOS",
+        "alias": "madre-de-dios",
+        "f_nombre": "Madre de Dios",
+        "capital": "Puerto Maldonado"
+    },
+    {
+        "id": 18,
+        "nombre": "MOQUEGUA",
+        "alias": "moquegua",
+        "f_nombre": "Moquegua",
+        "capital": "Moquegua"
+    },
+    {
+        "id": 19,
+        "nombre": "PASCO",
+        "alias": "pasco",
+        "f_nombre": "Pasco",
+        "capital": "Cerro de Pasco"
+    },
+    {
+        "id": 20,
+        "nombre": "PIURA",
+        "alias": "piura",
+        "f_nombre": "Piura",
+        "capital": "Piura"
+    },
+    {
+        "id": 21,
+        "nombre": "PUNO",
+        "alias": "puno",
+        "f_nombre": "Puno",
+        "capital": "Puno"
+    },
+    {
+        "id": 22,
+        "nombre": "SAN MARTIN",
+        "alias": "san-martin",
+        "f_nombre": "San Martín",
+        "capital": "Moyobamba"
+    },
+    {
+        "id": 23,
+        "nombre": "TACNA",
+        "alias": "tacna",
+        "f_nombre": "Tacna",
+        "capital": "Tacna"
+    },
+    {
+        "id": 24,
+        "nombre": "TUMBES",
+        "alias": "tumbes",
+        "f_nombre": "Tumbes",
+        "capital": "Tumbes"
+    },
+    {
+        "id": 25,
+        "nombre": "UCAYALI",
+        "alias": "ucayali",
+        "f_nombre": "Ucayali",
+        "capital": "Pucallpa"
+    }
+]

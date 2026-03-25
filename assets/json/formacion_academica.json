@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "nombre": "Estudiantes técnicos",
+        "alias": "estudiantes-tecnicos"
+    },
+    {
+        "id": 2,
+        "nombre": "Egresados técnicos",
+        "alias": "egresados-tecnicos"
+    },
+    {
+        "id": 3,
+        "nombre": "Estudiantes universitarios",
+        "alias": "estudiantes-universitarios"
+    },
+    {
+        "id": 4,
+        "nombre": "Egresados universitarios",
+        "alias": "egresados-universitarios"
+    },
+    {
+        "id": 5,
+        "nombre": "Bachilleres",
+        "alias": "bachilleres"
+    }
+]

@@ -2,7 +2,7 @@ use maud::{Markup, html};
 
 pub fn left_home(children: Option<Markup>) -> Markup {
     html! {
-        div class="flex flex-col gap-4 bg-dark-card h-full p-4 rounded-xl" {
+        div class="flex flex-col gap-2 bg-dark-card h-full p-4 rounded-xl lg:overflow-auto" {
             div class="flex items-center gap-2" {
                 img src="/public/images/logo.png" alt="Logo" class="size-24" { }
                 h2 class="text-2xl text-white" translate="no" {

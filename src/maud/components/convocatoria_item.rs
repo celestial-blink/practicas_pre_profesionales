@@ -1,6 +1,7 @@
 use maud::{Markup, PreEscaped, html};
 use time::{OffsetDateTime, macros::format_description};
 
+#[derive(Clone)]
 pub struct ConvocatoriaItem {
     pub id: i32,
     pub titulo: String,

@@ -4,7 +4,7 @@ mod middleware;
 mod modules;
 mod maud;
 mod t_logs;
-use std::fs::OpenOptions;
+mod helpers;
 
 use crate::maud::pages::home::home_index;
 use crate::{general_types::State};

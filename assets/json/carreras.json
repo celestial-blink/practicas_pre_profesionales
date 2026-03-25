@@ -1,0 +1,546 @@
+[
+    {
+        "id": 1,
+        "nombre": "ADMINISTRACION",
+        "alias": "ADMINISTRACION",
+        "clave_busq_bd": "ADMINISTRA*",
+        "terminos_busqueda": "ADMINISTRA\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 2,
+        "nombre": "CONTABILIDAD",
+        "alias": "CONTABILIDAD",
+        "clave_busq_bd": "CONTA*",
+        "terminos_busqueda": "CONTA\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 3,
+        "nombre": "DERECHO",
+        "alias": "DERECHO",
+        "clave_busq_bd": "DERECHO",
+        "terminos_busqueda": "DERECHO, ABOGAD\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 4,
+        "nombre": "EDUCACION",
+        "alias": "EDUCACION",
+        "clave_busq_bd": "EDUCACION",
+        "terminos_busqueda": "EDUCACI(Ó|O)N, DOCENT\\w*, PROFESOR\\w*, MAESTR\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 5,
+        "nombre": "ECONOMIA",
+        "alias": "ECONOMIA",
+        "clave_busq_bd": "ECONOMI*",
+        "terminos_busqueda": "INGENIER(Í|I)A ECON(Ó|O)MICA, ING(.|) ECON(Ó|O)MICA, ECONOM\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 8,
+        "nombre": "ENFERMERIA",
+        "alias": "ENFERMERIA",
+        "clave_busq_bd": "ENFERMER*",
+        "terminos_busqueda": "ENFERMER\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 9,
+        "nombre": "MEDICINA",
+        "alias": "MEDICINA",
+        "clave_busq_bd": "MEDIC* -TECNOLOG* -VETERINARI*",
+        "terminos_busqueda": "MEDICINA -TECN(Ó|O)LOG\\w* -VETERINARI\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 11,
+        "nombre": "INGENIERÍA INFORMÁTICA",
+        "alias": "INGENIERIA-INFORMATICA",
+        "clave_busq_bd": "INFORMATIC*",
+        "terminos_busqueda": "INGENIERIA INFORM(Á|A)TICA, ING(.|) INFORM(Á|A)TICA, INFORM(Á|A)TICA",
+        "publicar": 1
+    },
+    {
+        "id": 12,
+        "nombre": "COMPUTACION",
+        "alias": "COMPUTACION",
+        "clave_busq_bd": "COMPUTACION",
+        "terminos_busqueda": "CIENCIAS DE LA COMPUTACI(Ó|O)N, COMPUTACI(Ó|O)N",
+        "publicar": 1
+    },
+    {
+        "id": 14,
+        "nombre": "MARKETING PUBLICIDAD",
+        "alias": "MARKETING-PUBLICIDAD",
+        "clave_busq_bd": "MARKETING PUBLICIDAD",
+        "terminos_busqueda": "MARKETING, PUBLICI\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 15,
+        "nombre": "INGENIERÍA INDUSTRIAL",
+        "alias": "INGENIERIA-INDUSTRIAL",
+        "clave_busq_bd": "INDUSTRIAL",
+        "terminos_busqueda": "INGENIER(Í|I)A INDUSTRIAL, ING(.|) INDUSTRIAL, INGENIERIOS INDUSTRIALES",
+        "publicar": 1
+    },
+    {
+        "id": 17,
+        "nombre": "NEGOCIOS INTERNACIONALES",
+        "alias": "NEGOCIOS-INTERNACIONALES",
+        "clave_busq_bd": "NEGOCIOS",
+        "terminos_busqueda": "NEGOCIOS INTERNACIONALES, NEG(.|) INTERNACIONALES",
+        "publicar": 1
+    },
+    {
+        "id": 18,
+        "nombre": "INGENIERÍA DE SISTEMAS",
+        "alias": "INGENIERIA-DE-SISTEMAS",
+        "clave_busq_bd": "SISTEMAS",
+        "terminos_busqueda": "INGENIER(Í|I)A DE SISTEMAS, ING(.|) DE SISTEMAS, DESARROLLO DE SISTEMAS",
+        "publicar": 1
+    },
+    {
+        "id": 19,
+        "nombre": "INGENIERÍA CIVIL",
+        "alias": "INGENIERIA-CIVIL",
+        "clave_busq_bd": "CIVIL",
+        "terminos_busqueda": "INGENIER(Í|I)A CIVIL, ING(.|) CIVIL, INGENIEROS CIVILES",
+        "publicar": 1
+    },
+    {
+        "id": 21,
+        "nombre": "COMUNICACIONES",
+        "alias": "COMUNICACIONES",
+        "clave_busq_bd": "COMUNICACION* -INGENIERIA",
+        "terminos_busqueda": "CIENCIAS DE LA COMUNICACI(Ó|O)N, comunicaciones, periodismo",
+        "publicar": 1
+    },
+    {
+        "id": 22,
+        "nombre": "SECRETARIADO",
+        "alias": "SECRETARIADO-SECRETARIA",
+        "clave_busq_bd": "SECRETARIA*",
+        "terminos_busqueda": "SECRETAR(Í|I)A, SECRETARIADO",
+        "publicar": 1
+    },
+    {
+        "id": 27,
+        "nombre": "INGENIERÍA FÍSICA",
+        "alias": "INGENIERIA-FISICA",
+        "clave_busq_bd": "FÍSICA",
+        "terminos_busqueda": "INGENIER(Í|I)A F(Í|I)SICA, ING(.|) F(Í|I)SICA",
+        "publicar": 1
+    },
+    {
+        "id": 28,
+        "nombre": "INGENIERÍA GEOGRÁFICA",
+        "alias": "INGENIERIA-GEOGRAFICA-GEOGRAFIA",
+        "clave_busq_bd": "GEOGRAFI*",
+        "terminos_busqueda": "INGENIER(Í|I)A GEOGR(Á|A)FICA, ING(.|) GEOGR(Á|A)FICA, GEOGRAF(Í|I)A",
+        "publicar": 1
+    },
+    {
+        "id": 29,
+        "nombre": "INGENIERIA-ELECTRÓNICA",
+        "alias": "INGENIERIA-ELECTRONICA",
+        "clave_busq_bd": "ELECTRONICA",
+        "terminos_busqueda": "INGENIER(Í|I)A ELECTR(Ó|O)NICA, ING(.|) ELECTR(Ó|O)NICA, ELECTR(Ó|O)NICA",
+        "publicar": 1
+    },
+    {
+        "id": 31,
+        "nombre": "PSICOLOGÍA",
+        "alias": "PSICOLOGIA",
+        "clave_busq_bd": "PSICOLOG*",
+        "terminos_busqueda": "PSICOLOG\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 34,
+        "nombre": "ARQUITECTURA",
+        "alias": "ARQUITECTURA",
+        "clave_busq_bd": "ARQUITECT*",
+        "terminos_busqueda": "ARQUITECT\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 35,
+        "nombre": "INGENIERÍA GEOLÓGICA",
+        "alias": "INGENIERIA-GEOLOGICA-GEOLOGIA",
+        "clave_busq_bd": "GEOLOGI*",
+        "terminos_busqueda": "INGENIER(Í|I)A GEOL(Ó|O)GICA, ING(.|) GEOL(Ó|O)GICA, GEOL(Ó|O)GICA, GEOLOG(Í|I)A",
+        "publicar": 1
+    },
+    {
+        "id": 37,
+        "nombre": "INGENIERIA AGRONÓMICA - AGRONOMÍA",
+        "alias": "INGENIERIA-AGRONOMICA-AGRONOMIA",
+        "clave_busq_bd": "AGRONOM*",
+        "terminos_busqueda": "INGENIER(Í|I)A AGRON(Ó|O)MICA, ING(.|) AGRON(Ó|O)MICA, AGRONOM(Í|I)A, AGRON(Ó|O)MICA ",
+        "publicar": 1
+    },
+    {
+        "id": 38,
+        "nombre": "FINANZAS",
+        "alias": "FINANZAS",
+        "clave_busq_bd": "FINANZAS",
+        "terminos_busqueda": "FINANZAS",
+        "publicar": 1
+    },
+    {
+        "id": 39,
+        "nombre": "INGENIERIA DE TRANSPORTES",
+        "alias": "INGENIERIA-DE-TRANSPORTES",
+        "clave_busq_bd": "TRANSPORTE*",
+        "terminos_busqueda": "INGENIER(Í|I)A DE TRANSPORTES, ING(.|) DE TRANSPORTES",
+        "publicar": 1
+    },
+    {
+        "id": 40,
+        "nombre": "INGENIERÍA MECÁNICA",
+        "alias": "INGENIERIA-MECANICA",
+        "clave_busq_bd": "MECÁNICA",
+        "terminos_busqueda": "INGENIER(Í|I)A MEC(Á|A)NICA, ING(.|) MEC(Á|A)NICA, MEC(Á|A)NICA",
+        "publicar": 1
+    },
+    {
+        "id": 41,
+        "nombre": "INGENIERÍA MECATRÓNICA",
+        "alias": "INGENIERIA-MECATRONICA",
+        "clave_busq_bd": "MECATRÓNICA",
+        "terminos_busqueda": "INGENIER(Í|I)A MECATR(Ó|O)NICA, ING(.|) MECATR(Ó|O)NICA, MECATR(Ó|O)NICA",
+        "publicar": 1
+    },
+    {
+        "id": 44,
+        "nombre": "GASTRONOMÍA",
+        "alias": "GASTRONOMIA",
+        "clave_busq_bd": "GASTRONOMÍA",
+        "terminos_busqueda": "GASTRONOM(Í|I)A",
+        "publicar": 1
+    },
+    {
+        "id": 45,
+        "nombre": "NUTRICIÓN",
+        "alias": "NUTRICION",
+        "clave_busq_bd": "NUTRICION*",
+        "terminos_busqueda": "NUTRICI\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 47,
+        "nombre": "INGENIERÍA AMBIENTAL",
+        "alias": "INGENIERIA-AMBIENTAL",
+        "clave_busq_bd": "AMBIENTAL",
+        "terminos_busqueda": "INGENIER(Í|I)A AMBIENTAL, ING(.|) AMBIENTAL",
+        "publicar": 1
+    },
+    {
+        "id": 48,
+        "nombre": "ESTADÍSTICA",
+        "alias": "ESTADISTICA",
+        "clave_busq_bd": "ESTADÍSTICA",
+        "terminos_busqueda": "INGENIER(Í|I)A ESTAD(Í|I)STICA, ING. ESTAD(Í|I)STICA, ESTAD(Í|I)STICA",
+        "publicar": 1
+    },
+    {
+        "id": 49,
+        "nombre": "INGENIERÍA QUÍMICA",
+        "alias": "INGENIERIA-QUIMICA",
+        "clave_busq_bd": "QUÍMIC*",
+        "terminos_busqueda": "INGENIER(Í|I)A QU(Í|I)MICA, ING(.|) QU(Í|I)MICA",
+        "publicar": 1
+    },
+    {
+        "id": 51,
+        "nombre": "DISEÑO GRÁFICO \/ AUDIOVISUAL",
+        "alias": "DISENO-GRAFICO-AUDIOVISUAL",
+        "clave_busq_bd": "GRAFICO AUDIOVISUAL",
+        "terminos_busqueda": "DISEÑO GR(Á|A)FICO, DISEÑO AUDIOVISUAL, DISEÑADOR GR(Á|A)FICO",
+        "publicar": 1
+    },
+    {
+        "id": 52,
+        "nombre": "ARQUEOLOGÍA",
+        "alias": "ARQUEOLOGIA",
+        "clave_busq_bd": "ARQUEOLOGÍA",
+        "terminos_busqueda": "ARQUEOLOG(Í|I)A",
+        "publicar": 1
+    },
+    {
+        "id": 53,
+        "nombre": "SEGURIDAD",
+        "alias": "SEGURIDAD",
+        "clave_busq_bd": "SEGURIDAD -INGENIERIA",
+        "terminos_busqueda": "PERSONAL DE SEGURIDAD, AGENTE(S|) DE SEGURIDAD, VIGILANCIA",
+        "publicar": 1
+    },
+    {
+        "id": 55,
+        "nombre": "BIOLOGÍA",
+        "alias": "BIOLOGIA",
+        "clave_busq_bd": "BIOLOGI*",
+        "terminos_busqueda": "BIOLOG\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 56,
+        "nombre": "ANTROPOLOGÍA",
+        "alias": "ANTROPOLOGIA",
+        "clave_busq_bd": "ANTROPOLOG*",
+        "terminos_busqueda": "ANTROPOLOG\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 58,
+        "nombre": "LIMPIEZA",
+        "alias": "LIMPIEZA",
+        "clave_busq_bd": "LIMPIEZA",
+        "terminos_busqueda": "PERSONAL DE LIMPIEZA, LIMPIEZA",
+        "publicar": 1
+    },
+    {
+        "id": 59,
+        "nombre": "INGENIERIA PESQUERA",
+        "alias": "INGENIERIA-PESQUERA",
+        "clave_busq_bd": "PESQUERA",
+        "terminos_busqueda": "INGENIER(Í|I)A PESQUERA, ING(.|) PESQUERA, PESQUER(A|O)",
+        "publicar": 1
+    },
+    {
+        "id": 60,
+        "nombre": "TOPOGRAFÍA",
+        "alias": "TOPOGRAFIA",
+        "clave_busq_bd": "TOPOGRAF*",
+        "terminos_busqueda": "TOPOGRAF\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 61,
+        "nombre": "OBSTETRICIA",
+        "alias": "OBSTETRICIA",
+        "clave_busq_bd": "OBSTETR*",
+        "terminos_busqueda": "OBSTETR\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 63,
+        "nombre": "SOCIOLOGÍA",
+        "alias": "SOCIOLOGIA",
+        "clave_busq_bd": "SOCIOLOG*",
+        "terminos_busqueda": "SOCIOLOG\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 65,
+        "nombre": "ZOOTECNIA \/ ING. ZOOTECNISTA",
+        "alias": "INGENIERIA-ZOOTECNISTA-ZOOTECNIA",
+        "clave_busq_bd": "ZOOTECNI*",
+        "terminos_busqueda": "INGENIER(Í|I)A ZOOTECNISTA, ING(.|) ZOOTECNISTA, ZOOTECNISTA, ZOOTECNIA",
+        "publicar": 1
+    },
+    {
+        "id": 67,
+        "nombre": "MEDICINA VETERINARIA",
+        "alias": "MEDICINA-VETERINARIA",
+        "clave_busq_bd": "VETERINARI*",
+        "terminos_busqueda": "MEDICINA VETERINARIA, VETERINARI(A|O)",
+        "publicar": 1
+    },
+    {
+        "id": 68,
+        "nombre": "INGENIERÍA FORESTAL",
+        "alias": "INGENIERIA-FORESTAL",
+        "clave_busq_bd": "FORESTAL*",
+        "terminos_busqueda": "INGENIER(Í|I)A FORESTAL\\w*, ING(.|) FORESTAL\\w*, FORETAL\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 71,
+        "nombre": "HISTORIA",
+        "alias": "HISTORIA",
+        "clave_busq_bd": "HISTORIA",
+        "terminos_busqueda": "HISTORIA",
+        "publicar": 1
+    },
+    {
+        "id": 73,
+        "nombre": "INGENIERÍA AGROINDUSTRIAL",
+        "alias": "INGENIERIA-AGROINDUSTRIAL",
+        "clave_busq_bd": "AGROINDUSTRIAL",
+        "terminos_busqueda": "INGENIER(Í|I)A AGROINDUSTRIA\\w*, ING(.|) AGROINDUSTRIA\\w*, AGROINDUSTRIA\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 78,
+        "nombre": "INGENIERÍA METALÚRGICA",
+        "alias": "INGENIERIA-METALURGICA-METALURGIA",
+        "clave_busq_bd": "METALURGI*",
+        "terminos_busqueda": "INGENIER(Í|I)A METAL(Ú|U)RGI\\w*, ING(.|) METAL(Ú|U)RGI\\w*, METALURGI\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 81,
+        "nombre": "TRABAJO SOCIAL",
+        "alias": "TRABAJO-SOCIAL",
+        "clave_busq_bd": "+TRABAJ* +SOCIAL*",
+        "terminos_busqueda": "TRABAJ\\w* SOCIAL\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 86,
+        "nombre": "ARCHIVO",
+        "alias": "ARCHIVO",
+        "clave_busq_bd": "ARCHIV*",
+        "terminos_busqueda": "ARCHIV\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 87,
+        "nombre": "INGENIERÍA DE TELECOMUNICACIONES - REDES",
+        "alias": "INGENIERIA-TELECOMUNICACIONES-REDES",
+        "clave_busq_bd": "TELECOMUNICACIONES REDES",
+        "terminos_busqueda": "INGENIER(Í|I)A DE TELECOMUNICACIONES, ING(.|) DE TECOMUNICACIONES, TELECOMUNICACIONES, TELECOMUNICACIONES Y REDES",
+        "publicar": 1
+    },
+    {
+        "id": 90,
+        "nombre": "CIENCIAS POLITICAS",
+        "alias": "CIENCIAS-POLITICAS",
+        "clave_busq_bd": "POLITICA*",
+        "terminos_busqueda": "CIENCIA\\w* POLITICA\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 94,
+        "nombre": "INGENIERÍA AGROPECUARIA",
+        "alias": "INGENIERIA-AGROPECUARIA",
+        "clave_busq_bd": "AGROPECUARI*",
+        "terminos_busqueda": "INGENIER(Í|I)A AGROPECUARI\\w*, ING(.|) AGROPECUARI\\w*, AGROPECUARI\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 98,
+        "nombre": "SOLDADURA",
+        "alias": "SOLDADURA",
+        "clave_busq_bd": "SOLDAD*",
+        "terminos_busqueda": "SOLDAD\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 109,
+        "nombre": "INGENIERIA PETROLERA",
+        "alias": "INGENIERIA-PETROLERA",
+        "clave_busq_bd": "PETROLE*",
+        "terminos_busqueda": "INGENIER(Í|I)A PETROLE\\w*, ING(.|) PETROLE\\w*, PETROLE\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 110,
+        "nombre": "INGENIERIA DE MINAS",
+        "alias": "INGENIERIA-DE-MINAS",
+        "clave_busq_bd": "MINAS",
+        "terminos_busqueda": "INGENIER(Í|I)A DE MINAS, ING(.|) DE MINAS",
+        "publicar": 1
+    },
+    {
+        "id": 111,
+        "nombre": "INGENIERIA ELECTRICA",
+        "alias": "INGENIERIA-ELECTRICA",
+        "clave_busq_bd": "ELECTRI*",
+        "terminos_busqueda": "INGENIER(Í|I)A EL(É|E)CTRI\\w*, ING(.|) EL(É|E)CTRI\\w*, EL(É|E)CTRI\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 112,
+        "nombre": "INGENIERIA SANITARIA",
+        "alias": "INGENIERIA-SANITARIA",
+        "clave_busq_bd": "SANITARI*",
+        "terminos_busqueda": "INGENIER(Í|I)A SANITARI\\w*, ING(.|) SANITARI\\w*, SANITARI\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 113,
+        "nombre": "INGENIERÍA AGRÍCOLA",
+        "alias": "INGENIERIA-AGRICOLA",
+        "clave_busq_bd": "AGRICOLA",
+        "terminos_busqueda": "INGENIER(Í|I)A AGR(Í|I)COLA, ING(.|) AGR(Í|I)COLA, AGR(Í|I)COLA, AGRICULTURA",
+        "publicar": 1
+    },
+    {
+        "id": 114,
+        "nombre": "RELACIONES INDUSTRIALES",
+        "alias": "RELACIONES-INDUSTRIALES",
+        "clave_busq_bd": "INDUSTRIALES",
+        "terminos_busqueda": "RELACIONES INDUSTRIALES",
+        "publicar": 1
+    },
+    {
+        "id": 115,
+        "nombre": "INGENIERIA DE SOFTWARE",
+        "alias": "INGENIERIA-DE-SOFTWARE",
+        "clave_busq_bd": "SOFTWARE",
+        "terminos_busqueda": "INGENIER(Í|I)A DE SOFTWARE, ING(.|) DE SOFTWARE, DESARROLLADOR DE SOFTWARE, SOFTWARE",
+        "publicar": 1
+    },
+    {
+        "id": 121,
+        "nombre": "INDUSTRIAS ALIMENTARIAS",
+        "alias": "INDUSTRIAS-ALIMENTARIAS",
+        "clave_busq_bd": "ALIMENTARIA*",
+        "terminos_busqueda": "INDUSTRIAS ALIMENTARIAS",
+        "publicar": 1
+    },
+    {
+        "id": 122,
+        "nombre": "ECOLOGIA",
+        "alias": "ECOLOGIA",
+        "clave_busq_bd": "ECOLOG*",
+        "terminos_busqueda": "ECOLOG\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 123,
+        "nombre": "CHOFER - CONDUCTOR",
+        "alias": "chofer-conductor-transporte",
+        "clave_busq_bd": "chofer* conductor*",
+        "terminos_busqueda": "CHOFER\\w*, CONDUCTOR\\w*",
+        "publicar": 1
+    },
+    {
+        "id": 124,
+        "nombre": "RELACIONES PÚBLICAS",
+        "alias": "RELACIONES-PUBLICAS",
+        "clave_busq_bd": "RELACIONES +PUBLICA*",
+        "terminos_busqueda": "RELACIONES P(Ú|U)BLICAS",
+        "publicar": 1
+    },
+    {
+        "id": 125,
+        "nombre": "INGENIERIA EMPRESARIAL",
+        "alias": "INGENIERIA-EMPRESARIAL",
+        "clave_busq_bd": "EMPRESARIAL*",
+        "terminos_busqueda": "INGENIER(Í|I)A EMPRESARIAL, ING(.|) EMPRESARIAL",
+        "publicar": 1
+    },
+    {
+        "id": 126,
+        "nombre": "RELACIONES INTERNACIONALES",
+        "alias": "relaciones-internacionales",
+        "clave_busq_bd": "RELACIONES +INTERNACIONALES",
+        "terminos_busqueda": "RELACIONES INTERNACIONALES",
+        "publicar": 1
+    },
+    {
+        "id": 128,
+        "nombre": "INGENIERÍA COMERCIAL",
+        "alias": "ingenieria-comercial",
+        "clave_busq_bd": "comercial",
+        "terminos_busqueda": "INGENIER(Í|I)A COMERCIAL, ING(.|) COMERCIAL",
+        "publicar": 1
+    }
+]
