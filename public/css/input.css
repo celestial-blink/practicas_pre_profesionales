@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@source "../../maud/**/*.rs";
+@source "../js/**/*.js";
+
+@theme {
+    --color-dark-background: oklch(13.85% 0.025 273.24);
+    --color-dark-card: oklch(18.74% 0.024 280.08);
+}
+
+@layer utilities {
+  .bg-grid-dark-fade {
+    --color: #1e1e1e;
+    background-color: oklch(13.85% 0.025 273.24);
+    background-image:
+      linear-gradient(
+        0deg,
+        transparent 24%,
+        var(--color) 25%,
+        var(--color) 26%,
+        transparent 27%,
+        transparent 74%,
+        var(--color) 75%,
+        var(--color) 76%,
+        transparent 77%,
+        transparent
+      ),
+      linear-gradient(
+        90deg,
+        transparent 24%,
+        var(--color) 25%,
+        var(--color) 26%,
+        transparent 27%,
+        transparent 74%,
+        var(--color) 75%,
+        var(--color) 76%,
+        transparent 77%,
+        transparent
+      );
+
+    background-size: 55px 55px;
+
+    /* 👇 Fade inferior */
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  }
+}
