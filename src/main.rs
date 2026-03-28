@@ -12,6 +12,7 @@ use crate::middleware::api_auth_middleware::api_auth_middleware;
 use crate::modules::organizaciones::presentation::router::create::create;
 use crate::modules::organizaciones::presentation::router::find_by_search::find_by_search;
 
+use actix_multipart::form::tempfile::TempFileConfig;
 use actix_web::{App, HttpServer, middleware::from_fn, web};
 use dotenvy::dotenv;
 use sqlx::MySqlPool;
@@ -49,6 +50,7 @@ async fn main() -> std::io::Result<()> {
             )
             .wrap(TracingLogger::default())
             .app_data(web::Data::new(State { db: pool.clone() }))
+            .app_data(TempFileConfig::default().directory("/var/www/practicasperupro/temp"))
             .service(
                 web::scope("/api/v1")
                     .wrap(from_fn(api_auth_middleware))
