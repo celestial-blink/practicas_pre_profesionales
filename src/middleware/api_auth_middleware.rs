@@ -1,5 +1,5 @@
 use actix_web::{Error, body::MessageBody, dev::{ServiceRequest, ServiceResponse}, middleware::Next, web};
-use crate::modules::tokens::presentation::auth_token::auth_token;
+use crate::modules::tokens::{presentation::auth_token::auth_token};
 use crate::general_types::State;
 
 pub async fn api_auth_middleware(
@@ -10,10 +10,12 @@ pub async fn api_auth_middleware(
     let token = req.headers().get("Authorization").map(|header| header.to_str().unwrap().to_string());
     let token = token.map(|token| token.replace("Bearer ", ""));
 
+    // let token_data: Option<Token> = None;
+
     if let Some(token) = token {
         let state = req.app_data::<web::Data<State>>().unwrap();
-        let token = auth_token(state.db.clone(), token).await;
-        if let Some(token) = token {
+        let token_data = auth_token(state.db.clone(), token).await;
+        if let Some(token) = token_data {
             // valida estado
 
             if token.estado == 0 { // inactivo
@@ -30,6 +32,7 @@ pub async fn api_auth_middleware(
                     return Err(actix_web::error::ErrorUnauthorized("Token expirado"));
                 }
             }
+
         } else {
             return Err(actix_web::error::ErrorUnauthorized("Token no encontrado"));
         }
@@ -37,6 +40,10 @@ pub async fn api_auth_middleware(
         return Err(actix_web::error::ErrorUnauthorized("Token no proporcionado"));
     }
 
+    // // pasamos el token a la peticion
+    // if let Some(token) = token_data {
+    //     req.extensions_mut().insert(token);
+    // }
 
     next.call(req).await
     // post-processing

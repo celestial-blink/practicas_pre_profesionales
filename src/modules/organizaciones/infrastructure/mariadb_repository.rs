@@ -1,3 +1,5 @@
+use tracing::error;
+
 use crate::modules::organizaciones::domain::dto::SearchParams;
 use crate::modules::organizaciones::domain::organizacion::Organizacion;
 use crate::modules::organizaciones::domain::repository::OrganizacionRepository;
@@ -14,19 +16,71 @@ impl MariadbRepository {
 
 impl OrganizacionRepository for MariadbRepository {
     async fn create(&self, organizacion: Organizacion) -> Result<(), String> {
-        todo!()
+        let query_sql = "INSERT INTO organizaciones (razon_social, nombre_comercial, alias, ruc, logo, tipo, estado) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        let _ = sqlx::query(query_sql)
+            .bind(organizacion.razon_social)
+            .bind(organizacion.nombre_comercial)
+            .bind(organizacion.alias)
+            .bind(organizacion.ruc)
+            .bind(organizacion.logo)
+            .bind(organizacion.tipo)
+            .bind(organizacion.estado)
+            .execute(&self.pool)
+            .await
+            .map_err(|e| e.to_string())?;
+
+        Ok(())
     }
 
     async fn update(&self, organizacion: Organizacion) -> Result<(), String> {
-        todo!()
+        let query_sql = "UPDATE organizaciones SET razon_social = ?, nombre_comercial = ?, alias = ?, ruc = ?, logo = ?, tipo = ?, estado = ? WHERE id = ?";
+        let _ = sqlx::query(query_sql)
+            .bind(organizacion.razon_social)
+            .bind(organizacion.nombre_comercial)
+            .bind(organizacion.alias)
+            .bind(organizacion.ruc)
+            .bind(organizacion.logo)
+            .bind(organizacion.tipo)
+            .bind(organizacion.estado)
+            .bind(organizacion.id)
+            .execute(&self.pool)
+            .await
+            .map_err(|e| e.to_string())?;
+
+        Ok(())
+
     }
 
     async fn find_by_id(&self, id: i32) -> Option<Organizacion> {
-        todo!()
+        let query_sql = "SELECT * FROM organizaciones WHERE id = ?";
+        let result = sqlx::query_as::<_, Organizacion>(query_sql)
+            .bind(id)
+            .fetch_optional(&self.pool)
+            .await;
+
+        if let Ok(organizacion) = result {
+            return organizacion;
+        } else {
+            error!("Error al buscar organizacion por id: {}", id);
+        }
+
+        None
     }
 
     async fn find_by_ruc(&self, ruc: String) -> Option<Organizacion> {
-        todo!()
+        let query_sql = "SELECT * FROM organizaciones WHERE ruc = ?";
+        let result = sqlx::query_as::<_, Organizacion>(query_sql)
+            .bind(&ruc)
+            .fetch_optional(&self.pool)
+            .await;
+
+        if let Ok(organizacion) = result {
+            return organizacion;
+        } else {
+            error!("Error al buscar organizacion por ruc: {}", ruc);
+        }
+
+        None
     }
 
     async fn find_by_search(&self, params: SearchParams) -> Result<Vec<Organizacion>, String> {
@@ -91,6 +145,8 @@ impl OrganizacionRepository for MariadbRepository {
 
         if let Ok(organizaciones) = result {
             return Ok(organizaciones);
+        } else {
+            error!("Error al buscar organizaciones por estado: {}", estado);
         }
 
         Err("Error al buscar organizaciones".to_string())

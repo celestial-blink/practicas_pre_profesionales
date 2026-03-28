@@ -1,15 +1,16 @@
 mod config;
 mod general_types;
+mod helpers;
+mod maud;
 mod middleware;
 mod modules;
-mod maud;
 mod t_logs;
-mod helpers;
 
+use crate::general_types::State;
 use crate::maud::pages::home::home_index;
-use crate::modules::organizaciones::presentation::router::find_by_search::find_by_search;
-use crate::{general_types::State};
 use crate::middleware::api_auth_middleware::api_auth_middleware;
+use crate::modules::organizaciones::presentation::router::create::create;
+use crate::modules::organizaciones::presentation::router::find_by_search::find_by_search;
 
 use actix_web::{App, HttpServer, middleware::from_fn, web};
 use dotenvy::dotenv;
@@ -41,19 +42,25 @@ async fn main() -> std::io::Result<()> {
 
     let _ = HttpServer::new(move || {
         App::new()
-            .service(actix_files::Files::new("/public", "./public").show_files_listing().use_last_modified(true))
+            .service(
+                actix_files::Files::new("/public", "./public")
+                    .show_files_listing()
+                    .use_last_modified(true),
+            )
             .wrap(TracingLogger::default())
             .app_data(web::Data::new(State { db: pool.clone() }))
             .service(
                 web::scope("/api/v1")
                     .wrap(from_fn(api_auth_middleware))
-                    .route("/test", web::get().to(|| async { "Test" }))
+                    .route("/validate-auth", web::get().to(|| async { "Is valid" }))
                     .service(web::scope("/pre-ofertas").service(
                         modules::pre_ofertas::presentation::router::insert_many::insert_many,
                     ))
-                    .service(web::scope("/organizaciones").service(
-                        find_by_search,
-                    ))
+                    .service(
+                        web::scope("/organizaciones")
+                            .service(find_by_search)
+                            .service(create),
+                    ),
             )
             .service(home_index)
     })

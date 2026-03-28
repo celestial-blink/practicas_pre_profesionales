@@ -12,5 +12,5 @@ pub struct Organizacion {
     pub logo: String,
     pub tipo: i8,
     pub estado: i8,
-    pub creado_en: OffsetDateTime,
+    pub creado_en: Option<OffsetDateTime>,
 }
