@@ -33,13 +33,12 @@ impl OrganizacionRepository for MariadbRepository {
     }
 
     async fn update(&self, organizacion: Organizacion) -> Result<(), String> {
-        let query_sql = "UPDATE organizaciones SET razon_social = ?, nombre_comercial = ?, alias = ?, ruc = ?, logo = ?, tipo = ?, estado = ? WHERE id = ?";
+        let query_sql = "UPDATE organizaciones SET razon_social = ?, nombre_comercial = ?, alias = ?, ruc = ?, tipo = ?, estado = ? WHERE id = ?";
         let _ = sqlx::query(query_sql)
             .bind(organizacion.razon_social)
             .bind(organizacion.nombre_comercial)
             .bind(organizacion.alias)
             .bind(organizacion.ruc)
-            .bind(organizacion.logo)
             .bind(organizacion.tipo)
             .bind(organizacion.estado)
             .bind(organizacion.id)

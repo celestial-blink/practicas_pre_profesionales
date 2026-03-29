@@ -1,10 +1,9 @@
 use actix_web::{HttpResponse, Responder, post, web};
-use serde::Deserialize;
 
 use crate::{
     general_types::State,
     modules::organizaciones::{
-        application::create::Create, domain::organizacion::Organizacion, infrastructure::{
+        application::create::Create, domain::dtos::create_dto::CreateParams, infrastructure::{
             mariadb_repository::MariadbRepository, storage::file_storage::FileStorage,
         }
     },
@@ -12,16 +11,7 @@ use crate::{
 
 use actix_multipart::form::{MultipartForm, json::Json as MpJson, tempfile::TempFile};
 
-#[derive(Deserialize, Debug)]
-pub struct CreateParams {
-    pub razon_social: String,
-    pub nombre_comercial: String,
-    pub alias: String,
-    pub ruc: String,
-    pub logo: String,
-    pub tipo: i8,
-    pub estado: i8,
-}
+
 
 #[derive(MultipartForm)]
 pub struct CreateRequest {
@@ -29,7 +19,7 @@ pub struct CreateRequest {
     pub logo_file: TempFile,
 }
 
-#[post("/create")]
+#[post("/")]
 pub async fn create(
     state: web::Data<State>,
     MultipartForm(params): MultipartForm<CreateRequest>,
@@ -38,17 +28,7 @@ pub async fn create(
     let params = params.params.into_inner();
 
 
-    let organizacion_params = Organizacion {
-        id: 0,
-        razon_social: params.razon_social,
-        nombre_comercial: params.nombre_comercial,
-        alias: params.alias,
-        ruc: params.ruc,
-        logo: params.logo,
-        tipo: params.tipo,
-        estado: params.estado,
-        creado_en: None,
-    };
+    let organizacion_params = params.into();
 
     let infrastructure = MariadbRepository::new(state.db.clone());
     let storage_infrastructure = FileStorage;

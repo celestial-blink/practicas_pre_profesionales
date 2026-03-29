@@ -2,7 +2,7 @@ use actix_web::{HttpResponse, Responder, get, web};
 
 use crate::{general_types::State, modules::organizaciones::{application::find_by_search::FindBySearch, domain::dto::SearchParams, infrastructure::mariadb_repository::MariadbRepository}};
 
-#[get("/find-by-search")]
+#[get("/search")]
 pub async fn find_by_search(
     state: web::Data<State>,
     params: web::Query<SearchParams>,
