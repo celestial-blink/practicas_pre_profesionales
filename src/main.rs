@@ -6,13 +6,10 @@ mod middleware;
 mod modules;
 mod t_logs;
 
-use crate::modules::organizaciones::presentation::router::find_by_id::find_by_id;
-use crate::modules::organizaciones::presentation::router::find_by_ruc::find_by_ruc;
-use crate::{general_types::State, modules::organizaciones::presentation::router::update::update};
-use crate::maud::pages::home::home_index;
 use crate::middleware::api_auth_middleware::api_auth_middleware;
-use crate::modules::organizaciones::presentation::router::create::create;
-use crate::modules::organizaciones::presentation::router::find_by_search::find_by_search;
+use crate::modules::ofertas::presentation::router as oferta_router;
+use crate::modules::organizaciones::presentation::router as organizacion_router;
+use crate::{general_types::State, maud::pages::home::home_index};
 
 use actix_multipart::form::tempfile::TempFileConfig;
 use actix_web::{App, HttpServer, middleware::from_fn, web};
@@ -44,12 +41,13 @@ async fn main() -> std::io::Result<()> {
     };
 
     let temp_dir = std::env::var("TEMP_DIR").expect("TEMP_DIR must be set");
+    let storage_dir = std::env::var("STORAGE_DIR").expect("STORAGE_DIR must be set");
 
     let _ = HttpServer::new(move || {
         App::new()
             .service(
-                actix_files::Files::new("/public", "./public")
-                    .show_files_listing()
+                actix_files::Files::new("/public", &storage_dir)
+                    // .show_files_listing()
                     .use_last_modified(true),
             )
             .wrap(TracingLogger::default())
@@ -64,11 +62,18 @@ async fn main() -> std::io::Result<()> {
                     ))
                     .service(
                         web::scope("/organizaciones")
-                            .service(find_by_search)
-                            .service(create)
-                            .service(update)
-                            .service(find_by_id)
-                            .service(find_by_ruc),
+                            .service(organizacion_router::find_by_search::find_by_search)
+                            .service(organizacion_router::create::create)
+                            .service(organizacion_router::update::update)
+                            .service(organizacion_router::find_by_id::find_by_id)
+                            .service(organizacion_router::find_by_ruc::find_by_ruc),
+                    )
+                    .service(
+                        web::scope("/ofertas")
+                            .service(oferta_router::find_by_search::find_by_search)
+                            .service(oferta_router::create::create)
+                            .service(oferta_router::update::update)
+                            .service(oferta_router::find_by_id::find_by_id),
                     ),
             )
             .service(home_index)

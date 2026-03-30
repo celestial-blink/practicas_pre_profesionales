@@ -1,5 +1,5 @@
 development
-IS_DEV=true cargo run
+tracing_env=warn,rs-backend=debug
 
 production
-IS_DEV=false cargo run
+tracing_env=RUST_LOG=error,tu_crate=info

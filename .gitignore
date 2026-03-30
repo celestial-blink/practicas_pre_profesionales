@@ -169,3 +169,5 @@ logs/
 
 *.prod.css
 *.prod.js
+public/images/organizaciones/*
+temp/*

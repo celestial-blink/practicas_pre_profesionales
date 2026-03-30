@@ -16,6 +16,7 @@ use actix_multipart::form::{MultipartForm, json::Json as MpJson, tempfile::TempF
 #[derive(MultipartForm)]
 pub struct CreateRequest {
     pub params: MpJson<CreateParams>,
+    #[multipart(limit = "1MB")]
     pub logo_file: TempFile,
 }
 

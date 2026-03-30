@@ -14,7 +14,10 @@ use tracing_subscriber::{
 pub async fn init() -> std::io::Result<()> {
     let now = OffsetDateTime::now_local().unwrap();
     let format = format_description::parse("[year]-[month]-[day]").unwrap();
-    let filename = format!("logs/app_{}.log", now.format(&format).unwrap());
+
+    let log_dir = std::env::var("LOG_DIR").unwrap_or_else(|_| "logs".to_string());
+
+    let filename = format!("{}/app_{}.log", log_dir, now.format(&format).unwrap());
     let log_file = OpenOptions::new()
         .create(true)
         .append(true)

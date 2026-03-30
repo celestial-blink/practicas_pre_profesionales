@@ -105,7 +105,7 @@ impl OrganizacionRepository for MariadbRepository {
         }
 
         // agrega limit y offset
-        query_sql = format!("{} LIMIT ? OFFSET ?", query_sql);
+        query_sql = format!("{} ORDER BY id DESC LIMIT ? OFFSET ?", query_sql);
 
         dbg!(&query_sql);
 
