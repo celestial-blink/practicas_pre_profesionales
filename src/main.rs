@@ -6,6 +6,8 @@ mod middleware;
 mod modules;
 mod t_logs;
 
+use crate::modules::organizaciones::presentation::router::find_by_id::find_by_id;
+use crate::modules::organizaciones::presentation::router::find_by_ruc::find_by_ruc;
 use crate::{general_types::State, modules::organizaciones::presentation::router::update::update};
 use crate::maud::pages::home::home_index;
 use crate::middleware::api_auth_middleware::api_auth_middleware;
@@ -43,16 +45,6 @@ async fn main() -> std::io::Result<()> {
 
     let temp_dir = std::env::var("TEMP_DIR").expect("TEMP_DIR must be set");
 
-//     println!("exists: {}", std::path::Path::new(&temp_dir).exists());
-//     println!("is_dir: {}", std::path::Path::new(&temp_dir).is_dir());
-// println!("metadata: {:?}", std::fs::metadata(&temp_dir));
-
-// // Agrega esto también para ver el error exacto al escribir
-// match std::fs::File::create(format!("{}/test.txt", &temp_dir)) {
-//     Ok(_) => println!("Escritura OK"),
-//     Err(e) => println!("Error escritura: {}", e),
-// }
-
     let _ = HttpServer::new(move || {
         App::new()
             .service(
@@ -74,7 +66,9 @@ async fn main() -> std::io::Result<()> {
                         web::scope("/organizaciones")
                             .service(find_by_search)
                             .service(create)
-                            .service(update),
+                            .service(update)
+                            .service(find_by_id)
+                            .service(find_by_ruc),
                     ),
             )
             .service(home_index)

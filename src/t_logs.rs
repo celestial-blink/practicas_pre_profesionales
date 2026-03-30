@@ -1,9 +1,15 @@
 use std::fs::OpenOptions;
 
-use time::{OffsetDateTime, UtcOffset, format_description::{self, well_known::Rfc3339}};
-use tracing_subscriber::{EnvFilter, fmt::{self, time::OffsetTime}, layer::SubscriberExt, util::SubscriberInitExt};
-
-
+use time::{
+    OffsetDateTime, UtcOffset,
+    format_description::{self, well_known::Rfc3339},
+};
+// use tracing_subscriber::{EnvFilter, fmt::{self, time::OffsetTime}, layer::SubscriberExt, util::SubscriberInitExt};
+use tracing_subscriber::{
+    fmt::{self, time::OffsetTime},
+    layer::SubscriberExt,
+    util::SubscriberInitExt,
+};
 
 pub async fn init() -> std::io::Result<()> {
     let now = OffsetDateTime::now_local().unwrap();
@@ -17,7 +23,7 @@ pub async fn init() -> std::io::Result<()> {
     let lima_offset = UtcOffset::from_hms(-5, 0, 0).unwrap();
 
     tracing_subscriber::registry()
-        .with(EnvFilter::new("info").add_directive("sqlx=debug".parse().unwrap()))
+        // .with(EnvFilter::new("info").add_directive("sqlx=debug".parse().unwrap()))
         .with(
             fmt::layer()
                 .with_timer(OffsetTime::new(lima_offset, Rfc3339))
