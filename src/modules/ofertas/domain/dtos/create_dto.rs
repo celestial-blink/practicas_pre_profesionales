@@ -16,6 +16,7 @@ pub struct CreateOfertaDto {
     pub modalidad_practicas: i8,
     pub vacantes: i16,
     pub subvencion: Decimal,
+    #[serde(with = "crate::general_types::datetime_format")]
     pub fecha_fin_oferta: PrimitiveDateTime,
     pub formacion: String,
     pub funciones: String,

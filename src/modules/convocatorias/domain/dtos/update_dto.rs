@@ -12,6 +12,7 @@ pub struct UpdateConvocatoriaDto {
     pub nombre_org: String,
     pub logo_org: String,
     pub alias_org: String,
+    #[serde(with = "crate::general_types::datetime_format")]
     pub fin_convocatoria: PrimitiveDateTime,
     pub carreras: String,
     pub departamentos: String,

@@ -1,6 +1,7 @@
 
+use rust_decimal::Decimal;
 use serde::Serialize;
-use sqlx::{FromRow, types::Decimal};
+use sqlx::FromRow;
 use time::{OffsetDateTime, PrimitiveDateTime};
 
 #[derive(Debug, FromRow, Serialize)]
@@ -16,6 +17,7 @@ pub struct Oferta {
     pub modalidad_practicas: i8,
     pub vacantes: i16,
     pub subvencion: Decimal,
+    #[serde(with = "crate::general_types::datetime_format")]
     pub fecha_fin_oferta: PrimitiveDateTime,
     pub formacion: String,
     pub funciones: String,

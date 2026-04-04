@@ -18,12 +18,39 @@ impl OfertaRepository for MariaDbRepository {
         &self,
         oferta: crate::modules::ofertas::domain::oferta::Oferta,
     ) -> Result<(), String> {
-        let query = "INSERT INTO ofertas (titulo, alias, id_organizacion, nombre_org, modalidad_practicas, vacantes, subvencion, fecha_fin_oferta, formacion, funciones, lugar_practicas, como_postular, bases, extra_info, id_region, region, distrito, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        let result = sqlx::query(query)
+        let columns = [
+            "id_convocatoria",
+            "titulo",
+            "alias",
+            "id_organizacion",
+            "nombre_org",
+            "logo_org",
+            "alias_org",
+            "modalidad_practicas",
+            "vacantes",
+            "subvencion",
+            "fecha_fin_oferta",
+            "formacion",
+            "funciones",
+            "lugar_practicas",
+            "como_postular",
+            "bases",
+            "extra_info",
+            "id_region",
+            "region",
+            "distrito",
+            "estado",
+        ];
+
+        let query = format!("INSERT INTO ofertas ({}) VALUES ({})", columns.join(", "), columns.iter().map(|_| "?").collect::<Vec<&str>>().join(", "));
+        let result = sqlx::query(&query)
+            .bind(&oferta.id_convocatoria)
             .bind(&oferta.titulo)
             .bind(&oferta.alias)
             .bind(&oferta.id_organizacion)
             .bind(&oferta.nombre_org)
+            .bind(&oferta.logo_org)
+            .bind(&oferta.alias_org)
             .bind(&oferta.modalidad_practicas)
             .bind(&oferta.vacantes)
             .bind(&oferta.subvencion)
@@ -50,12 +77,38 @@ impl OfertaRepository for MariaDbRepository {
         &self,
         oferta: crate::modules::ofertas::domain::oferta::Oferta,
     ) -> Result<(), String> {
-        let query = "UPDATE ofertas SET titulo = ?, alias = ?, id_organizacion = ?, nombre_org = ?, modalidad_practicas = ?, vacantes = ?, subvencion = ?, fecha_fin_oferta = ?, formacion = ?, funciones = ?, lugar_practicas = ?, como_postular = ?, bases = ?, extra_info = ?, id_region = ?, region = ?, distrito = ?, estado = ? WHERE id = ?";
-        let result = sqlx::query(query)
+        let columns = [
+            "id_convocatoria",
+            "titulo",
+            "alias",
+            "id_organizacion",
+            "nombre_org",
+            "logo_org",
+            "alias_org",
+            "modalidad_practicas",
+            "vacantes",
+            "subvencion",
+            "fecha_fin_oferta",
+            "formacion",
+            "funciones",
+            "lugar_practicas",
+            "como_postular",
+            "bases",
+            "extra_info",
+            "id_region",
+            "region",
+            "distrito",
+            "estado",
+        ];
+        let query = format!("UPDATE ofertas SET {} WHERE id = ?", columns.iter().map(|item| format!("{} = ?", item)).collect::<Vec<String>>().join(", "));
+        let result = sqlx::query(&query)
+            .bind(&oferta.id_convocatoria)
             .bind(&oferta.titulo)
             .bind(&oferta.alias)
             .bind(&oferta.id_organizacion)
             .bind(&oferta.nombre_org)
+            .bind(&oferta.logo_org)
+            .bind(&oferta.alias_org)
             .bind(&oferta.modalidad_practicas)
             .bind(&oferta.vacantes)
             .bind(&oferta.subvencion)
@@ -100,13 +153,20 @@ impl OfertaRepository for MariaDbRepository {
         &self,
         params: crate::modules::ofertas::domain::dtos::search_params::SearchParams,
     ) -> Result<Vec<Oferta>, String> {
-        let query = "SELECT * FROM ofertas WHERE CONCAT(ofertas.titulo, ofertas.nombre_org) LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
-        let result = sqlx::query_as::<_, Oferta>(query)
-            .bind(params.search)
+        let mut query = "SELECT * FROM ofertas ORDER BY id DESC LIMIT ? OFFSET ?";
+        if params.search.is_some() {
+            query = "SELECT * FROM ofertas WHERE CONCAT(ofertas.titulo, ofertas.nombre_org) LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
+        }
+        let mut result = sqlx::query_as::<_, Oferta>(query);
+        if params.search.is_some() {
+            result = result.bind(params.search);
+        }
+        let result = result
             .bind(params.limit)
             .bind(params.offset)
             .fetch_all(&self.pool)
             .await;
+
         match result {
             Ok(ofertas) => Ok(ofertas),
             Err(e) => Err(e.to_string()),
