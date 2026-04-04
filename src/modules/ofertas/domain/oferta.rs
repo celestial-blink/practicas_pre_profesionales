@@ -1,17 +1,21 @@
+
 use serde::Serialize;
-use sqlx::FromRow;
+use sqlx::{FromRow, types::Decimal};
 use time::{OffsetDateTime, PrimitiveDateTime};
 
 #[derive(Debug, FromRow, Serialize)]
 pub struct Oferta {
     pub id: i32,
+    pub id_convocatoria: Option<i32>,
     pub titulo: String,
     pub alias: String,
     pub id_organizacion: i32,
     pub nombre_org: String,
+    pub logo_org: String,
+    pub alias_org: String,
     pub modalidad_practicas: i8,
     pub vacantes: i16,
-    pub subvencion: f64,
+    pub subvencion: Decimal,
     pub fecha_fin_oferta: PrimitiveDateTime,
     pub formacion: String,
     pub funciones: String,

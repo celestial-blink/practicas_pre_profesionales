@@ -7,6 +7,7 @@ mod modules;
 mod t_logs;
 
 use crate::middleware::api_auth_middleware::api_auth_middleware;
+use crate::modules::convocatorias::presentation::router as convocatoria_router;
 use crate::modules::ofertas::presentation::router as oferta_router;
 use crate::modules::organizaciones::presentation::router as organizacion_router;
 use crate::{general_types::State, maud::pages::home::home_index};
@@ -58,7 +59,7 @@ async fn main() -> std::io::Result<()> {
                     .wrap(from_fn(api_auth_middleware))
                     .route("/validate-auth", web::get().to(|| async { "Is valid" }))
                     .service(web::scope("/pre-ofertas").service(
-                        modules::pre_ofertas::presentation::router::insert_many::insert_many,
+                        modules::pre_ofertas::presentation::router::insert_many::insert_many
                     ))
                     .service(
                         web::scope("/organizaciones")
@@ -66,15 +67,24 @@ async fn main() -> std::io::Result<()> {
                             .service(organizacion_router::create::create)
                             .service(organizacion_router::update::update)
                             .service(organizacion_router::find_by_id::find_by_id)
-                            .service(organizacion_router::find_by_ruc::find_by_ruc),
+                            .service(organizacion_router::find_by_ruc::find_by_ruc)
                     )
                     .service(
                         web::scope("/ofertas")
                             .service(oferta_router::find_by_search::find_by_search)
                             .service(oferta_router::create::create)
                             .service(oferta_router::update::update)
-                            .service(oferta_router::find_by_id::find_by_id),
-                    ),
+                            .service(oferta_router::find_by_id::find_by_id)
+                    )
+                    .service(
+                        web::scope("/convocatorias")
+                            .service(convocatoria_router::find_by_search::find_by_search)
+                            .service(convocatoria_router::create::create)
+                            .service(convocatoria_router::update::update)
+                            .service(convocatoria_router::find_by_id::find_by_id)
+                            .service(convocatoria_router::find_by_search_for_list::find_by_search_for_list)
+                            .service(convocatoria_router::find_by_id_for_list::find_by_id_for_list)
+                    )
             )
             .service(home_index)
     })
