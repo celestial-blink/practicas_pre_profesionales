@@ -28,6 +28,8 @@ pub struct UpdateOfertaDto {
     pub id_region: i8,
     pub region: String,
     pub distrito: String,
+    #[serde(default = "Vec::new")]
+    pub niveles: Vec<i8>,
     pub estado: i8,
 }
 
@@ -55,6 +57,7 @@ impl From<UpdateOfertaDto> for Oferta {
             id_region: params.id_region,
             region: params.region,
             distrito: params.distrito,
+            niveles: params.niveles.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "),
             estado: params.estado,
             creado_en: None,
         }

@@ -1,15 +1,49 @@
-use crate::modules::ofertas::domain::{oferta::Oferta, repository::OfertaRepository};
+use tracing_log::log::error;
 
-pub struct Create<T: OfertaRepository> {
+use crate::modules::{
+    oferta_niveles::domain::{
+        oferta_niveles::OfertaNiveles, oferta_niveles_repository::OfertaNivelesRepository,
+    },
+    ofertas::domain::{
+        dtos::create_dto::CreateOfertaDto, oferta::Oferta, repository::OfertaRepository,
+    },
+};
+
+pub struct Create<T: OfertaRepository, K: OfertaNivelesRepository> {
     pub repository: T,
+    pub niveles_repository: K,
 }
 
-impl<T: OfertaRepository> Create<T> {
-    pub fn new(repository: T) -> Self {
-        Self { repository }
+impl<T: OfertaRepository, K: OfertaNivelesRepository> Create<T, K> {
+    pub fn new(repository: T, niveles_repository: K) -> Self {
+        Self {
+            repository,
+            niveles_repository,
+        }
     }
 
-    pub async fn execute(&self, oferta: Oferta) -> Result<(), String> {
-        self.repository.create(oferta).await
+    pub async fn execute(&self, oferta_dto: CreateOfertaDto) -> Result<(), String> {
+        self.repository
+            .with_transaction(move || async move {
+                let oferta: Oferta = oferta_dto.clone().into();
+                let id = self.repository.create_with_niveles(oferta).await;
+                if id.is_ok() {
+                    let id = id.unwrap();
+                    let niveles = oferta_dto
+                        .niveles
+                        .into_iter()
+                        .map(|x| OfertaNiveles {
+                            id: 0,
+                            id_oferta: id,
+                            id_nivel_academico: x,
+                        })
+                        .collect::<Vec<OfertaNiveles>>();
+                    let _ = self.niveles_repository.create_multiple(niveles).await;
+                    return Ok(());
+                }
+                error!("Error al crear la oferta");
+                Err("Error al crear la oferta".to_string())
+            })
+            .await
     }
 }

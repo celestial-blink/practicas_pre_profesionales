@@ -28,6 +28,7 @@ pub struct Oferta {
     pub id_region: i8,
     pub region: String,
     pub distrito: String,
+    pub niveles: String,
     pub estado: i8,
     pub creado_en: Option<OffsetDateTime>,
 }

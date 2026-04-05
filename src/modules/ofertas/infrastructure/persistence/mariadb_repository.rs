@@ -14,10 +14,10 @@ impl MariaDbRepository {
 }
 
 impl OfertaRepository for MariaDbRepository {
-    async fn create(
+    async fn create_with_niveles(
         &self,
         oferta: crate::modules::ofertas::domain::oferta::Oferta,
-    ) -> Result<(), String> {
+    ) -> Result<i32, String> {
         let columns = [
             "id_convocatoria",
             "titulo",
@@ -42,7 +42,15 @@ impl OfertaRepository for MariaDbRepository {
             "estado",
         ];
 
-        let query = format!("INSERT INTO ofertas ({}) VALUES ({})", columns.join(", "), columns.iter().map(|_| "?").collect::<Vec<&str>>().join(", "));
+        let query = format!(
+            "INSERT INTO ofertas ({}) VALUES ({})",
+            columns.join(", "),
+            columns
+                .iter()
+                .map(|_| "?")
+                .collect::<Vec<&str>>()
+                .join(", ")
+        );
         let result = sqlx::query(&query)
             .bind(&oferta.id_convocatoria)
             .bind(&oferta.titulo)
@@ -68,7 +76,7 @@ impl OfertaRepository for MariaDbRepository {
             .execute(&self.pool)
             .await;
         match result {
-            Ok(_) => Ok(()),
+            Ok(res) => Ok(res.last_insert_id() as i32),
             Err(e) => Err(e.to_string()),
         }
     }
@@ -100,7 +108,14 @@ impl OfertaRepository for MariaDbRepository {
             "distrito",
             "estado",
         ];
-        let query = format!("UPDATE ofertas SET {} WHERE id = ?", columns.iter().map(|item| format!("{} = ?", item)).collect::<Vec<String>>().join(", "));
+        let query = format!(
+            "UPDATE ofertas SET {} WHERE id = ?",
+            columns
+                .iter()
+                .map(|item| format!("{} = ?", item))
+                .collect::<Vec<String>>()
+                .join(", ")
+        );
         let result = sqlx::query(&query)
             .bind(&oferta.id_convocatoria)
             .bind(&oferta.titulo)
@@ -189,6 +204,26 @@ impl OfertaRepository for MariaDbRepository {
         match result {
             Ok(ofertas) => Ok(ofertas),
             Err(e) => Err(e.to_string()),
+        }
+    }
+
+    async fn with_transaction<F, R>(&self, f: F) -> Result<R, String>
+    where
+        F: AsyncFnOnce() -> Result<R, String>,
+    {
+        let tx = self.pool.begin().await.unwrap();
+        let result = f().await;
+
+        match result {
+            Ok(r) => {
+                tx.commit().await.unwrap();
+                Ok(r)
+            }
+            Err(e) => {
+                error!("Error al ejecutar la transacción: {}", e);
+                tx.rollback().await.unwrap();
+                Err(e)
+            }
         }
     }
 }
