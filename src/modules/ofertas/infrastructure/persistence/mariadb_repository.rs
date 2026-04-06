@@ -172,6 +172,7 @@ impl OfertaRepository for MariaDbRepository {
         if params.search.is_some() {
             query = "SELECT * FROM ofertas WHERE CONCAT(ofertas.titulo, ofertas.nombre_org) LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
         }
+
         let mut result = sqlx::query_as::<_, Oferta>(query);
         if params.search.is_some() {
             result = result.bind(params.search);
@@ -184,7 +185,10 @@ impl OfertaRepository for MariaDbRepository {
 
         match result {
             Ok(ofertas) => Ok(ofertas),
-            Err(e) => Err(e.to_string()),
+            Err(e) => {
+                error!("Error al buscar la oferta: {}", e);
+                Err(e.to_string())
+            },
         }
     }
 

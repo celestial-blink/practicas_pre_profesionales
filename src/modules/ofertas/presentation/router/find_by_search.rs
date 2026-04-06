@@ -18,7 +18,7 @@ pub async fn find_by_search(
     let application = FindBySearch::new(infrastructure);
     let result = application.execute(search_params).await;
     match result {
-        Ok(organizaciones) => HttpResponse::Ok().json(organizaciones),
+        Ok(ofertas) => HttpResponse::Ok().json(ofertas),
         Err(e) => HttpResponse::InternalServerError().body(e),
     }
 }
