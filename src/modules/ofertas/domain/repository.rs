@@ -1,10 +1,16 @@
-use crate::modules::ofertas::domain::{dtos::search_params::SearchParams, oferta::Oferta};
+use crate::modules::ofertas::domain::{
+    dtos::{search_params::SearchParams, search_params_result_dto::SearchParamsResultDto},
+    oferta::Oferta,
+};
 
 pub trait OfertaRepository {
     async fn create_with_niveles(&self, oferta: Oferta) -> Result<i32, String>;
     async fn update(&self, oferta: Oferta) -> Result<(), String>;
     async fn find_by_id(&self, id: i32) -> Option<Oferta>;
-    async fn find_by_search(&self, params: SearchParams) -> Result<Vec<Oferta>, String>;
+    async fn find_by_search(
+        &self,
+        params: SearchParams,
+    ) -> Result<Vec<SearchParamsResultDto>, String>;
     async fn with_transaction<F, R>(&self, f: F) -> Result<R, String>
     where
         F: AsyncFnOnce() -> Result<R, String>;

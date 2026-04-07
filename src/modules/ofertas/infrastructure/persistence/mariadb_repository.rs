@@ -1,5 +1,6 @@
 use tracing_log::log::error;
 
+use crate::modules::ofertas::domain::dtos::search_params_result_dto::SearchParamsResultDto;
 use crate::modules::ofertas::domain::oferta::Oferta;
 use crate::modules::ofertas::domain::repository::OfertaRepository;
 
@@ -167,13 +168,14 @@ impl OfertaRepository for MariaDbRepository {
     async fn find_by_search(
         &self,
         params: crate::modules::ofertas::domain::dtos::search_params::SearchParams,
-    ) -> Result<Vec<Oferta>, String> {
-        let mut query = "SELECT * FROM ofertas ORDER BY id DESC LIMIT ? OFFSET ?";
+    ) -> Result<Vec<SearchParamsResultDto>, String> {
+        // TODO: usar sqlx::query_as::<_, SearchParamsResultDto>(query);
+        let mut query = "SELECT ofertas.*, GROUP_CONCAT(oferta_niveles.id_nivel_academico) as niveles_data FROM ofertas INNER JOIN oferta_niveles ON ofertas.id = oferta_niveles.id_oferta GROUP BY (ofertas.id) ORDER BY id DESC LIMIT ? OFFSET ?";
         if params.search.is_some() {
-            query = "SELECT * FROM ofertas WHERE CONCAT(ofertas.titulo, ofertas.nombre_org) LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
+            query = "SELECT ofertas.*, GROUP_CONCAT(oferta_niveles.id_nivel_academico) as niveles_data FROM ofertas INNER JOIN oferta_niveles ON ofertas.id = oferta_niveles.id_oferta WHERE CONCAT(ofertas.titulo, ofertas.nombre_org) LIKE ? GROUP BY (ofertas.id) ORDER BY id DESC LIMIT ? OFFSET ?";
         }
 
-        let mut result = sqlx::query_as::<_, Oferta>(query);
+        let mut result = sqlx::query_as::<_, _>(query);
         if params.search.is_some() {
             result = result.bind(params.search);
         }
@@ -181,7 +183,13 @@ impl OfertaRepository for MariaDbRepository {
             .bind(params.limit)
             .bind(params.offset)
             .fetch_all(&self.pool)
-            .await;
+            .await
+        .map(|ofertas| {
+            ofertas.iter().map(|oferta| {
+                oferta.niveles_data = oferta.niveles.split(",").map(|n| n.parse::<i8>().unwrap()).collect();
+                oferta
+            }).collect()
+        });
 
         match result {
             Ok(ofertas) => Ok(ofertas),
