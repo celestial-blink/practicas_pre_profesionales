@@ -1,5 +1,5 @@
 use crate::modules::ofertas::domain::{
-    dtos::search_params::SearchParams, oferta::Oferta, repository::OfertaRepository,
+    dtos::search_params::SearchParams, oferta::Oferta, repository::OfertaRepository
 };
 
 pub struct FindBySearch<T: OfertaRepository> {

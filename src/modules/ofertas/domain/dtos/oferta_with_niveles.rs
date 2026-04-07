@@ -1,11 +1,10 @@
 
 use rust_decimal::Decimal;
 use serde::Serialize;
-use sqlx::FromRow;
 use time::{OffsetDateTime, PrimitiveDateTime};
 
-#[derive(Debug, FromRow, Serialize)]
-pub struct SearchParamsResultDto {
+#[derive(Debug, Serialize)]
+pub struct OfertaWithNivelesDto {
     pub id: i32,
     pub id_convocatoria: Option<i32>,
     pub titulo: String,

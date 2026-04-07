@@ -14,6 +14,7 @@ pub struct UpdateConvocatoriaDto {
     pub alias_org: String,
     #[serde(with = "crate::general_types::datetime_format")]
     pub fin_convocatoria: PrimitiveDateTime,
+    pub vacantes: i32,
     pub carreras: String,
     pub departamentos: String,
     pub subvenciones: String,
@@ -35,6 +36,7 @@ impl From<UpdateConvocatoriaDto> for Convocatoria {
             logo_org: params.logo_org,
             alias_org: params.alias_org,
             fin_convocatoria: params.fin_convocatoria,
+            vacantes: params.vacantes,
             carreras: params.carreras,
             departamentos: params.departamentos,
             subvenciones: params.subvenciones,

@@ -2,20 +2,16 @@ use crate::modules::oferta_niveles::domain::{
     oferta_niveles::OfertaNiveles, oferta_niveles_repository::OfertaNivelesRepository,
 };
 
-pub struct MariaDbRepository {
-    pool: sqlx::MySqlPool,
-}
-
-impl MariaDbRepository {
-    pub fn new(pool: sqlx::MySqlPool) -> Self {
-        Self { pool }
-    }
-}
+pub struct MariaDbRepository;
 
 impl OfertaNivelesRepository for MariaDbRepository {
-    async fn create_multiple(&self, niveles: Vec<OfertaNiveles>) -> Result<(), String> {
+    async fn create_multiple(
+        &self,
+        niveles: Vec<OfertaNiveles>,
+        tx: &mut sqlx::Transaction<'_, sqlx::MySql>,
+    ) -> Result<(), String> {
         let sql_insert = format!(
-            "INSERT INTO oferta_niveles (id_oferta, id_nivel_estudio) VALUES {}",
+            "INSERT IGNORE INTO oferta_niveles (id_oferta, id_nivel_academico) VALUES {}",
             niveles
                 .iter()
                 .map(|_| "(?, ?)".to_owned())
@@ -28,7 +24,7 @@ impl OfertaNivelesRepository for MariaDbRepository {
             query = query.bind(nivel.id_oferta).bind(nivel.id_nivel_academico);
         }
 
-        query.execute(&self.pool).await.map_err(|e| e.to_string())?;
+        query.execute(&mut **tx).await.map_err(|e| e.to_string())?;
 
         Ok(())
     }
@@ -37,6 +33,7 @@ impl OfertaNivelesRepository for MariaDbRepository {
         &self,
         id_oferta: i32,
         id_niveles_academicos: Vec<i8>,
+        tx: &mut sqlx::Transaction<'_, sqlx::MySql>,
     ) -> Result<(), String> {
         let sql_delete_by_nivel_academico = format!(
             "DELETE FROM oferta_niveles WHERE id_oferta = ? AND id_nivel_academico NOT IN ({})",
@@ -49,7 +46,23 @@ impl OfertaNivelesRepository for MariaDbRepository {
 
         sqlx::query(&sql_delete_by_nivel_academico)
             .bind(id_oferta)
-            .execute(&self.pool)
+            .execute(&mut **tx)
+            .await
+            .map_err(|e| e.to_string())?;
+
+        Ok(())
+    }
+
+    async fn remove_by_id_oferta(
+        &self,
+        id_oferta: i32,
+        tx: &mut sqlx::Transaction<'_, sqlx::MySql>,
+    ) -> Result<(), String> {
+        let sql_delete_by_id_oferta = format!("DELETE FROM oferta_niveles WHERE id_oferta = ?");
+
+        sqlx::query(&sql_delete_by_id_oferta)
+            .bind(id_oferta)
+            .execute(&mut **tx)
             .await
             .map_err(|e| e.to_string())?;
 

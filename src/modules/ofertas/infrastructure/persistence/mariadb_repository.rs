@@ -1,8 +1,10 @@
+use sqlx::Transaction;
 use tracing_log::log::error;
 
-use crate::modules::ofertas::domain::dtos::search_params_result_dto::SearchParamsResultDto;
+use crate::modules::ofertas::domain::dtos::oferta_with_niveles::OfertaWithNivelesDto;
 use crate::modules::ofertas::domain::oferta::Oferta;
 use crate::modules::ofertas::domain::repository::OfertaRepository;
+use crate::modules::ofertas::infrastructure::dtos::oferta_with_niveles_dto::OfertaWithNivelesDto as InfraOfertaWithNivelesDto;
 
 pub struct MariaDbRepository {
     pub pool: sqlx::MySqlPool,
@@ -18,6 +20,7 @@ impl OfertaRepository for MariaDbRepository {
     async fn create_with_niveles(
         &self,
         oferta: crate::modules::ofertas::domain::oferta::Oferta,
+        tx: &mut Transaction<'_, sqlx::MySql>,
     ) -> Result<i32, String> {
         let columns = [
             "id_convocatoria",
@@ -40,6 +43,7 @@ impl OfertaRepository for MariaDbRepository {
             "id_region",
             "region",
             "distrito",
+            "niveles",
             "estado",
         ];
 
@@ -73,8 +77,9 @@ impl OfertaRepository for MariaDbRepository {
             .bind(&oferta.id_region)
             .bind(&oferta.region)
             .bind(&oferta.distrito)
+            .bind(&oferta.niveles)
             .bind(&oferta.estado)
-            .execute(&self.pool)
+            .execute(&mut **tx)
             .await;
         match result {
             Ok(res) => Ok(res.last_insert_id() as i32),
@@ -85,6 +90,7 @@ impl OfertaRepository for MariaDbRepository {
     async fn update(
         &self,
         oferta: crate::modules::ofertas::domain::oferta::Oferta,
+        tx: &mut Transaction<'_, sqlx::MySql>,
     ) -> Result<(), String> {
         let columns = [
             "id_convocatoria",
@@ -107,6 +113,7 @@ impl OfertaRepository for MariaDbRepository {
             "id_region",
             "region",
             "distrito",
+            "niveles",
             "estado",
         ];
         let query = format!(
@@ -138,9 +145,10 @@ impl OfertaRepository for MariaDbRepository {
             .bind(&oferta.id_region)
             .bind(&oferta.region)
             .bind(&oferta.distrito)
+            .bind(&oferta.niveles)
             .bind(&oferta.estado)
             .bind(&oferta.id)
-            .execute(&self.pool)
+            .execute(&mut **tx)
             .await;
         match result {
             Ok(_) => Ok(()),
@@ -168,35 +176,30 @@ impl OfertaRepository for MariaDbRepository {
     async fn find_by_search(
         &self,
         params: crate::modules::ofertas::domain::dtos::search_params::SearchParams,
-    ) -> Result<Vec<SearchParamsResultDto>, String> {
-        // TODO: usar sqlx::query_as::<_, SearchParamsResultDto>(query);
-        let mut query = "SELECT ofertas.*, GROUP_CONCAT(oferta_niveles.id_nivel_academico) as niveles_data FROM ofertas INNER JOIN oferta_niveles ON ofertas.id = oferta_niveles.id_oferta GROUP BY (ofertas.id) ORDER BY id DESC LIMIT ? OFFSET ?";
+    ) -> Result<Vec<Oferta>, String> {
+        let mut query = "SELECT * FROM ofertas ORDER BY id DESC LIMIT ? OFFSET ?";
         if params.search.is_some() {
-            query = "SELECT ofertas.*, GROUP_CONCAT(oferta_niveles.id_nivel_academico) as niveles_data FROM ofertas INNER JOIN oferta_niveles ON ofertas.id = oferta_niveles.id_oferta WHERE CONCAT(ofertas.titulo, ofertas.nombre_org) LIKE ? GROUP BY (ofertas.id) ORDER BY id DESC LIMIT ? OFFSET ?";
+            query = "SELECT * FROM ofertas WHERE CONCAT(ofertas.titulo, ofertas.nombre_org) LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
         }
 
-        let mut result = sqlx::query_as::<_, _>(query);
-        if params.search.is_some() {
-            result = result.bind(params.search);
+        let mut result = sqlx::query_as::<_, Oferta>(query);
+
+        if let Some(search) = params.search {
+            result = result.bind(format!("%{}%", search));
         }
+
         let result = result
             .bind(params.limit)
             .bind(params.offset)
             .fetch_all(&self.pool)
-            .await
-        .map(|ofertas| {
-            ofertas.iter().map(|oferta| {
-                oferta.niveles_data = oferta.niveles.split(",").map(|n| n.parse::<i8>().unwrap()).collect();
-                oferta
-            }).collect()
-        });
+            .await;
 
         match result {
             Ok(ofertas) => Ok(ofertas),
             Err(e) => {
                 error!("Error al buscar la oferta: {}", e);
                 Err(e.to_string())
-            },
+            }
         }
     }
 
@@ -221,10 +224,11 @@ impl OfertaRepository for MariaDbRepository {
 
     async fn with_transaction<F, R>(&self, f: F) -> Result<R, String>
     where
-        F: AsyncFnOnce() -> Result<R, String>,
+        F: AsyncFnOnce(&mut Transaction<'_, sqlx::MySql>) -> Result<R, String>,
     {
-        let tx = self.pool.begin().await.unwrap();
-        let result = f().await;
+        let mut tx = self.pool.begin().await.unwrap();
+
+        let result = f(&mut tx).await;
 
         match result {
             Ok(r) => {
@@ -235,6 +239,62 @@ impl OfertaRepository for MariaDbRepository {
                 error!("Error al ejecutar la transacción: {}", e);
                 tx.rollback().await.unwrap();
                 Err(e)
+            }
+        }
+    }
+
+    async fn find_by_id_with_niveles(&self, id: i32) -> Option<OfertaWithNivelesDto> {
+        let query = "SELECT ofertas.*, GROUP_CONCAT(oferta_niveles.id_nivel_academico) as niveles_data FROM ofertas LEFT JOIN oferta_niveles ON ofertas.id = oferta_niveles.id_oferta WHERE ofertas.id = ? GROUP BY (ofertas.id)";
+
+        let result = sqlx::query_as::<_, InfraOfertaWithNivelesDto>(query)
+            .bind(id)
+            .fetch_optional(&self.pool)
+            .await;
+        match result {
+            Ok(Some(oferta)) => {
+                let niveles_data: Vec<i8> = if oferta.niveles_data.is_some() {
+                    oferta
+                        .niveles_data
+                        .unwrap()
+                        .split(",")
+                        .into_iter()
+                        .map(|x| x.parse::<i8>().unwrap_or(0))
+                        .collect()
+                } else {
+                    vec![]
+                };
+                Some(OfertaWithNivelesDto {
+                    id: oferta.id,
+                    id_convocatoria: oferta.id_convocatoria,
+                    titulo: oferta.titulo,
+                    alias: oferta.alias,
+                    id_organizacion: oferta.id_organizacion,
+                    nombre_org: oferta.nombre_org,
+                    logo_org: oferta.logo_org,
+                    alias_org: oferta.alias_org,
+                    modalidad_practicas: oferta.modalidad_practicas,
+                    vacantes: oferta.vacantes,
+                    subvencion: oferta.subvencion,
+                    fecha_fin_oferta: oferta.fecha_fin_oferta,
+                    formacion: oferta.formacion,
+                    funciones: oferta.funciones,
+                    lugar_practicas: oferta.lugar_practicas,
+                    como_postular: oferta.como_postular,
+                    bases: oferta.bases,
+                    extra_info: oferta.extra_info,
+                    id_region: oferta.id_region,
+                    region: oferta.region,
+                    distrito: oferta.distrito,
+                    niveles: oferta.niveles,
+                    niveles_data: niveles_data,
+                    estado: oferta.estado,
+                    creado_en: oferta.creado_en,
+                })
+            }
+            Ok(None) => None,
+            Err(e) => {
+                error!("Error al buscar la oferta: {}", e);
+                None
             }
         }
     }

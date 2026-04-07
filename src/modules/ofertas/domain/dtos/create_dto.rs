@@ -27,7 +27,8 @@ pub struct CreateOfertaDto {
     pub id_region: i8,
     pub region: String,
     pub distrito: String,
-    pub niveles: Vec<i8>,
+    pub niveles: String,
+    pub niveles_data: Vec<i8>,
     pub estado: i8,
 }
 
@@ -55,7 +56,7 @@ impl From<CreateOfertaDto> for Oferta {
             id_region: params.id_region,
             region: params.region,
             distrito: params.distrito,
-            niveles: params.niveles.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(", "),
+            niveles: params.niveles,
             estado: params.estado,
             creado_en: None,
         }

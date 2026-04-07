@@ -1,7 +1,16 @@
-use crate::modules::convocatorias::{application::{dtos::search_list_result::SearchListResult, repository::{find_by_id_list_repository::FindByIdListRepository, search_list_repository::SearchListRepository}}, domain::{
-    convocatoria::Convocatoria, dtos::search_params::SearchParams,
-    repository::ConvocatoriaRepository,
-}};
+use crate::modules::convocatorias::{
+    application::{
+        dtos::search_list_result::SearchListResult,
+        repository::{
+            find_by_id_list_repository::FindByIdListRepository,
+            search_list_repository::SearchListRepository,
+        },
+    },
+    domain::{
+        convocatoria::Convocatoria, dtos::search_params::SearchParams,
+        repository::ConvocatoriaRepository,
+    },
+};
 use tracing_log::log::error;
 
 pub struct MariaDbRepository {
@@ -86,9 +95,40 @@ impl ConvocatoriaRepository for MariaDbRepository {
     }
 
     async fn find_by_search(&self, params: SearchParams) -> Result<Vec<Convocatoria>, String> {
-        let query = "SELECT * FROM convocatorias WHERE CONCAT(convocatorias.titulo, convocatorias.nombre_org) LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
-        let result = sqlx::query_as::<_, Convocatoria>(query)
-            .bind(params.search)
+        let columns = [
+            "id",
+            "titulo",
+            "alias",
+            "id_organizacion",
+            "nombre_org",
+            "logo_org",
+            "alias_org",
+            "fin_convocatoria",
+            "carreras",
+            "NULL as texto",
+            "departamentos",
+            "subvenciones",
+            "modalidades",
+            "nivel_estudios",
+            "finalizan_todos",
+            "estado",
+            "actualizado_en",
+            "creado_en",
+        ];
+
+        let mut query = format!("SELECT {} FROM convocatorias WHERE ORDER BY id DESC LIMIT ? OFFSET ?", columns.join(", "));
+
+        if params.search.is_some() {
+            query = format!("SELECT {} FROM convocatorias WHERE CONCAT(convocatorias.titulo, convocatorias.nombre_org) LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?", columns.join(", "));
+        }
+
+        let mut result = sqlx::query_as::<_, Convocatoria>(&query);
+
+        if let Some(search) = params.search {
+            result = result.bind(format!("%{}%", search));
+        }
+
+        let result = result
             .bind(params.limit)
             .bind(params.offset)
             .fetch_all(&self.pool)
@@ -120,9 +160,11 @@ impl ConvocatoriaRepository for MariaDbRepository {
     }
 }
 
-
 impl SearchListRepository for MariaDbRepository {
-    async fn find_by_search_for_list(&self, params: SearchParams) -> Result<Vec<SearchListResult>, String> {
+    async fn find_by_search_for_list(
+        &self,
+        params: SearchParams,
+    ) -> Result<Vec<SearchListResult>, String> {
         let query = "SELECT (id, titulo, nombre_org, estado, creado_en) FROM convocatorias WHERE CONCAT(convocatorias.titulo, convocatorias.nombre_org) LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
         let result = sqlx::query_as::<_, SearchListResult>(query)
             .bind(params.search)
@@ -139,7 +181,8 @@ impl SearchListRepository for MariaDbRepository {
 
 impl FindByIdListRepository for MariaDbRepository {
     async fn find_by_id_list(&self, id: i32) -> Result<SearchListResult, String> {
-        let query = "SELECT (id, titulo, nombre_org, estado, creado_en) FROM convocatorias WHERE id = ?";
+        let query =
+            "SELECT (id, titulo, nombre_org, estado, creado_en) FROM convocatorias WHERE id = ?";
         let result = sqlx::query_as::<_, SearchListResult>(query)
             .bind(id)
             .fetch_optional(&self.pool)

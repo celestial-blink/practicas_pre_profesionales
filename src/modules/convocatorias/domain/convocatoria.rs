@@ -12,6 +12,7 @@ pub struct Convocatoria {
     pub logo_org: String,
     pub alias_org: String,
     pub fin_convocatoria: PrimitiveDateTime,
+    pub vacantes: i32,
     pub carreras: String,
     pub departamentos: String,
     pub subvenciones: String,

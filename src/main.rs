@@ -75,6 +75,7 @@ async fn main() -> std::io::Result<()> {
                             .service(oferta_router::create::create)
                             .service(oferta_router::update::update)
                             .service(oferta_router::find_by_id::find_by_id)
+                            .service(oferta_router::find_by_id_with_niveles::find_by_id_with_niveles)
                     )
                     .service(
                         web::scope("/convocatorias")

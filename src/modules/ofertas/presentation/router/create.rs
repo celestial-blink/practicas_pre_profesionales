@@ -11,12 +11,10 @@ use crate::{
 
 #[post("/")]
 pub async fn create(state: web::Data<State>, params: web::Json<CreateOfertaDto>) -> impl Responder {
-    let db = state.db.clone();
-
     let oferta_params: CreateOfertaDto = params.into_inner();
 
-    let infrastructure = MariaDbRepository::new(db.clone());
-    let niveles_infrastructure = MariaDbNivelesRepository::new(db.clone());
+    let infrastructure = MariaDbRepository::new(state.db.clone());
+    let niveles_infrastructure = MariaDbNivelesRepository;
 
     let application = Create::new(infrastructure, niveles_infrastructure);
     let result = application.execute(oferta_params).await;

@@ -9,7 +9,7 @@ impl<T: OfertaNivelesRepository> CreateMultiple<T> {
         Self { repository }
     }
 
-    pub async fn execute(&self, niveles: Vec<OfertaNiveles>) -> Result<(), String> {
-        self.repository.create_multiple(niveles).await
+    pub async fn execute(&self, niveles: Vec<OfertaNiveles>, tx: &mut sqlx::Transaction<'_, sqlx::MySql>) -> Result<(), String> {
+        self.repository.create_multiple(niveles, tx).await
     }
 }

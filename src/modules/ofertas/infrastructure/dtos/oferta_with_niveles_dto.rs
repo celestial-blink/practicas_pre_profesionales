@@ -1,11 +1,9 @@
-
-use rust_decimal::Decimal;
 use serde::Serialize;
-use sqlx::FromRow;
+use sqlx::prelude::FromRow;
 use time::{OffsetDateTime, PrimitiveDateTime};
 
-#[derive(Debug, FromRow, Serialize, Clone)]
-pub struct Oferta {
+#[derive(Debug, FromRow, Serialize)]
+pub struct OfertaWithNivelesDto {
     pub id: i32,
     pub id_convocatoria: Option<i32>,
     pub titulo: String,
@@ -16,7 +14,7 @@ pub struct Oferta {
     pub alias_org: String,
     pub modalidad_practicas: i8,
     pub vacantes: i16,
-    pub subvencion: Decimal,
+    pub subvencion: rust_decimal::Decimal,
     #[serde(with = "crate::general_types::datetime_format")]
     pub fecha_fin_oferta: PrimitiveDateTime,
     pub formacion: String,
@@ -29,6 +27,7 @@ pub struct Oferta {
     pub region: String,
     pub distrito: String,
     pub niveles: String,
+    pub niveles_data: Option<String>,
     pub estado: i8,
     pub creado_en: Option<OffsetDateTime>,
 }
