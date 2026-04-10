@@ -1,4 +1,4 @@
-use actix_web::{HttpResponse, Responder, post, web};
+use actix_web::{HttpResponse, Responder, put, web};
 
 use crate::{
     general_types::State,
@@ -12,7 +12,7 @@ use crate::{
     },
 };
 
-#[post("/")]
+#[put("/{id}")]
 pub async fn update(state: web::Data<State>, params: web::Json<UpdateConvocatoriaDto>) -> impl Responder {
     let convocatoria_params: UpdateConvocatoriaDto = params.into_inner();
     let convocatoria_params: Convocatoria = convocatoria_params.into();

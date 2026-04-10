@@ -25,8 +25,34 @@ impl MariaDbRepository {
 
 impl ConvocatoriaRepository for MariaDbRepository {
     async fn create(&self, convocatoria: Convocatoria) -> Result<(), String> {
-        let query = "INSERT INTO convocatorias (titulo, alias, id_organizacion, nombre_org, logo_org, alias_org, fin_convocatoria, carreras, departamentos, subvenciones,modalidades, nivel_estudios, texto, finalizan_todos, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        let result = sqlx::query(query)
+        let columns = [
+            "titulo",
+            "alias",
+            "id_organizacion",
+            "nombre_org",
+            "logo_org",
+            "alias_org",
+            "fin_convocatoria",
+            "vacantes",
+            "carreras",
+            "departamentos",
+            "subvenciones",
+            "modalidades",
+            "nivel_estudios",
+            "texto",
+            "finalizan_todos",
+            "estado",
+        ];
+        let query = format!(
+            "INSERT INTO convocatorias ({}) VALUES ({})",
+            columns.join(", "),
+            columns
+                .iter()
+                .map(|_| "?")
+                .collect::<Vec<&str>>()
+                .join(", ")
+        );
+        let result = sqlx::query(&query)
             .bind(&convocatoria.titulo)
             .bind(&convocatoria.alias)
             .bind(&convocatoria.id_organizacion)
@@ -34,6 +60,7 @@ impl ConvocatoriaRepository for MariaDbRepository {
             .bind(&convocatoria.logo_org)
             .bind(&convocatoria.alias_org)
             .bind(&convocatoria.fin_convocatoria)
+            .bind(&convocatoria.vacantes)
             .bind(&convocatoria.carreras)
             .bind(&convocatoria.departamentos)
             .bind(&convocatoria.subvenciones)
@@ -104,6 +131,7 @@ impl ConvocatoriaRepository for MariaDbRepository {
             "logo_org",
             "alias_org",
             "fin_convocatoria",
+            "vacantes",
             "carreras",
             "NULL as texto",
             "departamentos",
@@ -116,10 +144,16 @@ impl ConvocatoriaRepository for MariaDbRepository {
             "creado_en",
         ];
 
-        let mut query = format!("SELECT {} FROM convocatorias WHERE ORDER BY id DESC LIMIT ? OFFSET ?", columns.join(", "));
+        let mut query = format!(
+            "SELECT {} FROM convocatorias ORDER BY id DESC LIMIT ? OFFSET ?",
+            columns.join(", ")
+        );
 
         if params.search.is_some() {
-            query = format!("SELECT {} FROM convocatorias WHERE CONCAT(convocatorias.titulo, convocatorias.nombre_org) LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?", columns.join(", "));
+            query = format!(
+                "SELECT {} FROM convocatorias WHERE CONCAT(convocatorias.titulo, convocatorias.nombre_org) LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?",
+                columns.join(", ")
+            );
         }
 
         let mut result = sqlx::query_as::<_, Convocatoria>(&query);
@@ -135,7 +169,10 @@ impl ConvocatoriaRepository for MariaDbRepository {
             .await;
         match result {
             Ok(convocatorias) => Ok(convocatorias),
-            Err(e) => Err(e.to_string()),
+            Err(e) => {
+                error!("Error al buscar las convocatorias: {}", e);
+                Err(e.to_string())
+            }
         }
     }
 
