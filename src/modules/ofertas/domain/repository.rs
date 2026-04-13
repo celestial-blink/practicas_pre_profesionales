@@ -17,10 +17,6 @@ pub trait OfertaRepository {
     async fn with_transaction<F, R>(&self, f: F) -> Result<R, String>
     where
         F: AsyncFnOnce(&mut Transaction<'_, sqlx::MySql>) -> Result<R, String>;
-    async fn get_all_by_estado(
-        &self,
-        estado: i8,
-        limit: i32,
-        offset: i32,
-    ) -> Result<Vec<Oferta>, String>;
+
+    async fn get_all_by_id_convocatoria(&self, id_convocatoria: i32) -> Result<Vec<Oferta>, String>;
 }

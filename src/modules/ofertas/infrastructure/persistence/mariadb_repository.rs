@@ -1,4 +1,4 @@
-use sqlx::Transaction;
+use sqlx::{MySql, Transaction};
 use tracing_log::log::error;
 
 use crate::modules::ofertas::domain::dtos::oferta_with_niveles::OfertaWithNivelesDto;
@@ -203,25 +203,6 @@ impl OfertaRepository for MariaDbRepository {
         }
     }
 
-    async fn get_all_by_estado(
-        &self,
-        estado: i8,
-        limit: i32,
-        offset: i32,
-    ) -> Result<Vec<Oferta>, String> {
-        let query = "SELECT * FROM ofertas WHERE estado = ? ORDER BY id DESC LIMIT ? OFFSET ?";
-        let result = sqlx::query_as::<_, Oferta>(query)
-            .bind(estado)
-            .bind(limit)
-            .bind(offset)
-            .fetch_all(&self.pool)
-            .await;
-        match result {
-            Ok(ofertas) => Ok(ofertas),
-            Err(e) => Err(e.to_string()),
-        }
-    }
-
     async fn with_transaction<F, R>(&self, f: F) -> Result<R, String>
     where
         F: AsyncFnOnce(&mut Transaction<'_, sqlx::MySql>) -> Result<R, String>,
@@ -296,6 +277,18 @@ impl OfertaRepository for MariaDbRepository {
                 error!("Error al buscar la oferta: {}", e);
                 None
             }
+        }
+    }
+
+    async fn get_all_by_id_convocatoria(&self, id_convocatoria: i32) -> Result<Vec<Oferta>, String> {
+        let query = "SELECT * FROM ofertas WHERE id_convocatoria = ?";
+        let result = sqlx::query_as::<MySql, Oferta>(query)
+            .bind(id_convocatoria)
+            .fetch_all(&self.pool)
+            .await;
+        match result {
+            Ok(ofertas) => Ok(ofertas),
+            Err(e) => Err(e.to_string()),
         }
     }
 }

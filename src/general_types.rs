@@ -37,3 +37,18 @@ pub mod datetime_format {
         Err(serde::de::Error::custom("Invalid date format"))
     }
 }
+
+// pub mod modalidad_format {
+//     pub fn serialize<S>(modalidad: &i8, serializer: S) -> Result<S::Ok, S::Error>
+//     where
+//         S: serde::Serializer,
+//     {
+//         let s = match modalidad {
+//             0 => "Preprofesional",
+//             1 => "Profesional",
+//             2 => "Pre y profesional",
+//             _ => "",
+//         };
+//         serializer.serialize_str(s)
+//     }
+// }

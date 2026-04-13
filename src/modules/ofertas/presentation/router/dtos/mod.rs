@@ -1,0 +1,1 @@
+pub mod generate_texto_by_convocatoria_dto;
