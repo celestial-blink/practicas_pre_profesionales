@@ -258,6 +258,7 @@ impl OfertaRepository for MariaDbRepository {
                     subvencion: oferta.subvencion,
                     fecha_fin_oferta: oferta.fecha_fin_oferta,
                     formacion: oferta.formacion,
+                    carreras: oferta.carreras,
                     funciones: oferta.funciones,
                     lugar_practicas: oferta.lugar_practicas,
                     como_postular: oferta.como_postular,
