@@ -19,6 +19,7 @@ pub struct CreateOfertaDto {
     #[serde(with = "crate::general_types::datetime_format")]
     pub fecha_fin_oferta: PrimitiveDateTime,
     pub formacion: String,
+    pub carreras: String,
     pub funciones: String,
     pub lugar_practicas: String,
     pub como_postular: String,
@@ -48,6 +49,7 @@ impl From<CreateOfertaDto> for Oferta {
             subvencion: params.subvencion,
             fecha_fin_oferta: params.fecha_fin_oferta,
             formacion: params.formacion,
+            carreras: params.carreras,
             funciones: params.funciones,
             lugar_practicas: params.lugar_practicas,
             como_postular: params.como_postular,

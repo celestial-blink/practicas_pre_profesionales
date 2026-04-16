@@ -20,6 +20,7 @@ pub struct Oferta {
     #[serde(with = "crate::general_types::datetime_format")]
     pub fecha_fin_oferta: PrimitiveDateTime,
     pub formacion: String,
+    pub carreras: String,
     pub funciones: String,
     pub lugar_practicas: String,
     pub como_postular: String,

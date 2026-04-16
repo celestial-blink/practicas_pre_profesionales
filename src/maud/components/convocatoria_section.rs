@@ -1,6 +1,5 @@
 use maud::{Markup, html};
 
-use crate::maud::components::convocatoria_item::{ConvocatoriaItem, convocatoria_item};
 
 pub fn convocatoria_section(children: Markup, title: &str) -> Markup {
     html! {
