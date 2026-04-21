@@ -8,7 +8,7 @@ use crate::{
     },
 };
 
-#[get("/search-list/{id}")]
+#[get("/{id}/search-list")]
 pub async fn find_by_id_for_list(
     state: web::Data<State>,
     params: web::Path<i32>,

@@ -202,16 +202,29 @@ impl SearchListRepository for MariaDbRepository {
         &self,
         params: SearchParams,
     ) -> Result<Vec<SearchListResult>, String> {
-        let query = "SELECT (id, titulo, nombre_org, estado, creado_en) FROM convocatorias WHERE CONCAT(convocatorias.titulo, convocatorias.nombre_org) LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
-        let result = sqlx::query_as::<_, SearchListResult>(query)
-            .bind(params.search)
+        let query = format!(
+            "SELECT id, titulo, nombre_org, estado, creado_en FROM convocatorias {} ORDER BY id DESC LIMIT ? OFFSET ?",
+            if params.search.is_some() {
+                "WHERE CONCAT(convocatorias.titulo, convocatorias.nombre_org) LIKE ?"
+            } else {
+                ""
+            }
+        );
+        let mut result = sqlx::query_as::<_, SearchListResult>(&query);
+        if let Some(search) = params.search {
+            result = result.bind(format!("%{}%", search));
+        }
+        let result = result
             .bind(params.limit)
             .bind(params.offset)
             .fetch_all(&self.pool)
             .await;
         match result {
             Ok(convocatorias) => Ok(convocatorias),
-            Err(e) => Err(e.to_string()),
+            Err(e) => {
+                error!("Error al buscar las convocatorias: {}", e);
+                Err(e.to_string())
+            }
         }
     }
 }

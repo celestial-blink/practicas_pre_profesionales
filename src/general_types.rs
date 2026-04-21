@@ -40,6 +40,44 @@ pub mod datetime_format {
     }
 }
 
+pub mod datetime_no_z {
+    use serde::{Deserialize, Deserializer, Serializer};
+    use time::OffsetDateTime;
+    use time::macros::format_description;
+
+    pub fn serialize<S>(dt: &OffsetDateTime, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let format = format_description!("[year]-[month]-[day]T[hour]:[minute]:[second]");
+        let s = dt.format(&format).map_err(serde::ser::Error::custom)?;
+        serializer.serialize_str(&s)
+    }
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<OffsetDateTime, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let formats = [
+            format_description!("[year]-[month]-[day]T[hour]:[minute]:[second]"),
+            format_description!("[year]-[month]-[day]T[hour]:[minute]"),
+            format_description!("[year]-[month]-[day] [hour]:[minute]:[second]"),
+            format_description!("[year]-[month]-[day] [hour]:[minute]"),
+            format_description!("[year]-[month]-[day]T[hour]:[minute]:[second]Z"),
+            format_description!("[year]-[month]-[day]T[hour]:[minute]Z"),
+        ];
+
+        for format in &formats {
+            if let Ok(dt) = OffsetDateTime::parse(&s, &format) {
+                return Ok(dt);
+            }
+        }
+
+        Err(serde::de::Error::custom("Invalid date format"))
+    }
+}
+
 // pub mod modalidad_format {
 //     pub fn serialize<S>(modalidad: &i8, serializer: S) -> Result<S::Ok, S::Error>
 //     where

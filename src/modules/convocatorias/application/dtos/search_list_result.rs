@@ -8,5 +8,6 @@ pub struct SearchListResult {
     pub titulo: String,
     pub nombre_org: String,
     pub estado: i8,
+    #[serde(with = "crate::general_types::datetime_no_z")]
     pub creado_en: OffsetDateTime,
 }
