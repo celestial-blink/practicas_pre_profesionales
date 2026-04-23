@@ -232,7 +232,7 @@ impl SearchListRepository for MariaDbRepository {
 impl FindByIdListRepository for MariaDbRepository {
     async fn find_by_id_list(&self, id: i32) -> Result<SearchListResult, String> {
         let query =
-            "SELECT (id, titulo, nombre_org, estado, creado_en) FROM convocatorias WHERE id = ?";
+            "SELECT id, titulo, nombre_org, estado, creado_en FROM convocatorias WHERE id = ?";
         let result = sqlx::query_as::<_, SearchListResult>(query)
             .bind(id)
             .fetch_optional(&self.pool)

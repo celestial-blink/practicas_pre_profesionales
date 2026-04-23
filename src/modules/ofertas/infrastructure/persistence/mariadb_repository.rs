@@ -35,6 +35,7 @@ impl OfertaRepository for MariaDbRepository {
             "subvencion",
             "fecha_fin_oferta",
             "formacion",
+            "carreras",
             "funciones",
             "lugar_practicas",
             "como_postular",
@@ -69,6 +70,7 @@ impl OfertaRepository for MariaDbRepository {
             .bind(&oferta.subvencion)
             .bind(&oferta.fecha_fin_oferta)
             .bind(&oferta.formacion)
+            .bind(&oferta.carreras)
             .bind(&oferta.funciones)
             .bind(&oferta.lugar_practicas)
             .bind(&oferta.como_postular)
