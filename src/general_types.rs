@@ -1,5 +1,3 @@
-use time::{OffsetDateTime, PrimitiveDateTime};
-
 pub struct State {
     pub db: sqlx::MySqlPool,
 }

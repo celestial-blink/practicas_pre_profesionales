@@ -16,3 +16,29 @@ const handle_add_bg_title = (id_element = '', id_focus_element = '') => {
 document.addEventListener('DOMContentLoaded', () => {
     handle_add_bg_title('ultimas_covocatorias', 'convocatoria_0'); // para ultimas convocatorias del inicio "/"
 });
+
+
+const handle_open_dialog = (id_dialog = '', open = false, prevent_background_scroll = true) => {
+    const dialog_element = document.getElementById(id_dialog);
+
+    if (open) {
+        dialog_element.showModal();
+        if (prevent_background_scroll) {
+            document.body.classList.add("overflow-hidden");
+        }
+    } else {
+        dialog_element.close();
+        document.body.classList.remove("overflow-hidden");
+    }
+}
+
+const handle_close_header_dialog = (event, id_dialog = '') => {
+    const { tagName, dataset } = event.target;
+    if (tagName === 'DIALOG' && dataset?.evref === 'handle_close_header_dialog') {
+        const confirm = window.confirm('Quieres cerrar la ventana?');
+        if (!confirm) {
+            return;
+        }
+        handle_open_dialog(id_dialog, false);
+    }
+}

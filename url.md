@@ -1,3 +1,6 @@
+## Para la seccion de busquedas
+/practicas-peru
+
 ## Para las ofertas de practicas por ofertas es
 
 /oferta-practicas/[alias_oferta]

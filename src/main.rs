@@ -10,7 +10,7 @@ use crate::middleware::api_auth_middleware::api_auth_middleware;
 use crate::modules::convocatorias::presentation::router as convocatoria_router;
 use crate::modules::ofertas::presentation::router as oferta_router;
 use crate::modules::organizaciones::presentation::router as organizacion_router;
-use crate::{general_types::State, maud::pages::home::home_index};
+use crate::{general_types::State, maud::pages::filters::page_filters};
 
 use actix_multipart::form::tempfile::TempFileConfig;
 use actix_web::{App, HttpServer, middleware::from_fn, web};
@@ -52,6 +52,8 @@ async fn main() -> std::io::Result<()> {
                     .use_last_modified(true),
             )
             .wrap(TracingLogger::default())
+            .service(maud::pages::home::index::home_index)
+            .service(page_filters)
             .app_data(web::Data::new(State { db: pool.clone() }))
             .app_data(TempFileConfig::default().directory(&temp_dir))
             .service(
@@ -88,7 +90,6 @@ async fn main() -> std::io::Result<()> {
                             .service(convocatoria_router::find_by_id::find_by_id)
                     )
             )
-            .service(home_index)
     })
     .bind(("127.0.0.1", port.parse().unwrap()))?
     .run()
