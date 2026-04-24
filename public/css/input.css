@@ -1,6 +1,6 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 
-@source "../../maud/**/*.rs";
+@source "../../src/maud/**/*.rs";
 @source "../js/**/*.js";
 
 @theme {

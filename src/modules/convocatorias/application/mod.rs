@@ -7,3 +7,4 @@ pub mod repository;
 pub mod dtos;
 pub mod find_by_search_for_list;
 pub mod find_by_id_for_list;
+pub mod get_all_actives;
