@@ -1,16 +1,17 @@
 use maud::{Markup, PreEscaped, html};
-use time;
+use time::{self, OffsetDateTime, PrimitiveDateTime};
 
 use crate::modules::convocatorias::domain::convocatoria::Convocatoria;
 
 pub fn convocatoria_item_view(convocatoria: Convocatoria) -> Markup {
     // compara usando microsegundos
-    let finished = convocatoria.fin_convocatoria.microsecond() < time::OffsetDateTime::now_utc().microsecond();
+    let now = OffsetDateTime::now_utc();
+    let expired = PrimitiveDateTime::new(now.date(), now.time()) > convocatoria.fin_convocatoria;
 
     html!(
         section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20" {
             div {
-                @if finished {
+                @if expired {
                     div class="flex gap-1 w-max bg-red-500/20 text-red-500 px-2 py-1 rounded-full font-bold" {
                         // point animate pulse
                         span class="animate-pulse" {
@@ -23,7 +24,7 @@ pub fn convocatoria_item_view(convocatoria: Convocatoria) -> Markup {
                         span class="animate-pulse" {
                             "●"
                         }
-                        "Convocatoria activa"
+                        "Convocatoria abierta"
                     }
                 }
                 br;
@@ -41,7 +42,7 @@ pub fn convocatoria_item_view(convocatoria: Convocatoria) -> Markup {
                         "Descripción:"
                     }
                     p class="text-slate-200 text-lg" {
-                        "Hay " span class="text-white font-bold" { (convocatoria.vacantes) } " en " span class="text-white font-bold" { (convocatoria.nombre_org) } " publico convocatorias de practicas " span class="text-white font-bold" { (convocatoria.modalidades) } ". para las carreras de: " (convocatoria.carreras)
+                        "Hay " span class="text-white font-bold" { (convocatoria.vacantes) } " vacantes para practicantes " span class="text-white font-bold" { (convocatoria.modalidades) } " en " span class="text-white font-bold" { (convocatoria.nombre_org) }  ", carreras requeridas: " (convocatoria.carreras) "."
                     }
                 }
                 div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4" {
@@ -84,9 +85,10 @@ pub fn convocatoria_item_view(convocatoria: Convocatoria) -> Markup {
         br;
         section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20" {
             h2 class="text-xl font-bold" {
-                "Lista de vancantes:"
+                "Lista de vacantes:"
             }
-            div class="flex flex-col gap-4 text-slate-200 text-lg" {
+            br;
+            div class="flex flex-col gap-4 text-slate-200 text-lg [&_article]:border-b [&_article]:border-slate-500/50 [&_article]:pb-4" {
                 (PreEscaped(convocatoria.texto.unwrap_or_default()))
             }
         }

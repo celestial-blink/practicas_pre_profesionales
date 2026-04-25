@@ -147,24 +147,26 @@ pub async fn get_all_by_id_convocatoria(
             niveles_estudios.dedup();
             let nivel_estudios = niveles_estudios.join(", ");
 
-            let fin_convocatoria_item: OffsetDateTime = fin_convocatoria.assume_utc();
-
-            let texto = convocatoria_item(
-                ConvocatoriaItem {
-                    id: 0,
-                    titulo: String::new(),
-                    id_organizacion: 0,
-                    nombre_org: String::new(),
-                    logo_org: String::new(),
-                    fin_convocatoria: fin_convocatoria_item,
-                    carreras: carreras.clone(),
-                    departamentos: departamentos.clone(),
-                    texto: String::new(),
-                    finalizan_todos: false,
-                },
-                0,
-            )
-            .into_string();
+            let texto = ofertas
+                .iter()
+                .map(|oferta| {
+                    convocatoria_item(
+                        ConvocatoriaItem {
+                            titulo: oferta.titulo.clone(),
+                            alias: oferta.alias.clone(),
+                            alias_org: oferta.alias_org.clone(),
+                            nombre_org: oferta.nombre_org.clone(),
+                            logo_org: oferta.logo_org.clone(),
+                            fin_convocatoria: oferta.fecha_fin_oferta,
+                            formacion: oferta.formacion.clone(),
+                            departamentos: oferta.region.clone(),
+                        },
+                        oferta.id as usize,
+                    )
+                    .into_string()
+                })
+                .collect::<Vec<String>>()
+                .join("");
 
             let result = GenerateTextoByConvocatoriaDto {
                 fin_convocatoria,

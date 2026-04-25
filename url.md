@@ -24,3 +24,8 @@
 ## Para las ofertas de practicas por formacion es
 
 /formacion/[alias_formacion]
+
+
+## Para organizaciones
+
+/organizacion/[alias_organizacion]

@@ -11,6 +11,7 @@ pub struct Convocatoria {
     pub nombre_org: String,
     pub logo_org: String,
     pub alias_org: String,
+    #[serde(with = "crate::general_types::datetime_format")]
     pub fin_convocatoria: PrimitiveDateTime,
     pub vacantes: i32,
     pub carreras: String,
@@ -21,6 +22,8 @@ pub struct Convocatoria {
     pub texto: Option<String>,
     pub finalizan_todos: bool,
     pub estado: i8,
+    #[serde(with = "crate::general_types::datetime_format_option")]
     pub actualizado_en: Option<PrimitiveDateTime>,
+    #[serde(with = "crate::general_types::datetime_no_z_option")]
     pub creado_en: Option<OffsetDateTime>,
 }

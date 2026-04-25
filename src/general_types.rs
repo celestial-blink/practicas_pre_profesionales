@@ -38,6 +38,47 @@ pub mod datetime_format {
     }
 }
 
+pub mod datetime_format_option {
+    use serde::{Deserialize, Deserializer, Serializer};
+    use time::PrimitiveDateTime;
+    use time::macros::format_description;
+
+    pub fn serialize<S>(dt: &Option<PrimitiveDateTime>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match dt {
+            Some(dt) => {
+                let format = format_description!("[year]-[month]-[day]T[hour]:[minute]:[second]");
+                let s = dt.format(&format).map_err(serde::ser::Error::custom)?;
+                serializer.serialize_str(&s)
+            }
+            None => serializer.serialize_none(),
+        }
+    }
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<PrimitiveDateTime>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let formats = [
+            format_description!("[year]-[month]-[day]T[hour]:[minute]:[second]"),
+            format_description!("[year]-[month]-[day]T[hour]:[minute]"),
+            format_description!("[year]-[month]-[day] [hour]:[minute]:[second]"),
+            format_description!("[year]-[month]-[day] [hour]:[minute]"),
+        ];
+
+        for format in &formats {
+            if let Ok(dt) = PrimitiveDateTime::parse(&s, &format) {
+                return Ok(Some(dt));
+            }
+        }
+
+        Err(serde::de::Error::custom("Invalid date format"))
+    }
+}
+
 pub mod datetime_no_z {
     use serde::{Deserialize, Deserializer, Serializer};
     use time::OffsetDateTime;
@@ -69,6 +110,49 @@ pub mod datetime_no_z {
         for format in &formats {
             if let Ok(dt) = OffsetDateTime::parse(&s, &format) {
                 return Ok(dt);
+            }
+        }
+
+        Err(serde::de::Error::custom("Invalid date format"))
+    }
+}
+
+pub mod datetime_no_z_option {
+    use serde::{Deserialize, Deserializer, Serializer};
+    use time::OffsetDateTime;
+    use time::macros::format_description;
+
+    pub fn serialize<S>(dt: &Option<OffsetDateTime>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match dt {
+            Some(dt) => {
+                let format = format_description!("[year]-[month]-[day]T[hour]:[minute]:[second]");
+                let s = dt.format(&format).map_err(serde::ser::Error::custom)?;
+                serializer.serialize_str(&s)
+            }
+            None => serializer.serialize_none(),
+        }
+    }
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<OffsetDateTime>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        let formats = [
+            format_description!("[year]-[month]-[day]T[hour]:[minute]:[second]"),
+            format_description!("[year]-[month]-[day]T[hour]:[minute]"),
+            format_description!("[year]-[month]-[day] [hour]:[minute]:[second]"),
+            format_description!("[year]-[month]-[day] [hour]:[minute]"),
+            format_description!("[year]-[month]-[day]T[hour]:[minute]:[second]Z"),
+            format_description!("[year]-[month]-[day]T[hour]:[minute]Z"),
+        ];
+
+        for format in &formats {
+            if let Ok(dt) = OffsetDateTime::parse(&s, &format) {
+                return Ok(Some(dt));
             }
         }
 

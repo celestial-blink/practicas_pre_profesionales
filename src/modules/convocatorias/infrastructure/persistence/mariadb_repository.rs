@@ -78,8 +78,31 @@ impl ConvocatoriaRepository for MariaDbRepository {
     }
 
     async fn update(&self, convocatoria: Convocatoria) -> Result<(), String> {
-        let query = "UPDATE convocatorias SET titulo = ?, alias = ?, id_organizacion = ?, nombre_org = ?, logo_org = ?, alias_org = ?, fin_convocatoria = ?, carreras = ?, departamentos = ?, subvenciones = ?,modalidades = ?, nivel_estudios = ?, texto = ?, finalizan_todos = ?, estado = ? WHERE id = ?";
-        let result = sqlx::query(query)
+        let columns = [
+            "titulo = ?",
+            "alias = ?",
+            "id_organizacion = ?",
+            "nombre_org = ?",
+            "logo_org = ?",
+            "alias_org = ?",
+            "fin_convocatoria = ?",
+            "vacantes = ?",
+            "carreras = ?",
+            "departamentos = ?",
+            "subvenciones = ?",
+            "modalidades = ?",
+            "nivel_estudios = ?",
+            "texto = ?",
+            "finalizan_todos = ?",
+            "estado = ?",
+        ];
+        let query = format!(
+            "UPDATE convocatorias SET {} WHERE id = ?",
+            columns.join(", ")
+        );
+
+        dbg!(&convocatoria.texto);
+        let result = sqlx::query(&query)
             .bind(&convocatoria.titulo)
             .bind(&convocatoria.alias)
             .bind(&convocatoria.id_organizacion)
@@ -87,6 +110,7 @@ impl ConvocatoriaRepository for MariaDbRepository {
             .bind(&convocatoria.logo_org)
             .bind(&convocatoria.alias_org)
             .bind(&convocatoria.fin_convocatoria)
+            .bind(&convocatoria.vacantes)
             .bind(&convocatoria.carreras)
             .bind(&convocatoria.departamentos)
             .bind(&convocatoria.subvenciones)
@@ -173,26 +197,6 @@ impl ConvocatoriaRepository for MariaDbRepository {
                 error!("Error al buscar las convocatorias: {}", e);
                 Err(e.to_string())
             }
-        }
-    }
-
-    async fn get_all_by_estado(
-        &self,
-        estado: i8,
-        limit: i32,
-        offset: i32,
-    ) -> Result<Vec<Convocatoria>, String> {
-        let query =
-            "SELECT * FROM convocatorias WHERE estado = ? ORDER BY id DESC LIMIT ? OFFSET ?";
-        let result = sqlx::query_as::<_, Convocatoria>(query)
-            .bind(estado)
-            .bind(limit)
-            .bind(offset)
-            .fetch_all(&self.pool)
-            .await;
-        match result {
-            Ok(convocatorias) => Ok(convocatorias),
-            Err(e) => Err(e.to_string()),
         }
     }
 }
