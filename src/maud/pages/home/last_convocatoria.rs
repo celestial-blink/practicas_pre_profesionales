@@ -61,11 +61,11 @@ pub fn last_convocatoria(props: LastConvocatoriaProps) -> Markup {
                     }
                 }
 
-                div class="mt-10 text-center" {
-                    a href="#" class="border border-rose-700 hover:bg-rose-800 px-8 py-3 rounded-xl transition font-semibold" {
-                        "Ver todas las convocatorias"
-                    }
-                }
+                // div class="mt-10 text-center" {
+                //     a href="#" class="border border-rose-700 hover:bg-rose-800 px-8 py-3 rounded-xl transition font-semibold" {
+                //         "Ver todas las convocatorias"
+                //     }
+                // }
             }
         }
     )

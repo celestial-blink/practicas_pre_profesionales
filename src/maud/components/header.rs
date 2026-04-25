@@ -1,51 +1,20 @@
 use maud::{Markup, html};
 
-struct MenuItem {
-    title: String,
-    url: String,
-    is_call_to_action: bool,
-    sub_menu: Option<Vec<MenuItem>>,
+pub struct MenuItem {
+    pub title: String,
+    pub url: String,
+    pub is_call_to_action: bool,
+    pub target: Option<String>,
+    pub sub_menu: Option<Vec<MenuItem>>,
 }
 
-pub fn header() -> Markup {
-    let list_menu: Vec<MenuItem> = vec![
-        MenuItem {
-            title: "Inicio".to_string(),
-            url: "/".to_string(),
-            is_call_to_action: false,
-            sub_menu: None,
-        },
-        MenuItem {
-            title: "Ofertas".to_string(),
-            url: "/ofertas".to_string(),
-            is_call_to_action: false,
-            sub_menu: None,
-        },
-        MenuItem {
-            title: "Convocatorias".to_string(),
-            url: "/convocatorias".to_string(),
-            is_call_to_action: false,
-            sub_menu: None,
-        },
-        MenuItem {
-            title: "Organizaciones".to_string(),
-            url: "/organizaciones".to_string(),
-            is_call_to_action: false,
-            sub_menu: None,
-        },
-        MenuItem {
-            title: "Publicar gratis".to_string(),
-            url: "#publicar".to_string(),
-            is_call_to_action: true,
-            sub_menu: None,
-        },
-    ];
+pub fn header(list_menu: Vec<MenuItem>) -> Markup {
 
     html! {
         nav class="fixed top-0 w-full z-50 bg-theme-glass border-b border-slate-800" {
             div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" {
                 div class="flex justify-between h-16 items-center" {
-                    div class="flex items-center gap-2" {
+                    a href="/" class="flex items-center gap-2" {
                         img src="/public/images/logo.png" alt="Logo" class="size-10" { }
                         h2 class="text-lg text-white" translate="no" {
                             span class="text-rose-500 font-bold" { "P" } "rácticas " span class="text-rose-500 font-bold" { "P" } "erú Pro"
@@ -55,14 +24,14 @@ pub fn header() -> Markup {
                         @for item in &list_menu {
                             @if let Some(sub_menu) = &item.sub_menu {
                                 div class="group relative" {
-                                    p class="transition text-white hover:text-white/75 cursor-pointer" {
+                                    p class="transition text-slate-300 hover:text-white cursor-pointer" {
                                         (item.title)
                                     }
 
-                                    ul class="hidden group-hover:block absolute right-0 top-full z-10 p-4 rounded-lg space-y-2 bg-slate-900 shadow" {
+                                    ul class="hidden group-hover:block w-max absolute right-0 top-full z-10 p-4 rounded-lg space-y-2 bg-slate-950/95 border border-slate-800 shadow" {
                                         @for sub_item in sub_menu {
                                             li {
-                                                a class="text-slate-300 hover:text-white transition-colors" href=(sub_item.url) {
+                                                a class="text-slate-300 hover:text-white transition-colors" href=(sub_item.url) target=(sub_item.target.clone().unwrap_or("".to_string()))  {
                                                     (sub_item.title)
                                                 }
                                             }
@@ -71,11 +40,11 @@ pub fn header() -> Markup {
                                 }
                             } @else {
                                 @if item.is_call_to_action {
-                                    a class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-full transition" href=(item.url) {
+                                    a class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-full transition"  href=(item.url) target=(item.target.clone().unwrap_or("".to_string()))  {
                                         (item.title)
                                     }
                                 } @else {
-                                    a class="text-slate-300 hover:text-white transition-colors" href=(item.url) {
+                                    a class="text-slate-300 hover:text-white transition-colors" href=(item.url) target=(item.target.clone().unwrap_or("".to_string()))  {
                                         (item.title)
                                     }
                                 }
@@ -126,7 +95,7 @@ pub fn header() -> Markup {
                                 ul class="text-base p-2 mt-2" {
                                     @for sub_item in sub_menu {
                                         li {
-                                            a class="transition-colors text-white hover:text-white/75" href=(sub_item.url) {
+                                            a class="transition-colors text-white hover:text-white/75" href=(sub_item.url) target=(sub_item.target.clone().unwrap_or("".to_string()))  {
                                                 (sub_item.title)
                                             }
                                         }
@@ -135,11 +104,11 @@ pub fn header() -> Markup {
                             }
                         } @else {
                             @if item.is_call_to_action {
-                                a class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-full transition w-max" href=(item.url) {
+                                a class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-full transition w-max" href=(item.url) target=(item.target.clone().unwrap_or("".to_string()))  {
                                     (item.title)
                                 }
                             } @else {
-                                a class="transition-colors text-white hover:text-white/75" href=(item.url) {
+                                a class="transition-colors text-white hover:text-white/75" href=(item.url) target=(item.target.clone().unwrap_or("".to_string()))  {
                                     (item.title)
                                 }
                             }

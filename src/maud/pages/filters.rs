@@ -7,11 +7,12 @@ use crate::{
         components::{
             head::{HeadProps, head_component},
             left_home::left_home,
-            menu_home::{Departamento, FormacionAcademica, menu_home},
+            menu_home::menu_home,
             right_home::right_home,
         },
         layouts::home_layout::home_layout,
     },
+    types::{departamento::Departamento, formacion_academica::FormacionAcademica},
 };
 
 #[get("/practicas-peru")]

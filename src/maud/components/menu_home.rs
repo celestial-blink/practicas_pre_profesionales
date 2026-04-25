@@ -1,18 +1,6 @@
 use maud::{Markup, html, PreEscaped};
 
-#[derive(serde::Deserialize)]
-pub struct Departamento {
-    id: i32,
-    nombre: String,
-    alias: String,
-}
-
-#[derive(serde::Deserialize)]
-pub struct FormacionAcademica {
-    id: i32,
-    nombre: String,
-    alias: String,
-}
+use crate::types::{departamento::Departamento, formacion_academica::FormacionAcademica};
 
 pub fn menu_home(departamentos: Vec<Departamento>, formacion_academica: Vec<FormacionAcademica>) -> Markup {
     html! {

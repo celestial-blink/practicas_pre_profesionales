@@ -11,12 +11,16 @@
 
 ## Para las ofertas de practicas por departamento es
 
-/practicas/region/[alias_departamento]
+/region/[alias_departamento]
 
 ## Para las ofertas de practicas por nivel es
 
-/practicas/nivel/[alias_nivel]
+/nivel/[alias_nivel]
 
 ## Para las ofertas de practicas por modalidad es
 
-/practicas/modalidad/[alias_modalidad]
+/modalidad/[alias_modalidad]
+
+## Para las ofertas de practicas por formacion es
+
+/formacion/[alias_formacion]

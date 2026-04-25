@@ -5,6 +5,8 @@ mod maud;
 mod middleware;
 mod modules;
 mod t_logs;
+mod types;
+mod macros;
 
 use crate::middleware::api_auth_middleware::api_auth_middleware;
 use crate::modules::convocatorias::presentation::router as convocatoria_router;
@@ -53,6 +55,7 @@ async fn main() -> std::io::Result<()> {
             )
             .wrap(TracingLogger::default())
             .service(maud::pages::home::index::home_index)
+            .service(maud::pages::convocatorias_practicas::index::convocatorias_practicas)
             .service(page_filters)
             .app_data(web::Data::new(State { db: pool.clone() }))
             .app_data(TempFileConfig::default().directory(&temp_dir))

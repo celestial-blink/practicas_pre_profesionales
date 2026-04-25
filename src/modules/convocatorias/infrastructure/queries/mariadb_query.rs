@@ -50,4 +50,26 @@ impl QueryRepository for MariaDbQuery {
             },
         }
     }
+
+    async fn get_one_by_alias(
+        &self,
+        pool: &sqlx::MySqlPool,
+        alias: String,
+    ) -> Result<Convocatoria, String> {
+        let query = "SELECT * FROM convocatorias WHERE alias = ?";
+
+        let result = sqlx::query_as::<_, Convocatoria>(&query)
+            .bind(alias)
+            .fetch_optional(pool)
+            .await;
+
+        match result {
+            Ok(Some(data)) => Ok(data),
+            Ok(None) => Err("Convocatoria no encontrada".to_string()),
+            Err(e) => {
+                error!("Error al obtener la convocatoria: {}", e);
+                Err(e.to_string())
+            },
+        }
+    }
 }

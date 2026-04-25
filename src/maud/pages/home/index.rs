@@ -10,13 +10,17 @@ use crate::{
         components::{
             footer::footer,
             head::{HeadProps, head_component},
-        },
-        pages::home::{
-            guide::guide,
             header::header,
-            hero::hero,
-            last_convocatoria::{self, last_convocatoria},
-            meta::meta, top::{self, top},
+        },
+        pages::{
+            general::header_items::header_items,
+            home::{
+                guide::guide,
+                hero::hero,
+                last_convocatoria::{self, last_convocatoria},
+                meta::meta,
+                top::{self, top},
+            },
         },
     },
     modules::convocatorias::{
@@ -129,7 +133,7 @@ pub async fn home_index(
                 include_ads: true,
             }
         ))
-        (header())
+        (header(header_items()))
         (hero())
         (top(top_carreras_props))
         (guide())
