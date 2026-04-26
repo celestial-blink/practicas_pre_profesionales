@@ -16,7 +16,7 @@ pub fn hero() -> Markup {
                         "Encuentra convocatorias de " span class="text-rose-500" { "Prácticas pre y profesionales" } " en el Perú"
                     }
 
-                    p class="text-lg text-slate-400 mb-10 leading-relaxed" {
+                    p class="text-xl text-slate-400 mb-10 leading-relaxed" {
                         "Conectamos el talento universitario con las empresas más importantes del país. Filtros inteligentes, y 100% gratuito para estudiantes, egresado y bachilleres."
                     }
                 }

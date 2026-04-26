@@ -22,7 +22,7 @@ pub fn convocatoria_item(prop: ConvocatoriaItem, key: usize) -> Markup {
     let expired = prop.fin_convocatoria < PrimitiveDateTime::new(now.date(), now.time());
 
     html! {
-        article class="grid grid-cols-1 md:grid-cols-[64px_1fr] gap-4 p-4 z-0" id={(format!("convocatoria_{}", key))} {
+        article class="bg-theme-glass rounded-4xl border-blue-500/20 p-8 grid grid-cols-1 md:grid-cols-[64px_1fr] gap-4 z-0" id={(format!("convocatoria_{}", key))} {
             div class="col-span-1" {
                 img src=(format!("/public/images/organizaciones/{}", prop.logo_org)) alt=(prop.nombre_org) class="size-16 p-1 rounded-lg bg-white";
             }
@@ -58,7 +58,7 @@ pub fn convocatoria_item(prop: ConvocatoriaItem, key: usize) -> Markup {
             }
             div class="col-span-1 md:col-span-2 md:col-start-2" {
                 a href=(url) class="block text-white font-bold bg-rose-800 hover:bg-rose-700 px-8 py-2 rounded-full w-max" target="_blank" {
-                    "Ver convocatoria"
+                    "Ver completo"
                 }
             }
         }

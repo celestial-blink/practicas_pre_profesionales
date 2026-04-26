@@ -38,9 +38,6 @@ pub fn convocatoria_item_view(convocatoria: Convocatoria) -> Markup {
             br;
             div class="flex flex-col gap-8" {
                 div class="flex-1" {
-                    h2 class="text-xl font-bold" {
-                        "Descripción:"
-                    }
                     p class="text-slate-200 text-lg" {
                         "Hay " span class="text-white font-bold" { (convocatoria.vacantes) } " vacantes para practicantes " span class="text-white font-bold" { (convocatoria.modalidades) } " en " span class="text-white font-bold" { (convocatoria.nombre_org) }  ", carreras requeridas: " (convocatoria.carreras) "."
                     }
@@ -83,12 +80,13 @@ pub fn convocatoria_item_view(convocatoria: Convocatoria) -> Markup {
             }
         }
         br;
-        section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20" {
+        br;
+        section {
             h2 class="text-xl font-bold" {
                 "Lista de vacantes:"
             }
             br;
-            div class="flex flex-col gap-4 text-slate-200 text-lg [&_article]:border-b [&_article]:border-slate-500/50 [&_article]:pb-4" {
+            div class="flex flex-col gap-4 text-slate-200 text-lg" {
                 (PreEscaped(convocatoria.texto.unwrap_or_default()))
             }
         }

@@ -17,7 +17,7 @@ pub fn guide() -> Markup {
                                 "aqui"
                             }
                         }
-                        p class="text-slate-400 text-sm" {
+                        p class="text-slate-400 text-base" {
                             "Busca prácticas y revisa bien los requisitos y fechas antes de postular."
                         }
                     }
@@ -28,7 +28,7 @@ pub fn guide() -> Markup {
                         h3 class="font-bold text-lg mb-2" {
                             "Postula correctamente"
                         }
-                        p class="text-slate-400 text-sm" {
+                        p class="text-slate-400 text-base" {
                             "Lee las bases de la oferta de práctica y envía tu CV según las indicaciones: correo, web o presencial"
                         }
                     }
@@ -39,7 +39,7 @@ pub fn guide() -> Markup {
                         h3 class="font-bold text-lg mb-2" {
                             "Espera resultados"
                         }
-                        p class="text-slate-400 text-sm" {
+                        p class="text-slate-400 text-base" {
                             "Revisa tu correo y prepárate para entrevistas o evaluaciones, también lo indica las bases."
                         }
                     }

@@ -53,7 +53,7 @@ pub async fn home_index(
     let top_carreras_props = top::TopProps {
         description: "Las carreras con mayor demanda este mes.",
         link: "/convocatorias",
-        link_text: "Ver todas las convocatorias",
+        link_text: "Ver carreras",
         title: "Explora por Áreas",
         items: vec![
             top::TopItem {

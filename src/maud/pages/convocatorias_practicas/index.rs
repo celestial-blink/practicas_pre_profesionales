@@ -54,8 +54,6 @@ pub async fn convocatorias_practicas(state: Data<State>, alias: web::Path<String
                     }
                 }
             }
-            br;
-            br;
             (header(header_items()))
             (footer())
         };

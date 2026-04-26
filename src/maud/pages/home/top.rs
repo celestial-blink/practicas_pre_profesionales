@@ -17,7 +17,7 @@ pub fn top(props: TopProps) -> Markup {
     html!(
         section class="py-20 bg-slate-950" {
             div  class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" {
-                div class="flex justify-between items-end mb-12" {
+                div class="flex justify-between items-end mb-12 text-lg" {
                     div {
                         h2 class="text-3xl font-bold mb-2" {
                             (props.title)
@@ -31,16 +31,16 @@ pub fn top(props: TopProps) -> Markup {
                     }
                 }
 
-                div class="grid grid-cols-2 md:grid-cols-3 gap-4" {
+                div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-lg" {
                     @for item in &props.items {
                         div class="bg-theme-glass p-6 rounded-2xl text-center hover-glow transition cursor-pointer group" {
                             div class="bg-blue-500/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-500/20 transition" {
                                 (item.icon)
                             }
-                            h3 class="font-semibold text-sm" {
+                            h3 class="font-semibold" {
                                 (item.title)
                             }
-                            p class="text-xs text-slate-500 mt-1" {
+                            p class="text-base text-slate-500 mt-1" {
                                 (item.total) " prácticas"
                             }
                         }

@@ -39,14 +39,14 @@ pub fn last_convocatoria(props: LastConvocatoriaProps) -> Markup {
                             img src=(convocatoria.image) class="w-16 h-16 object-contain rounded-xl bg-white shrink-0 flex items-center justify-center border border-white/10" { }
                             div class="flex flex-col grow flex-1 w-full" {
                                 div class="flex flex-col md:flex-row justify-between items-start gap-4" {
-                                    div class="flex-1" {
+                                    div class="flex-1 flex flex-col gap-1" {
                                         h3 class="font-bold text-lg" {
                                             (convocatoria.title)
                                         }
-                                        p class="text-blue-400 text-sm font-mediuml" {
+                                        p class="text-blue-400 text-base font-mediuml" {
                                             (convocatoria.company)
                                         }
-                                        span class="bg-blue-500/20 text-blue-300 text-[10px] px-2 py-1 rounded-md font-bold" {
+                                        span class="bg-blue-500/20 text-blue-300 w-max text-base px-2 py-1 rounded-md font-bold" {
                                             (convocatoria.location)
                                         }
                                     }
