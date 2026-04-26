@@ -16,7 +16,7 @@ pub struct ConvocatoriaItem {
 }
 
 pub fn convocatoria_item(prop: ConvocatoriaItem, key: usize) -> Markup {
-    let url = format!("/convocatorias-practicas/{}", prop.alias);
+    let url = format!("/oferta-practicas/{}", prop.alias);
     // en unix
     let now = OffsetDateTime::now_utc();
     let expired = prop.fin_convocatoria < PrimitiveDateTime::new(now.date(), now.time());
@@ -41,7 +41,7 @@ pub fn convocatoria_item(prop: ConvocatoriaItem, key: usize) -> Markup {
                         (prop.nombre_org)
                     }
                 }
-                h3 class="text-xl font-bold  my-1" {
+                h3 class="text-lg font-bold  my-1" {
                     a href=(&url) class="text-rose-500 hover:underline" target="_blank" {
                         (prop.titulo)
                     }

@@ -6,4 +6,5 @@ pub mod find_by_id_with_niveles;
 pub mod dtos;
 pub mod ports;
 pub mod get_all_by_id_convocatoria;
-pub mod get_all_actives;
+pub mod repository;
+pub mod get_one_by_alias;

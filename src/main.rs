@@ -56,6 +56,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(TracingLogger::default())
             .service(maud::pages::home::index::home_index)
             .service(maud::pages::convocatorias_practicas::index::convocatorias_practicas)
+            .service(maud::pages::oferta_practicas::index::oferta_practicas)
             .service(page_filters)
             .app_data(web::Data::new(State { db: pool.clone() }))
             .app_data(TempFileConfig::default().directory(&temp_dir))
@@ -81,7 +82,7 @@ async fn main() -> std::io::Result<()> {
                             .service(oferta_router::update::update)
                             .service(oferta_router::find_by_id::find_by_id)
                             .service(oferta_router::find_by_id_with_niveles::find_by_id_with_niveles)
-                            .service(oferta_router::get_all_by_id_convocatoria::get_all_by_id_convocatoria)
+                            .service(oferta_router::get_all_by_id_convocatoria::get_all_by_id_convocatoria) // resumen
                     )
                     .service(
                         web::scope("/convocatorias")

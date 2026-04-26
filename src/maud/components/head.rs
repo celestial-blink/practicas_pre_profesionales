@@ -42,6 +42,12 @@ pub fn head_component(props: HeadProps) -> Markup {
                 meta name="color-scheme" id="color-scheme" content="dark";
                 link rel="stylesheet" href=(format!("{}{}", css, css_version.clone().unwrap_or_default()));
                 link rel="icon" href="/public/images/favicon.ico" type="image/x-icon";
+
+                // font iter
+                link rel="preconnect" href="https://fonts.googleapis.com";
+                link rel="preconnect" href="https://fonts.gstatic.com" crossorigin;
+                link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet";
+
                 @if let Some(canonical) = props.canonical {
                     link rel="canonical" href=(canonical);
                 }

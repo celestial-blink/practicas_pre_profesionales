@@ -33,17 +33,17 @@ use crate::{
 };
 
 #[get("/")]
-pub async fn home_index(
-    state: Data<State>,
-    params: web::Query<GetAllActivesParamsDto>,
-) -> AwResult<Markup> {
+pub async fn home_index(state: Data<State>) -> AwResult<Markup> {
     let convocatoria_query_port = MariaDbQuery;
     let get_all_actives = GetAllActives::new(convocatoria_query_port);
-    let convocatorias = get_all_actives
-        .execute(&state.db, params.into_inner())
-        .await;
 
-    dbg!(&convocatorias);
+    let params = GetAllActivesParamsDto {
+        offset: 0,
+        limit: 100,
+        include_texto: false,
+    };
+
+    let convocatorias = get_all_actives.execute(&state.db, params).await;
 
     let convocatorias = match convocatorias {
         Ok(convocatorias) => convocatorias,

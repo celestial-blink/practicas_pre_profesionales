@@ -86,7 +86,7 @@ pub fn convocatoria_item_view(convocatoria: Convocatoria) -> Markup {
                 "Lista de vacantes:"
             }
             br;
-            div class="flex flex-col gap-4 text-slate-200 text-lg" {
+            div class="flex flex-col gap-4 text-slate-200 text-base" {
                 (PreEscaped(convocatoria.texto.unwrap_or_default()))
             }
         }

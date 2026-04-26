@@ -3,6 +3,12 @@
 @source "../../src/maud/**/*.rs";
 @source "../js/**/*.js";
 
+@base {
+    body {
+        font-family: 'Inter', 'sans-serif';
+    }
+}
+
 @theme {
     --color-dark-background: oklch(13.85% 0.025 273.24);
     --color-dark-card: oklch(18.74% 0.024 280.08);

@@ -13,12 +13,12 @@ use crate::{
             header::header,
         },
         pages::{
-            convocatorias_practicas::convocatoria_item::convocatoria_item_view,
+            convocatorias_practicas::{convocatoria_item::convocatoria_item_view, last_convocatoria::{LastConvocatoriaProps, last_convocatoria_view}},
             general::header_items::header_items,
         },
     },
     modules::convocatorias::{
-        application::get_one_by_alias::GetOneByAlias,
+        application::{dtos::get_all_actives_params_dto::GetAllActivesParamsDto, get_all_actives::GetAllActives, get_one_by_alias::GetOneByAlias},
         infrastructure::queries::mariadb_query::MariaDbQuery,
     },
 };
@@ -26,17 +26,31 @@ use crate::{
 #[get("/convocatorias-practicas/{alias}")]
 pub async fn convocatorias_practicas(state: Data<State>, alias: web::Path<String>) -> HttpResponse {
     let query_repository = MariaDbQuery;
-    let get_one_by_alias = GetOneByAlias::new(query_repository);
+    let get_one_by_alias = GetOneByAlias::new(&query_repository);
     let convocatoria = get_one_by_alias
         .execute(&state.db, alias.into_inner())
         .await;
+
+       let params = GetAllActivesParamsDto {
+        offset: 0,
+        limit: 10,
+        include_texto: false,
+    };
+
+    let get_all_actives = GetAllActives::new(query_repository);
+    let convocatorias = get_all_actives.execute(&state.db, params).await;
+
+    let convocatorias: LastConvocatoriaProps = match convocatorias {
+        Ok(convocatorias) => LastConvocatoriaProps { items: convocatorias.into_iter().filter(|conv| conv.id != convocatoria.as_ref().unwrap().id).map(|conv| conv.into()).collect() },
+        Err(_) => LastConvocatoriaProps { items: vec![] },
+    };
 
     if convocatoria.is_ok() {
         let content = html! {
             (head_component(HeadProps {
                 title: convocatoria.as_ref().unwrap().titulo.clone(),
                 metadata: None,
-                canonical: Some("https://practicasperu.com/convocatorias_practicas".to_string()),
+                canonical: Some(format!("https://practicasperu.com/convocatorias_practicas/{}", convocatoria.as_ref().unwrap().alias)),
                 scripts_extra: None,
                 css_extra: None,
                 include_analytics: true,
@@ -50,7 +64,7 @@ pub async fn convocatorias_practicas(state: Data<State>, alias: web::Path<String
                         (convocatoria_item_view(convocatoria.unwrap()))
                     }
                     aside class="flex-1" {
-                        "Aside"
+                        (last_convocatoria_view(convocatorias))
                     }
                 }
             }
@@ -85,7 +99,7 @@ pub async fn convocatorias_practicas(state: Data<State>, alias: web::Path<String
                         }
                     }
                     aside class="flex flex-col gap-4" {
-                        "Aside"
+                        "Asides"
                     }
                 }
             }

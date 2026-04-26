@@ -4,12 +4,12 @@ use crate::modules::convocatorias::{
     application::repository::query_repository::QueryRepository, domain::convocatoria::Convocatoria,
 };
 
-pub struct GetOneByAlias<T: QueryRepository> {
-    pub repository: T,
+pub struct GetOneByAlias<'t, T: QueryRepository> {
+    pub repository: &'t T,
 }
 
-impl<T: QueryRepository> GetOneByAlias<T> {
-    pub fn new(repository: T) -> Self {
+impl<'t, T: QueryRepository> GetOneByAlias<'t, T> {
+    pub fn new(repository: &'t T) -> Self {
         Self { repository }
     }
 

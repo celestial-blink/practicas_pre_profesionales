@@ -36,7 +36,7 @@ impl QueryRepository for MariaDbQuery {
             true => "*".to_string(),
             false => data_columns.join(", "),
         };
-        let query = format!("SELECT {} FROM convocatorias WHERE estado = 1 ORDER BY id DESC LIMIT {}, {}", columns, params.offset, params.limit);
+        let query = format!("SELECT {} FROM convocatorias WHERE estado = 1 AND fin_convocatoria >= CURDATE() ORDER BY id DESC LIMIT {}, {}", columns, params.offset, params.limit);
 
         let result = sqlx::query_as::<_, Convocatoria>(&query)
             .fetch_all(pool)
