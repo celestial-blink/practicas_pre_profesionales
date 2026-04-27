@@ -1,7 +1,16 @@
-use time::PrimitiveDateTime;
+use time::{OffsetDateTime, PrimitiveDateTime};
 
-pub fn month_es(date: &PrimitiveDateTime) -> &'static str {
-    match date.month() {
+pub enum TDate {
+    PrimitiveDateTime(PrimitiveDateTime),
+    OffsetDateTime(OffsetDateTime),
+}
+
+pub fn month_es(date: &TDate) -> &'static str {
+    let month = match date {
+        TDate::PrimitiveDateTime(date) => date.month(),
+        TDate::OffsetDateTime(date) => date.month(),
+    };
+    match month {
         time::Month::January => "enero",
         time::Month::February => "febrero",
         time::Month::March => "marzo",
@@ -17,6 +26,13 @@ pub fn month_es(date: &PrimitiveDateTime) -> &'static str {
     }
 }
 
-pub fn format_date_human_es(date: &PrimitiveDateTime) -> String {
-    format!("{} de {} de {}", date.day(), month_es(date), date.year())
+pub fn format_date_human_es(date: &TDate) -> String {
+    match date {
+        TDate::PrimitiveDateTime(dat) => {
+            format!("{} de {} de {}", dat.day(), month_es(date), dat.year())
+        }
+        TDate::OffsetDateTime(dat) => {
+            format!("{} de {} de {}", dat.day(), month_es(date), dat.year())
+        }
+    }
 }

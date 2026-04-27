@@ -1,7 +1,7 @@
 use maud::{Markup, PreEscaped, html};
 use time::{OffsetDateTime, PrimitiveDateTime};
 
-use crate::helpers::t_date_es::format_date_human_es;
+use crate::helpers::t_date_es::{TDate, format_date_human_es};
 
 #[derive(Clone)]
 pub struct ConvocatoriaItem {
@@ -53,7 +53,7 @@ pub fn convocatoria_item(prop: ConvocatoriaItem, key: usize) -> Markup {
                     span class="font-bold text-white" { "Lugar: " } (prop.departamentos)
                     }
                     p class="text-slate-300" {
-                        span class="font-bold text-white" { "Fecha de finalización: " } (format_date_human_es(&prop.fin_convocatoria))
+                        span class="font-bold text-white" { "Fecha de finalización: " } (format_date_human_es(&TDate::PrimitiveDateTime(prop.fin_convocatoria)))
                     }
             }
             div class="col-span-1 md:col-span-2 md:col-start-2" {

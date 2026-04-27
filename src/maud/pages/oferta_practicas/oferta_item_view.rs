@@ -1,7 +1,10 @@
 use maud::{Markup, PreEscaped, html};
 use time::{self, OffsetDateTime, PrimitiveDateTime};
 
-use crate::modules::ofertas::domain::oferta::Oferta;
+use crate::{
+    helpers::t_date_es::{TDate, format_date_human_es},
+    modules::ofertas::domain::oferta::Oferta,
+};
 
 pub fn oferta_item_view(oferta: Oferta) -> Markup {
     // compara usando microsegundos
@@ -12,33 +15,36 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
 
     html!(
         section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20" {
-            div {
-                @if expired {
-                    div class="flex gap-1 w-max bg-red-500/20 text-red-500 px-2 py-1 rounded-full font-bold" {
-                        span class="animate-pulse" {
-                            "●"
+            div class="flex gap-2 items-center" {
+                img src=(format!("/public/images/organizaciones/{}", oferta.logo_org)) class="size-20 bg-white p-2 rounded-lg object-contain" alt=(format!("Logo de {}", oferta.nombre_org));
+                div {
+                    div class="flex items-center justify-between gap-4 mb-2" {
+                        @if expired {
+                            div class="flex gap-1 w-max bg-red-500/20 text-red-500 px-2 py-1 rounded-full font-bold text-sm" {
+                                span class="animate-pulse" {
+                                    "●"
+                                }
+                                "Finalizada"
+                            }
+                        } @else {
+                            div class="flex gap-1 w-max bg-green-500/20 text-green-500 px-2 py-1 rounded-full font-bold text-sm" {
+                                span class="animate-pulse" {
+                                    "●"
+                                }
+                                "Abierta"
+                            }
                         }
-                        "Finalizada"
+                        @if let Some(creado_en) = oferta.creado_en {
+                            div class="flex gap-1 w-max bg-blue-500/20 text-blue-500 px-2 py-1 rounded-full text-sm" {
+                                "Publicado el " (format_date_human_es(&TDate::OffsetDateTime(creado_en)))
+                            }
+                        }
                     }
-                } @else {
-                    div class="flex gap-1 w-max bg-green-500/20 text-green-500 px-2 py-1 rounded-full font-bold" {
-                        span class="animate-pulse" {
-                            "●"
-                        }
-                        "Abierta"
+                    h1 class="text-3xl md:text-4xl font-extrabold" {
+                        (oferta.titulo)
                     }
-                }
-                br;
-                div class="flex gap-2 items-center" {
-                    img src=(format!("/public/images/organizaciones/{}", oferta.logo_org)) class="size-20 bg-white p-2 rounded-lg object-contain" alt=(format!("Logo de {}", oferta.nombre_org));
-
-                    div {
-                        h1 class="text-3xl md:text-4xl font-extrabold" {
-                            (oferta.titulo)
-                        }
-                        p class="text-blue-400 font-semibold text-lg mt-1" {
-                            (oferta.nombre_org)
-                        }
+                    p class="text-blue-400 font-semibold text-lg mt-1" {
+                        (oferta.nombre_org)
                     }
                 }
             }
@@ -65,7 +71,7 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
                         (PreEscaped("<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"flex-none text-purple-500\" width=\"48\" height=\"48\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" /><path d=\"M22 9l-10 -4l-10 4l10 4l10 -4v6\" /><path d=\"M6 10.6v5.4a6 3 0 0 0 12 0v-5.4\" /></svg>"))
                         div class="flex flex-col" {
                             p class="text-sm text-slate-400 font-bold" {
-                                "Niveles Académicos"
+                                "Para"
                             }
                             p class="text-sm font-semibold" {
                                 (oferta.niveles)
@@ -98,13 +104,52 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
             }
         }
         br;
-        section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20" {
+        section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-purple-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" {
+            div class="flex flex-col gap-2 relative z-10" {
+                h3 class="text-lg font-bold text-white" {
+                    "Contenido:"
+                }
+                ul class="text-lg" {
+                    li {
+                        a href="#info" class="text-purple-300 hover:underline" {
+                            (PreEscaped("&#x279C;")) " Información de la practicas"
+                        }
+                    }
+                    li {
+                        a href="#como-postular" class="text-purple-300 hover:underline" {
+                            (PreEscaped("&#x279C;")) " Como postular"
+                        }
+                    }
+                    @if oferta.bases.is_some() {
+                        li {
+                            a href="#bases" class="text-purple-300 hover:underline" {
+                                (PreEscaped("&#x279C;")) " Bases de la convocatoria"
+                            }
+                        }
+                    }
+                    @if oferta.extra_info.is_some() {
+                        li {
+                            a href="#info-adicional" class="text-purple-300 hover:underline" {
+                                (PreEscaped("&#x279C;")) " Información adicional"
+                            }
+                        }
+                    }
+                    li {
+                        a href="#recomendaciones" class="text-purple-300 hover:underline" {
+                            (PreEscaped("&#x279C;")) " Recomendaciones para postular"
+                        }
+                    }
+                }
+            }
+        }
+        br;
+        section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20" id="info" {
             div class=(format!("flex flex-col gap-4 {}", wrapper_class)) {
                 div class="flex flex-col gap-2" {
                     h2 class="text-xl font-bold" {
                         "Formación académica:"
                     }
-                    p class="text-base text-slate-300 font-semibold" {
+                    p class="text-base text-slate-300" {
                         (oferta.formacion)
                     }
                 }
@@ -114,7 +159,7 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
                             h2 class="text-xl font-bold" {
                                 "Funciones:"
                             }
-                            div class="text-base text-slate-300 font-semibold" {
+                            div class="text-base text-slate-300" {
                                 (PreEscaped(funciones))
                             }
                         }
@@ -125,17 +170,22 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
                         h2 class="text-xl font-bold" {
                             "Lugar de practicas:"
                         }
-                        div class="text-base text-slate-300 font-semibold" {
+                        div class="text-base text-slate-300" {
                             (PreEscaped(lugar_practicas))
                         }
                     }
                 }
-                @if let Some(como_postular) = oferta.como_postular {
+            }
+        }
+        @if let Some(como_postular) = oferta.como_postular {
+            br;
+            section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-yellow-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" id="como-postular" {
+                div class=(format!("flex flex-col gap-4 z-10 relative {}", wrapper_class)) {
                     div class="flex flex-col gap-2" {
                         h2 class="text-xl font-bold" {
                             "Como postular:"
                         }
-                        div class="text-base text-slate-300 font-semibold" {
+                        div class="text-base text-slate-300" {
                             (PreEscaped(como_postular))
                         }
                     }
@@ -144,13 +194,13 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
         }
         @if let Some(extra_info) = oferta.extra_info {
             br;
-            section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-yellow-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" {
+            section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-yellow-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" id="info-adicional" {
                 div class=(format!("flex flex-col gap-4 z-10 relative {}", wrapper_class)) {
                     div class="flex flex-col gap-2" {
                         h2 class="text-xl font-bold" {
                             "Información adicional:"
                         }
-                        div class="text-base text-slate-300 font-semibold" {
+                        div class="text-base text-slate-300" {
                             (PreEscaped(extra_info))
                         }
                     }
@@ -159,13 +209,13 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
         }
         @if let Some(bases) = oferta.bases {
             br;
-            section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-green-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" {
+            section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-green-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" id="bases" {
                 div class=(format!("flex flex-col gap-4 z-10 relative {}", wrapper_class)) {
                     div class="flex flex-col gap-2" {
                         h2 class="text-xl font-bold" {
                             "Bases:"
                         }
-                        div class="text-base text-slate-300 font-semibold" {
+                        div class="text-base text-slate-300" {
                             (PreEscaped(bases))
                         }
                     }
@@ -173,12 +223,26 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
             }
         }
         br;
-        section {
-            h2 class="text-xl font-bold" {
-                "Lista de vacantes:"
+        section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-blue-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" id="recomendaciones" {
+            div class=(format!("flex flex-col gap-4 z-10 relative {}", wrapper_class)) {
+                h2 class="text-xl font-bold" {
+                    "Recomendaciones para postular a un puesto de practicas pre y profesional en el sector publico peruano:"
+                }
+                ul class="list-disc ml-6" {
+                    li {
+                        "Revisa cuidadosamente los requisitos, fechas, documentos y condiciones de postulación."
+                    }
+                    li {
+                        "Ten listos los archivos solicitados (CV, constancia de estudios, DNI, etc.)."
+                    }
+                    li {
+                        "Envía tu postulación en la fecha indicada o según las condiciones de la entidad."
+                    }
+                    li {
+                        "Consulta los resultados en el medio indicado: página web oficial o redes sociales de la entidad."
+                    }
+                }
             }
-            br;
-
         }
     )
 }
