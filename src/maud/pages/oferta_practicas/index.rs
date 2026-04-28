@@ -8,6 +8,7 @@ use crate::{
     general_types::State,
     maud::{
         components::{
+            convocatoria::last_convocatoria::last_convocatoria_view,
             footer::footer,
             head::{HeadProps, head_component},
             header::header,
@@ -17,19 +18,46 @@ use crate::{
             oferta_practicas::oferta_item_view::oferta_item_view,
         },
     },
-    modules::ofertas::{
-        application::get_one_by_alias::GetOneByAlias,
-        infrastructure::queries::mariadb_query::MariaDbQuery,
+    modules::{
+        convocatorias::{
+            application::{
+                dtos::get_all_actives_params_dto::GetAllActivesParamsDto,
+                get_all_actives::GetAllActives,
+            },
+            infrastructure::queries::mariadb_query::MariaDbQuery,
+        },
+        ofertas::{
+            application::get_one_by_alias::GetOneByAlias,
+            infrastructure::queries::mariadb_query::MariaDbQuery as MariaDbQueryOfertas,
+        },
     },
 };
 
 #[get("/oferta-practicas/{alias}")]
 pub async fn oferta_practicas(state: Data<State>, alias: web::Path<String>) -> HttpResponse {
-    let mariadb_oferta_query = MariaDbQuery;
+    let mariadb_oferta_query = MariaDbQueryOfertas;
     let get_one_by_alias = GetOneByAlias::new(&mariadb_oferta_query);
     let oferta = get_one_by_alias
         .execute(&state.db, alias.into_inner())
         .await;
+
+    let mariadb_convocatoria_query = MariaDbQuery;
+    let get_last_convocatoria = GetAllActives::new(mariadb_convocatoria_query);
+    let last_convocatorias = get_last_convocatoria
+        .execute(
+            &state.db,
+            GetAllActivesParamsDto {
+                include_texto: false,
+                limit: 10,
+                offset: 0,
+            },
+        )
+        .await;
+
+    let last_convocatorias = match last_convocatorias {
+        Ok(convocatorias) => convocatorias.into_iter().map(|conv| conv.into()).collect(),
+        Err(_) => vec![],
+    };
 
     match oferta {
         Some(oferta) => {
@@ -51,7 +79,7 @@ pub async fn oferta_practicas(state: Data<State>, alias: web::Path<String>) -> H
                             (oferta_item_view(oferta))
                         }
                         aside class="flex-1" {
-                            "owo"
+                            (last_convocatoria_view(last_convocatorias))
                         }
                     }
                 }

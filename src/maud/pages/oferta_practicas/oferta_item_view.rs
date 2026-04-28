@@ -15,31 +15,31 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
 
     html!(
         section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20" {
+            div class="flex items-center justify-between gap-4 mb-2" {
+                @if expired {
+                    div class="flex gap-1 w-max bg-red-500/20 text-red-500 px-2 py-1 rounded-full font-bold text-sm" {
+                        span class="animate-pulse" {
+                            "●"
+                        }
+                        "Finalizada"
+                    }
+                } @else {
+                    div class="flex gap-1 w-max bg-green-500/20 text-green-500 px-2 py-1 rounded-full font-bold text-sm" {
+                        span class="animate-pulse" {
+                            "●"
+                        }
+                        "Abierta"
+                    }
+                }
+                @if let Some(creado_en) = oferta.creado_en {
+                    div class="flex gap-1 w-max bg-blue-500/20 text-blue-500 px-2 py-1 rounded-full text-sm" {
+                        "Publicado el " (format_date_human_es(&TDate::OffsetDateTime(creado_en)))
+                    }
+                }
+            }
             div class="flex gap-2 items-center" {
                 img src=(format!("/public/images/organizaciones/{}", oferta.logo_org)) class="size-20 bg-white p-2 rounded-lg object-contain" alt=(format!("Logo de {}", oferta.nombre_org));
                 div {
-                    div class="flex items-center justify-between gap-4 mb-2" {
-                        @if expired {
-                            div class="flex gap-1 w-max bg-red-500/20 text-red-500 px-2 py-1 rounded-full font-bold text-sm" {
-                                span class="animate-pulse" {
-                                    "●"
-                                }
-                                "Finalizada"
-                            }
-                        } @else {
-                            div class="flex gap-1 w-max bg-green-500/20 text-green-500 px-2 py-1 rounded-full font-bold text-sm" {
-                                span class="animate-pulse" {
-                                    "●"
-                                }
-                                "Abierta"
-                            }
-                        }
-                        @if let Some(creado_en) = oferta.creado_en {
-                            div class="flex gap-1 w-max bg-blue-500/20 text-blue-500 px-2 py-1 rounded-full text-sm" {
-                                "Publicado el " (format_date_human_es(&TDate::OffsetDateTime(creado_en)))
-                            }
-                        }
-                    }
                     h1 class="text-3xl md:text-4xl font-extrabold" {
                         (oferta.titulo)
                     }
@@ -143,7 +143,7 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
             }
         }
         br;
-        section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20" id="info" {
+        section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20 target:outline-2 outline-offset-4 outline-rose-500 relative" id="info" {
             div class=(format!("flex flex-col gap-4 {}", wrapper_class)) {
                 div class="flex flex-col gap-2" {
                     h2 class="text-xl font-bold" {
@@ -179,7 +179,7 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
         }
         @if let Some(como_postular) = oferta.como_postular {
             br;
-            section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-yellow-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" id="como-postular" {
+            section class="bg-theme-glass p-8 rounded-4xl target:outline-2 outline-offset-4 outline-rose-500 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-rose-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" id="como-postular" {
                 div class=(format!("flex flex-col gap-4 z-10 relative {}", wrapper_class)) {
                     div class="flex flex-col gap-2" {
                         h2 class="text-xl font-bold" {
@@ -194,7 +194,7 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
         }
         @if let Some(extra_info) = oferta.extra_info {
             br;
-            section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-yellow-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" id="info-adicional" {
+            section class="bg-theme-glass p-8 rounded-4xl target:outline-2 outline-offset-4 outline-rose-500 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-rose-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" id="info-adicional" {
                 div class=(format!("flex flex-col gap-4 z-10 relative {}", wrapper_class)) {
                     div class="flex flex-col gap-2" {
                         h2 class="text-xl font-bold" {
@@ -209,7 +209,7 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
         }
         @if let Some(bases) = oferta.bases {
             br;
-            section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-green-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" id="bases" {
+            section class="bg-theme-glass p-8 rounded-4xl target:outline-2 outline-offset-4 outline-rose-500 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-rose-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" id="bases" {
                 div class=(format!("flex flex-col gap-4 z-10 relative {}", wrapper_class)) {
                     div class="flex flex-col gap-2" {
                         h2 class="text-xl font-bold" {
@@ -223,7 +223,7 @@ pub fn oferta_item_view(oferta: Oferta) -> Markup {
             }
         }
         br;
-        section class="bg-theme-glass p-8 rounded-4xl border-blue-500/20 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-blue-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" id="recomendaciones" {
+        section class="bg-theme-glass p-8 rounded-4xl target:outline-2 outline-offset-4 outline-rose-500 relative overflow-hidden before:block bofore:w-full before:h-full before:bg-blue-500/10 before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:z-0" id="recomendaciones" {
             div class=(format!("flex flex-col gap-4 z-10 relative {}", wrapper_class)) {
                 h2 class="text-xl font-bold" {
                     "Recomendaciones para postular a un puesto de practicas pre y profesional en el sector publico peruano:"

@@ -8,12 +8,10 @@ use crate::{
     general_types::State,
     maud::{
         components::{
-            footer::footer,
-            head::{HeadProps, head_component},
-            header::header,
+            convocatoria::last_convocatoria::last_convocatoria_view, footer::footer, head::{HeadProps, head_component}, header::header
         },
         pages::{
-            convocatorias_practicas::{convocatoria_item::convocatoria_item_view, last_convocatoria::{LastConvocatoriaProps, last_convocatoria_view}},
+            convocatorias_practicas::convocatoria_item::convocatoria_item_view,
             general::header_items::header_items,
         },
     },
@@ -40,9 +38,9 @@ pub async fn convocatorias_practicas(state: Data<State>, alias: web::Path<String
     let get_all_actives = GetAllActives::new(query_repository);
     let convocatorias = get_all_actives.execute(&state.db, params).await;
 
-    let convocatorias: LastConvocatoriaProps = match convocatorias {
-        Ok(convocatorias) => LastConvocatoriaProps { items: convocatorias.into_iter().filter(|conv| conv.id != convocatoria.as_ref().unwrap().id).map(|conv| conv.into()).collect() },
-        Err(_) => LastConvocatoriaProps { items: vec![] },
+    let convocatorias = match convocatorias {
+        Ok(convocatorias) => convocatorias.into_iter().filter(|conv| conv.id != convocatoria.as_ref().unwrap().id).map(|conv| conv.into()).collect(),
+        Err(_) => vec![],
     };
 
     if convocatoria.is_ok() {
