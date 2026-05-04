@@ -1,4 +1,4 @@
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Clone)]
 pub struct FormacionAcademica {
     pub id: i32,
     pub nombre: String,

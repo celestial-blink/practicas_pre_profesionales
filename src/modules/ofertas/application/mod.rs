@@ -10,3 +10,4 @@ pub mod repository;
 pub mod get_one_by_alias;
 pub mod get_count_ofertas_by_departamento;
 pub mod get_count_ofertas_by_organizacion;
+pub mod ofertas_filter;

@@ -1,20 +1,11 @@
 use crate::{
-    load_json,
+    data::static_data::{DEPARTAMENTOS, FORMACION_ACADEMICAS},
     maud::components::header::MenuItem,
-    types::{departamento::Departamento, formacion_academica::FormacionAcademica},
 };
 
 pub fn header_items() -> Vec<MenuItem> {
-    let departamentos = load_json!(
-        "../../../../assets/json/departamentos.json",
-        Vec<Departamento>
-    );
-    let formacion_academicas = load_json!(
-        "../../../../assets/json/formacion_academica.json",
-        Vec<FormacionAcademica>
-    );
-
-    let departamentos_sub_menu: Vec<MenuItem> = departamentos
+    let departamentos_sub_menu: Vec<MenuItem> = DEPARTAMENTOS
+        .clone()
         .into_iter()
         .map(|item| MenuItem {
             title: item.nombre,
@@ -25,7 +16,8 @@ pub fn header_items() -> Vec<MenuItem> {
         })
         .collect();
 
-    let formacion_academicas_sub_menu: Vec<MenuItem> = formacion_academicas
+    let formacion_academicas_sub_menu: Vec<MenuItem> = FORMACION_ACADEMICAS
+        .clone()
         .into_iter()
         .map(|item| MenuItem {
             title: item.nombre,

@@ -5,3 +5,5 @@ pub mod general;
 pub mod not_found;
 pub mod oferta_practicas;
 pub mod departamentos;
+pub mod organizaciones;
+pub mod busqueda;

@@ -1,6 +1,6 @@
 use actix_web::{
     Result as AwResult, get,
-    web::{self, Data},
+    web::Data,
 };
 use maud::{Markup, html};
 

@@ -11,14 +11,14 @@ use tracing_subscriber::{
     util::SubscriberInitExt,
 };
 
+use crate::config::IS_DEV;
+
 pub fn init() -> std::io::Result<()> {
     let lima_offset = UtcOffset::from_hms(-5, 0, 0).unwrap();
 
     let registry = tracing_subscriber::registry().with(EnvFilter::from_default_env());
 
-    let is_dev = std::env::var("IS_DEV").unwrap_or_else(|_| "false".to_string());
-
-    if is_dev == "true" {
+    if IS_DEV {
         registry
             .with(fmt::layer().with_timer(OffsetTime::new(lima_offset, Rfc3339)))
             .init();

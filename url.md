@@ -11,7 +11,7 @@
 
 ## Para las ofertas de practicas por departamento es
 
-/region/[alias_departamento]
+/departamento/[alias_departamento]
 
 ## Para las ofertas de practicas por nivel es
 

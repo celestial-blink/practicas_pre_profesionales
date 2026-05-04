@@ -1,3 +1,6 @@
+use serde::Serialize;
+use sqlx::prelude::FromRow;
+
 pub struct State {
     pub db: sqlx::MySqlPool,
 }
@@ -174,3 +177,8 @@ pub mod datetime_no_z_option {
 //         serializer.serialize_str(s)
 //     }
 // }
+
+#[derive(Debug, Serialize, FromRow)]
+pub struct Total {
+    pub total: i32,
+}

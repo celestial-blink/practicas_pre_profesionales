@@ -1,15 +1,21 @@
 use sqlx::MySqlPool;
+use std::vec;
 use tracing::error;
 
-use crate::modules::ofertas::{
-    application::{
-        dtos::{
-            count_ofertas_by_departamento_result_dto::CountOfertasByDepartamentoResultDto,
-            count_ofertas_by_organizacion_result_dto::CountOfertasByOrganizacionResultDto,
+use crate::{
+    general_types::Total,
+    modules::ofertas::{
+        application::{
+            dtos::{
+                count_ofertas_by_departamento_result_dto::CountOfertasByDepartamentoResultDto,
+                count_ofertas_by_organizacion_result_dto::CountOfertasByOrganizacionResultDto,
+                ofertas_filter_params_dto::OfertasFilterParamsDto,
+                ofertas_filter_result_dto::OfertasFilterResultDto,
+            },
+            repository::query_repository::QueryRepository,
         },
-        repository::query_repository::QueryRepository,
+        domain::oferta::Oferta,
     },
-    domain::oferta::Oferta,
 };
 
 pub struct MariaDbQuery;
@@ -48,5 +54,133 @@ impl QueryRepository for MariaDbQuery {
             .fetch_all(pool)
             .await
         .map_err(|e| { format!("Error en obtener ofertas, {}", e.to_string()) })
+    }
+
+    async fn ofertas_filter(
+        &self,
+        pool: &MySqlPool,
+        params: OfertasFilterParamsDto,
+    ) -> Result<OfertasFilterResultDto, String> {
+        let table_name = if params.niveles.is_some() {
+            "ofertas LEFT JOIN oferta_niveles ON ofertas.id = oferta_niveles.id_oferta"
+        } else {
+            "ofertas"
+        };
+        // busca en ofertas activas
+        let mut active_conditional_str =
+            String::from("ofertas.estado = 1 AND ofertas.fecha_fin_oferta >= CURRENT_TIMESTAMP");
+
+        if params.id_organizacion.is_some() {
+            active_conditional_str.push_str(" AND ofertas.id_organizacion = ?");
+        }
+
+        if params.modalidad_practicas.is_some() {
+            active_conditional_str.push_str(" AND ofertas.modalidad_practicas = ?");
+        }
+
+        if params.id_region.is_some() {
+            active_conditional_str.push_str(" AND ofertas.id_region = ?");
+        }
+
+        if params.niveles.is_some() {
+            active_conditional_str.push_str(" AND oferta_niveles.id_nivel_academico IN (?)");
+        }
+
+        if params.search.is_some() {
+            active_conditional_str.push_str(
+                " AND MATCH(ofertas.titulo, ofertas.carreras) AGAINST ('?' IN BOOLEAN MODE)",
+            );
+        }
+
+        let query_string = format!(
+            "SELECT * FROM {} WHERE {} LIMIT ? OFFSET ?",
+            table_name, active_conditional_str
+        );
+
+        let mut actives_ofertas = sqlx::query_as::<_, Oferta>(&query_string);
+
+        if params.id_organizacion.is_some() {
+            actives_ofertas = actives_ofertas.bind(params.id_organizacion.unwrap());
+        }
+
+        if params.modalidad_practicas.is_some() {
+            actives_ofertas = actives_ofertas.bind(params.modalidad_practicas.unwrap());
+        }
+
+        if params.id_region.is_some() {
+            actives_ofertas = actives_ofertas.bind(params.id_region.unwrap());
+        }
+
+        if params.search.is_some() {
+            // solo agrega + a caracteres que sea igual o mas de 3
+            let search_str = params
+                .search
+                .unwrap()
+                .split_whitespace()
+                .map(|word| {
+                    if word.len() >= 3 {
+                        format!("+{}", word)
+                    } else {
+                        word.to_string()
+                    }
+                })
+                .collect::<Vec<String>>()
+                .join(" ");
+
+            actives_ofertas = actives_ofertas.bind(search_str);
+        }
+
+        if params.niveles.is_some() {
+            let niveles_str = params
+                .niveles
+                .unwrap()
+                .iter()
+                .map(|id| id.to_string())
+                .collect::<Vec<String>>()
+                .join(", ");
+            actives_ofertas = actives_ofertas.bind(niveles_str);
+        }
+
+        actives_ofertas = actives_ofertas.bind(params.limit).bind(params.offset);
+
+        let actives_ofertas = actives_ofertas
+            .fetch_all(pool)
+            .await
+            .map_err(|e| format!("Error en obtener ofertas, {}", e.to_string()))?;
+
+        // obtiene el total de ofertas activas sin limit solo si el total de activas es igual o mayor a limit
+        let mut total_actives_ofertas = actives_ofertas.len() as i32;
+        if actives_ofertas.len() >= params.limit as usize {
+            let query_string = format!(
+                "SELECT COUNT(*) as total FROM {} WHERE {}",
+                table_name, active_conditional_str
+            );
+
+            let total = sqlx::query_as::<_, Total>(&query_string)
+                .fetch_one(pool)
+                .await
+                .map_err(|e| format!("Error en obtener ofertas, {}", e.to_string()))?;
+            total_actives_ofertas = total.total;
+        }
+
+        // optine 30 ofertas vencidas solo con el filtro de estao y fin_convocatoria, solo si total_actives_ofertas es igual a 0,
+        let vencidas_ofertas = match total_actives_ofertas {
+            0 => {
+                let query_string = format!(
+                    "SELECT * FROM ofertas WHERE ofertas.estado = 1 AND ofertas.fecha_fin_oferta < CURRENT_TIMESTAMP LIMIT 30"
+                );
+                sqlx::query_as::<_, Oferta>(&query_string)
+                    .fetch_all(pool)
+                    .await
+                    .map_err(|e| format!("Error en obtener ofertas, {}", e.to_string()))?
+            }
+            _ => vec![],
+        };
+
+        Ok(OfertasFilterResultDto {
+            ofertas_activas: actives_ofertas,
+            ofertas_vencidad: vencidas_ofertas,
+            total_activas: total_actives_ofertas,
+        })
     }
 }
