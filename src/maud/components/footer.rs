@@ -19,6 +19,16 @@ pub fn footer() -> Markup {
                         "Contacto"
                     }
                 }
+                li {
+                    a href=(format!("{}/departamentos", crate::config::DOMAIN)) class="text-white block p-2 rounded-md hover:text-rose-500 transition-colors duration-300" {
+                        "Departamentos"
+                    }
+                }
+                li {
+                    a href=(format!("{}/organizaciones", crate::config::DOMAIN)) class="text-white block p-2 rounded-md hover:text-rose-500 transition-colors duration-300" {
+                        "Organizaciones"
+                    }
+                }
             }
             p class="text-slate-50 text-center text-sm" {
                 "© 2026 Practicas Perú Pro. Todos los derechos reservados."

@@ -8,3 +8,8 @@ pub const IS_DEV: bool = match option_env!("IS_DEV") {
     }
     None => true,
 };
+
+pub const DOMAIN: &str = match option_env!("DOMAIN") {
+    Some(val) => val,
+    None => "http://localhost:8083",
+};

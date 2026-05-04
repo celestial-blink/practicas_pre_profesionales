@@ -1,1 +1,3 @@
 pub mod get_all_actives_params_dto;
+pub mod count_ofertas_by_departamento_result_dto;
+pub mod count_ofertas_by_organizacion_result_dto;

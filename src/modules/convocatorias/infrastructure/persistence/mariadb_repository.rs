@@ -100,8 +100,6 @@ impl ConvocatoriaRepository for MariaDbRepository {
             "UPDATE convocatorias SET {} WHERE id = ?",
             columns.join(", ")
         );
-
-        dbg!(&convocatoria.texto);
         let result = sqlx::query(&query)
             .bind(&convocatoria.titulo)
             .bind(&convocatoria.alias)

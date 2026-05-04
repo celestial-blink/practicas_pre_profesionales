@@ -8,3 +8,5 @@ pub mod ports;
 pub mod get_all_by_id_convocatoria;
 pub mod repository;
 pub mod get_one_by_alias;
+pub mod get_count_ofertas_by_departamento;
+pub mod get_count_ofertas_by_organizacion;

@@ -7,6 +7,7 @@ mod modules;
 mod t_logs;
 mod types;
 mod macros;
+mod data;
 
 use crate::middleware::api_auth_middleware::api_auth_middleware;
 use crate::modules::convocatorias::presentation::router as convocatoria_router;
@@ -28,7 +29,7 @@ async fn main() -> std::io::Result<()> {
     let port = std::env::var("PORT").expect("PORT must be set");
     let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
-    let _ = t_logs::init().await;
+    let _ = t_logs::init();
 
     tracing::info!("🚀 Servidor iniciando en http://127.0.0.1:{}", port);
 
@@ -57,6 +58,7 @@ async fn main() -> std::io::Result<()> {
             .service(maud::pages::home::index::home_index)
             .service(maud::pages::convocatorias_practicas::index::convocatorias_practicas)
             .service(maud::pages::oferta_practicas::index::oferta_practicas)
+            .service(maud::pages::departamentos::index::departamentos_view)
             .service(page_filters)
             .app_data(web::Data::new(State { db: pool.clone() }))
             .app_data(TempFileConfig::default().directory(&temp_dir))

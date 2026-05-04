@@ -107,8 +107,6 @@ impl OrganizacionRepository for MariadbRepository {
         // agrega limit y offset
         query_sql = format!("{} ORDER BY id DESC LIMIT ? OFFSET ?", query_sql);
 
-        dbg!(&query_sql);
-
         let mut query = sqlx::query_as::<_, Organizacion>(&query_sql);
 
         if let Some(search) = params.search {

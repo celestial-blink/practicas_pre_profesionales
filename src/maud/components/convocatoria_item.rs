@@ -1,5 +1,5 @@
-use maud::{Markup, PreEscaped, html};
-use time::{OffsetDateTime, PrimitiveDateTime};
+use maud::{Markup, html};
+use time::PrimitiveDateTime;
 
 use crate::helpers::t_date_es::{TDate, format_date_human_es};
 
@@ -17,9 +17,6 @@ pub struct ConvocatoriaItem {
 
 pub fn convocatoria_item(prop: ConvocatoriaItem, key: usize) -> Markup {
     let url = format!("/oferta-practicas/{}", prop.alias);
-    // en unix
-    let now = OffsetDateTime::now_utc();
-    let expired = prop.fin_convocatoria < PrimitiveDateTime::new(now.date(), now.time());
 
     html! {
         article class="bg-theme-glass rounded-4xl border-blue-500/20 p-8 grid grid-cols-1 md:grid-cols-[64px_1fr] gap-4 z-0" id={(format!("convocatoria_{}", key))} {
@@ -27,15 +24,6 @@ pub fn convocatoria_item(prop: ConvocatoriaItem, key: usize) -> Markup {
                 img src=(format!("/public/images/organizaciones/{}", prop.logo_org)) alt=(prop.nombre_org) class="size-16 p-1 rounded-lg bg-white";
             }
             div class="col-span-1 md:col-span-2 md:col-start-2 flex flex-col" {
-                @if !expired {
-                    span class="bg-green-900 text-green-200 text-xs px-2 rounded-full w-max mb-2"{
-                        (PreEscaped("&#8226;"))" Abierta"
-                    }
-                } @else {
-                    span class="bg-red-900 text-red-200 text-xs px-2 rounded-full w-max mb-2"{
-                        (PreEscaped("&#8226;"))" Cerrada"
-                    }
-                }
                 p class="text-base font-bold" {
                     a href=(format!("/organizacion/{}", prop.alias_org)) class="text-blue-400 hover:text-blue-500 hover:underline" target="_blank" {
                         (prop.nombre_org)
