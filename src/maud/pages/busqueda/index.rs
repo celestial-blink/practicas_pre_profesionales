@@ -6,10 +6,10 @@ use maud::html;
 
 use crate::{
     general_types::State,
-    maud::components::{
+    maud::{components::{
         footer::footer,
-        head::{HeadProps, head_component},
-    },
+        head::{HeadProps, head_component}, header::header,
+    }, pages::{busqueda::{aside_filters::aside_filters, top_search::top_search}, general::header_items::header_items}},
     modules::ofertas::{
         application::{
             dtos::ofertas_filter_params_dto::OfertasFilterParamsDto, ofertas_filter::OfertasFilter,
@@ -42,16 +42,22 @@ pub async fn busqueda_view(
             include_analytics: true,
             include_ads: true,
         }))
+        (header(header_items()))
         section class="py-20 bg-slate-950/50" {
-                div class="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" {
+            div class="flex flex-col gap-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" {
+                br;
+                br;
+                (top_search())
+                div class="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-4" {
+                    aside class="flex-1" {
+                        (aside_filters())
+                    }
                     main class="flex-1" {
                         "Hola mundo"
                     }
-                    aside class="flex-1" {
-                        "Una prueba"
-                    }
                 }
             }
+        }
         (footer())
     );
 

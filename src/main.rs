@@ -60,6 +60,7 @@ async fn main() -> std::io::Result<()> {
             .service(maud::pages::oferta_practicas::index::oferta_practicas)
             .service(maud::pages::departamentos::index::departamentos_view)
             .service(maud::pages::organizaciones::index::organizaciones_view)
+            .service(maud::pages::busqueda::index::busqueda_view)
             .service(page_filters)
             .app_data(web::Data::new(State { db: pool.clone() }))
             .app_data(TempFileConfig::default().directory(&temp_dir))
