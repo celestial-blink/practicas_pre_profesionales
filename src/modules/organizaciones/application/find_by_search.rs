@@ -1,14 +1,13 @@
-use crate::modules::organizaciones::domain::{
-    dto::SearchParams,
-    organizacion::Organizacion,
-    repository::OrganizacionRepository,
+use crate::modules::organizaciones::{
+    application::repository::query_respository::QueryRepository,
+    domain::{dto::SearchParams, organizacion::Organizacion},
 };
 
-pub struct FindBySearch<T: OrganizacionRepository> {
+pub struct FindBySearch<T: QueryRepository> {
     pub repository: T,
 }
 
-impl<T: OrganizacionRepository> FindBySearch<T> {
+impl<T: QueryRepository> FindBySearch<T> {
     pub fn new(repository: T) -> Self {
         Self { repository }
     }

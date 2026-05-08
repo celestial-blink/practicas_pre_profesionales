@@ -52,7 +52,7 @@ pub fn header_items() -> Vec<MenuItem> {
         },
         MenuItem {
             title: "Buscar Prácticas".to_string(),
-            url: "#publicar".to_string(),
+            url: "#practicas".to_string(),
             is_call_to_action: true,
             sub_menu: None,
             target: None,

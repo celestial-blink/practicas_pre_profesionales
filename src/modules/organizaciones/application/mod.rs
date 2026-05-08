@@ -4,3 +4,4 @@ pub mod create;
 pub mod update;
 pub mod find_by_id;
 pub mod find_by_ruc;
+pub mod repository;

@@ -73,6 +73,9 @@ pub fn aside_filters() -> Markup {
                         }
                     }
                 }
+                button type="button" class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 px-8 rounded-xl transition w-full" {
+                    "Aplicar filtros"
+                }
             }
         }
     )

@@ -6,10 +6,20 @@ use maud::html;
 
 use crate::{
     general_types::State,
-    maud::{components::{
-        footer::footer,
-        head::{HeadProps, head_component}, header::header,
-    }, pages::{busqueda::{aside_filters::aside_filters, top_search::top_search}, general::header_items::header_items}},
+    maud::{
+        components::{
+            footer::footer,
+            head::{HeadProps, head_component},
+            header::header,
+        },
+        pages::{
+            busqueda::{
+                aside_filters::aside_filters,
+                top_search::{TopSearchProps, top_search},
+            },
+            general::header_items::header_items,
+        },
+    },
     modules::ofertas::{
         application::{
             dtos::ofertas_filter_params_dto::OfertasFilterParamsDto, ofertas_filter::OfertasFilter,
@@ -23,6 +33,10 @@ pub async fn busqueda_view(
     state: Data<State>,
     query: web::Query<OfertasFilterParamsDto>,
 ) -> HttpResponse {
+    let query = query.into_inner();
+    let departamento_param = query.id_region.unwrap_or(0);
+    let search_param = query.search;
+
     // let infrastructure = MariaDbQuery;
     // let oferta_filter = OfertasFilter::new(&infrastructure);
     // let oferta_result = oferta_filter.execute(&state.db, query.into_inner()).await;
@@ -37,7 +51,7 @@ pub async fn busqueda_view(
             title: "Busqueda de practicas".to_owned(),
             metadata: None,
             canonical: Some("https://www.practicasperupro.com/busqueda".to_owned()),
-            scripts_extra: None,
+            scripts_extra: Some(vec!["/public/js/pages/busqueda.js".to_owned()]),
             css_extra: None,
             include_analytics: true,
             include_ads: true,
@@ -47,8 +61,11 @@ pub async fn busqueda_view(
             div class="flex flex-col gap-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" {
                 br;
                 br;
-                (top_search())
-                div class="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-4" {
+                (top_search(TopSearchProps {
+                    search: search_param,
+                    departamento: departamento_param as u8,
+                }))
+                div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4" {
                     aside class="flex-1" {
                         (aside_filters())
                     }
