@@ -179,7 +179,7 @@ impl QueryRepository for MariaDbQuery {
 
         Ok(OfertasFilterResultDto {
             ofertas_activas: actives_ofertas,
-            ofertas_vencidad: vencidas_ofertas,
+            ofertas_vencidas: vencidas_ofertas,
             total_activas: total_actives_ofertas,
         })
     }

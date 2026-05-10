@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct OfertasFilterParamsDto {
     #[serde(default = "get_default_limit")]
     pub limit: i32,

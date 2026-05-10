@@ -15,6 +15,7 @@ use crate::{
         pages::{
             busqueda::{
                 aside_filters::aside_filters,
+                main::{MainProps, main},
                 top_search::{TopSearchProps, top_search},
             },
             general::header_items::header_items,
@@ -33,19 +34,22 @@ pub async fn busqueda_view(
     state: Data<State>,
     query: web::Query<OfertasFilterParamsDto>,
 ) -> HttpResponse {
+    let query_clone = query.clone();
     let query = query.into_inner();
     let departamento_param = query.id_region.unwrap_or(0);
     let search_param = query.search;
 
-    // let infrastructure = MariaDbQuery;
-    // let oferta_filter = OfertasFilter::new(&infrastructure);
-    // let oferta_result = oferta_filter.execute(&state.db, query.into_inner()).await;
+    let infrastructure = MariaDbQuery;
+    let oferta_filter = OfertasFilter::new(&infrastructure);
+    let oferta_result = oferta_filter
+        .execute(&state.db, query_clone.into_inner())
+        .await;
 
-    // if oferta_result.is_err() {
-    //     return HttpResponse::InternalServerError().body(oferta_result.err().unwrap());
-    // }
+    if oferta_result.is_err() {
+        return HttpResponse::InternalServerError().body(oferta_result.err().unwrap());
+    }
+    let oferta_result = oferta_result.unwrap();
 
-    // let oferta_result =
     let markup = html!(
             (head_component(HeadProps {
             title: "Busqueda de practicas".to_owned(),
@@ -70,7 +74,11 @@ pub async fn busqueda_view(
                         (aside_filters())
                     }
                     main class="flex-1" {
-                        "Hola mundo"
+                        (main(MainProps {
+                            total_ofertas: oferta_result.total_activas as u32,
+                            ofertas: oferta_result.ofertas_activas,
+                            ofertas_vencidas: oferta_result.ofertas_vencidas,
+                        }))
                     }
                 }
             }

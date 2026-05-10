@@ -26,7 +26,7 @@ impl From<Convocatoria> for ConvocatoriaMinItem {
 
 pub fn convocatoria_min_content_item(convocatoria: ConvocatoriaMinItem) -> Markup {
     html!(
-        article class="bg-theme-glass p-6 rounded-2xl flex flex-col md:flex-row gap-4 items-start hover-glow transition" {
+        article class="bg-theme-glass p-6 rounded-2xl flex flex-col md:flex-row gap-4 items-start transition" {
             img src=(convocatoria.image) class="w-16 h-16 object-contain rounded-xl bg-white shrink-0 flex items-center justify-center border border-white/10" { }
             div class="flex flex-col grow flex-1 w-full" {
                 div class="flex flex-col md:flex-row justify-between items-start gap-4" {
@@ -56,7 +56,7 @@ pub fn convocatoria_min_content_item(convocatoria: ConvocatoriaMinItem) -> Marku
 
 pub fn convocatoria_min_content_sm_item(convocatoria: ConvocatoriaMinItem) -> Markup {
     html!(
-        article class="bg-theme-glass p-6 rounded-2xl flex flex-col gap-4 items-start hover-glow transition hover:outline-1 outline-offset-2 outline-rose-900" {
+        article class="bg-theme-glass p-6 rounded-2xl flex flex-col gap-4 items-start transition hover:outline-1 outline-offset-2 outline-rose-900" {
             img src=(convocatoria.image) class="w-16 h-16 object-contain rounded-xl bg-white shrink-0 flex items-center justify-center border border-white/10" { }
             div class="flex flex-col grow flex-1 w-full" {
                 div class="flex flex-col justify-between items-start gap-4" {
