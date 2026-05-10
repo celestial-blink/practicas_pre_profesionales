@@ -2,7 +2,7 @@ use maud::{Markup, html};
 
 pub fn aside_filters() -> Markup {
     html!(
-        div class="flex flex-col gap-4" {
+        div class="flex-col gap-4 hidden lg:flex" {
             div class="space-y-8" {
                 div {
                     h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4" {

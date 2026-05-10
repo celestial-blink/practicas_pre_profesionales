@@ -25,10 +25,8 @@ pub fn main(props: MainProps) -> Markup {
             @for oferta in props.ofertas {
                 (oferta_item(oferta.into()))
             }
-            @if props.ofertas_vencidas.len() > 0 {
-                @for oferta in props.ofertas_vencidas {
-                    (oferta_item(oferta.into()))
-                }
+            @for oferta in props.ofertas_vencidas {
+                (oferta_item(oferta.into()))
             }
         }
     )

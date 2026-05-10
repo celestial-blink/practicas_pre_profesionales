@@ -9,7 +9,7 @@ pub struct TopSearchProps {
 
 pub fn top_search(props: TopSearchProps) -> maud::Markup {
     html! {
-        div class="bg-theme-glass p-4 rounded-2xl mb-8 flex flex-col md:flex-row gap-4" {
+        div class="bg-theme-glass p-4 rounded-2xl mb-8 flex flex-col lg:flex-row gap-4" {
             div class="grow relative" {
                 svg class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {
                     path stroke="none" d="M0 0h24v24H0z" fill="none" { }
@@ -24,7 +24,7 @@ pub fn top_search(props: TopSearchProps) -> maud::Markup {
                 value=[props.search]
                 placeholder="Palabras clave (ej. Backend, Finanzas...)";
             }
-            div class="md:w-64 relative" {
+            div class="lg:w-64 relative" {
                 svg class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {
                     path stroke="none" d="M0 0h24v24H0z" fill="none" { }
                     path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" { }
@@ -39,6 +39,83 @@ pub fn top_search(props: TopSearchProps) -> maud::Markup {
                     @for departamento in DEPARTAMENTOS.iter() {
                         option value=(departamento.id) selected[props.departamento == departamento.id as u8] {
                             (departamento.nombre)
+                        }
+                    }
+                }
+            }
+            details class="lg:hidden" {
+                summary class="text-slate-300 cursor-pointer" { "Ver mas filtros" }
+                br;
+                div class="flex flex-col gap-4" {
+                    div class="space-y-8" {
+                        div {
+                            h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4" {
+                                "Modalidad de prácticas"
+                            }
+                            div class="space-y-3" {
+                                label class="flex items-center space-x-3 cursor-pointer group" {
+                                    input type="checkbox" class="w-4 h-4 rounded border-slate-700";
+                                    span class="text-slate-400 group-hover:text-white transition" {
+                                        "Pre profesionales"
+                                    }
+                                }
+                                label class="flex items-center space-x-3 cursor-pointer group" {
+                                    input type="checkbox" class="w-4 h-4 rounded border-slate-700";
+                                    span class="text-slate-400 group-hover:text-white transition" {
+                                        "Profesionales"
+                                    }
+                                }
+                            }
+                        }
+                        div {
+                            h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4" {
+                                "Nivel académico"
+                            }
+                            div class="space-y-3" {
+                                label class="flex items-center space-x-3 cursor-pointer group" {
+                                    input type="checkbox" class="w-4 h-4 rounded border-slate-700";
+                                    span class="text-slate-400 group-hover:text-white transition" {
+                                        "Estudiantes técnicos"
+                                    }
+                                }
+                                label class="flex items-center space-x-3 cursor-pointer group" {
+                                    input type="checkbox" class="w-4 h-4 rounded border-slate-700";
+                                    span class="text-slate-400 group-hover:text-white transition" {
+                                        "Egresados técnicos"
+                                    }
+                                }
+                                label class="flex items-center space-x-3 cursor-pointer group" {
+                                    input type="checkbox" class="w-4 h-4 rounded border-slate-700";
+                                    span class="text-slate-400 group-hover:text-white transition" {
+                                        "Estudiantes universitarios"
+                                    }
+                                }
+                                label class="flex items-center space-x-3 cursor-pointer group" {
+                                    input type="checkbox" class="w-4 h-4 rounded border-slate-700";
+                                    span class="text-slate-400 group-hover:text-white transition" {
+                                        "Egresados universitarios"
+                                    }
+                                }
+                                label class="flex items-center space-x-3 cursor-pointer group" {
+                                    input type="checkbox" class="w-4 h-4 rounded border-slate-700";
+                                    span class="text-slate-400 group-hover:text-white transition" {
+                                        "Bachilleres"
+                                    }
+                                }
+                            }
+                        }
+                        div {
+                            h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4" {
+                                "Organización"
+                            }
+                            div class="space-y-3" {
+                                label class="flex items-center space-x-3 cursor-pointer group" {
+                                    input type="checkbox" class="w-4 h-4 rounded border-slate-700";
+                                    span class="text-slate-400 group-hover:text-white transition" {
+                                        "SUNARP"
+                                    }
+                                }
+                            }
                         }
                     }
                 }
