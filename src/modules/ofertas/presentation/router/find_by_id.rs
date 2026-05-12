@@ -1,3 +1,5 @@
+use std::sync::RwLock;
+
 use actix_web::{HttpResponse, Responder, get, web};
 
 use crate::{
@@ -9,9 +11,9 @@ use crate::{
 };
 
 #[get("/{id}")]
-pub async fn find_by_id(state: web::Data<State>, params: web::Path<i32>) -> impl Responder {
+pub async fn find_by_id(state: web::Data<RwLock<State>>, params: web::Path<i32>) -> impl Responder {
     let id = params.into_inner();
-    let infrastructure = MariaDbRepository::new(state.db.clone());
+    let infrastructure = MariaDbRepository::new(state.read().unwrap().db.clone());
     let application = FindById::new(infrastructure);
     let result = application.execute(id).await;
 

@@ -1,8 +1,8 @@
-use sqlx::prelude::FromRow;
 use serde::Serialize;
+use sqlx::prelude::FromRow;
 use time::OffsetDateTime;
 
-#[derive(FromRow, Serialize, Debug)]
+#[derive(FromRow, Serialize, Debug, Clone)]
 pub struct Organizacion {
     pub id: i32,
     pub razon_social: String,

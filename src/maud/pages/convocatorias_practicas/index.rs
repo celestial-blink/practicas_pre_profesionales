@@ -1,3 +1,5 @@
+use std::sync::RwLock;
+
 use actix_web::{
     HttpResponse, get,
     web::{self, Data},
@@ -8,7 +10,10 @@ use crate::{
     general_types::State,
     maud::{
         components::{
-            convocatoria::last_convocatoria::last_convocatoria_view, footer::footer, head::{HeadProps, head_component}, header::header
+            convocatoria::last_convocatoria::last_convocatoria_view,
+            footer::footer,
+            head::{HeadProps, head_component},
+            header::header,
         },
         pages::{
             convocatorias_practicas::convocatoria_item::convocatoria_item_view,
@@ -16,20 +21,29 @@ use crate::{
         },
     },
     modules::convocatorias::{
-        application::{dtos::get_all_actives_params_dto::GetAllActivesParamsDto, get_all_actives::GetAllActives, get_one_by_alias::GetOneByAlias},
+        application::{
+            dtos::get_all_actives_params_dto::GetAllActivesParamsDto,
+            get_all_actives::GetAllActives, get_one_by_alias::GetOneByAlias,
+        },
         infrastructure::queries::mariadb_query::MariaDbQuery,
     },
 };
 
 #[get("/convocatorias-practicas/{alias}")]
-pub async fn convocatorias_practicas(state: Data<State>, alias: web::Path<String>) -> HttpResponse {
+pub async fn convocatorias_practicas(
+    state: Data<RwLock<State>>,
+    alias: web::Path<String>,
+) -> HttpResponse {
     let query_repository = MariaDbQuery;
     let get_one_by_alias = GetOneByAlias::new(&query_repository);
+
+    let state = state.read().unwrap();
+
     let convocatoria = get_one_by_alias
         .execute(&state.db, alias.into_inner())
         .await;
 
-       let params = GetAllActivesParamsDto {
+    let params = GetAllActivesParamsDto {
         offset: 0,
         limit: 10,
         include_texto: false,
@@ -39,7 +53,11 @@ pub async fn convocatorias_practicas(state: Data<State>, alias: web::Path<String
     let convocatorias = get_all_actives.execute(&state.db, params).await;
 
     let convocatorias = match convocatorias {
-        Ok(convocatorias) => convocatorias.into_iter().filter(|conv| conv.id != convocatoria.as_ref().unwrap().id).map(|conv| conv.into()).collect(),
+        Ok(convocatorias) => convocatorias
+            .into_iter()
+            .filter(|conv| conv.id != convocatoria.as_ref().unwrap().id)
+            .map(|conv| conv.into())
+            .collect(),
         Err(_) => vec![],
     };
 
@@ -53,6 +71,7 @@ pub async fn convocatorias_practicas(state: Data<State>, alias: web::Path<String
                 css_extra: None,
                 include_analytics: true,
                 include_ads: true,
+                text_extra: None,
             }))
             br;
             br;
@@ -81,6 +100,7 @@ pub async fn convocatorias_practicas(state: Data<State>, alias: web::Path<String
                 css_extra: None,
                 include_analytics: true,
                 include_ads: true,
+                text_extra: None,
             }))
 
             section class="py-20 bg-slate-950/50" {

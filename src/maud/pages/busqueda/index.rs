@@ -1,3 +1,5 @@
+use std::sync::RwLock;
+
 use actix_web::{
     HttpResponse, get,
     web::{self, Data},
@@ -14,7 +16,7 @@ use crate::{
         },
         pages::{
             busqueda::{
-                aside_filters::aside_filters,
+                aside_filters::{AsideFiltersProps, aside_filters},
                 main::{MainProps, main},
                 top_search::{TopSearchProps, top_search},
             },
@@ -31,7 +33,7 @@ use crate::{
 
 #[get("/busqueda")]
 pub async fn busqueda_view(
-    state: Data<State>,
+    state: Data<RwLock<State>>,
     query: web::Query<OfertasFilterParamsDto>,
 ) -> HttpResponse {
     let query_clone = query.clone();
@@ -41,6 +43,9 @@ pub async fn busqueda_view(
 
     let infrastructure = MariaDbQuery;
     let oferta_filter = OfertasFilter::new(&infrastructure);
+
+    let state = state.read().unwrap();
+
     let oferta_result = oferta_filter
         .execute(&state.db, query_clone.into_inner())
         .await;
@@ -59,6 +64,9 @@ pub async fn busqueda_view(
             css_extra: None,
             include_analytics: true,
             include_ads: true,
+            text_extra: Some(vec![
+                format!("<script>const organizaciones = {};</script>", serde_json::to_string(&state.cache.organizaciones).unwrap())
+            ])
         }))
         (header(header_items()))
         section class="py-20 bg-slate-950/50" {
@@ -71,7 +79,9 @@ pub async fn busqueda_view(
                 }))
                 div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4" {
                     aside class="flex-1" {
-                        (aside_filters())
+                        (aside_filters(AsideFiltersProps {
+                            organizaciones: &state.cache.organizaciones,
+                        }))
                     }
                     main class="flex-1" {
                         (main(MainProps {

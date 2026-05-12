@@ -1,8 +1,17 @@
 use serde::Serialize;
 use sqlx::prelude::FromRow;
 
+use crate::modules::organizaciones::domain::organizacion::Organizacion;
+
+#[derive(Debug, Clone)]
+pub struct CacheState {
+    pub organizaciones: Vec<Organizacion>,
+}
+
+#[derive(Debug, Clone)]
 pub struct State {
     pub db: sqlx::MySqlPool,
+    pub cache: CacheState,
 }
 
 pub mod datetime_format {

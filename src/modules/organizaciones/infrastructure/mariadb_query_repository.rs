@@ -2,17 +2,17 @@ use crate::modules::organizaciones::application::repository::query_respository::
 use crate::modules::organizaciones::domain::dto::SearchParams;
 use crate::modules::organizaciones::domain::organizacion::Organizacion;
 
-pub struct MariadbRepository {
+pub struct MariadbQueryRepository {
     pool: sqlx::MySqlPool,
 }
 
-impl MariadbRepository {
+impl MariadbQueryRepository {
     pub fn new(pool: sqlx::MySqlPool) -> Self {
         Self { pool }
     }
 }
 
-impl QueryRepository for MariadbRepository {
+impl QueryRepository for MariadbQueryRepository {
     async fn find_by_search(&self, params: SearchParams) -> Result<Vec<Organizacion>, String> {
         let mut query_sql = String::from("SELECT * FROM organizaciones");
         // agrega where en search, tipo y estado solo si vienen
@@ -62,5 +62,15 @@ impl QueryRepository for MariadbRepository {
         }
 
         Err("Error al buscar organizaciones".to_string())
+    }
+    async fn find_all(&self) -> Result<Vec<Organizacion>, String> {
+        let query_sql =
+            "SELECT * FROM organizaciones WHERE estado = 1 ORDER BY nombre_comercial ASC";
+        let result = sqlx::query_as::<_, Organizacion>(query_sql)
+            .fetch_all(&self.pool)
+            .await
+            .map_err(|e| e.to_string())?;
+
+        Ok(result)
     }
 }

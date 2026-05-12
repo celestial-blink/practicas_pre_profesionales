@@ -1,3 +1,5 @@
+use std::sync::RwLock;
+
 use actix_web::{HttpResponse, Responder, get, web};
 
 use crate::{
@@ -12,11 +14,11 @@ use crate::{
 
 #[get("/convocatoria/{id}")]
 pub async fn get_all_by_id_convocatoria(
-    state: web::Data<State>,
+    state: web::Data<RwLock<State>>,
     params: web::Path<i32>,
 ) -> impl Responder {
     let id = params.into_inner();
-    let infrastructure = MariaDbRepository::new(state.db.clone());
+    let infrastructure = MariaDbRepository::new(state.read().unwrap().db.clone());
     let application = GetAllByIdConvocatoria::new(infrastructure);
     let result = application.execute(id).await;
 

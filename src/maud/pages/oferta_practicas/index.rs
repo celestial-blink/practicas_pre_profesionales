@@ -1,3 +1,5 @@
+use std::sync::RwLock;
+
 use actix_web::{
     HttpResponse, get,
     web::{self, Data},
@@ -34,9 +36,15 @@ use crate::{
 };
 
 #[get("/oferta-practicas/{alias}")]
-pub async fn oferta_practicas(state: Data<State>, alias: web::Path<String>) -> HttpResponse {
+pub async fn oferta_practicas(
+    state: Data<RwLock<State>>,
+    alias: web::Path<String>,
+) -> HttpResponse {
     let mariadb_oferta_query = MariaDbQueryOfertas;
     let get_one_by_alias = GetOneByAlias::new(&mariadb_oferta_query);
+
+    let state = state.read().unwrap();
+
     let oferta = get_one_by_alias
         .execute(&state.db, alias.into_inner())
         .await;
@@ -70,6 +78,7 @@ pub async fn oferta_practicas(state: Data<State>, alias: web::Path<String>) -> H
                     css_extra: None,
                     include_analytics: true,
                     include_ads: true,
+                    text_extra: None,
                 }))
                 br;
                 br;

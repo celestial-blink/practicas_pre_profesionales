@@ -1,3 +1,5 @@
+use std::sync::RwLock;
+
 use actix_web::{HttpResponse, Responder, get, web};
 
 use crate::{
@@ -10,11 +12,11 @@ use crate::{
 
 #[get("/search")]
 pub async fn find_by_search(
-    state: web::Data<State>,
+    state: web::Data<RwLock<State>>,
     params: web::Query<SearchParams>,
 ) -> impl Responder {
     let search_params = params.into_inner();
-    let infrastructure = MariaDbRepository::new(state.db.clone());
+    let infrastructure = MariaDbRepository::new(state.read().unwrap().db.clone());
     let application = FindBySearch::new(infrastructure);
     let result = application.execute(search_params).await;
     match result {

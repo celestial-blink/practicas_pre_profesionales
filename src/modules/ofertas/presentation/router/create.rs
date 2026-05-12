@@ -1,3 +1,5 @@
+use std::sync::RwLock;
+
 use actix_web::{HttpResponse, Responder, post, web};
 
 use crate::{
@@ -10,10 +12,13 @@ use crate::{
 };
 
 #[post("/")]
-pub async fn create(state: web::Data<State>, params: web::Json<CreateOfertaDto>) -> impl Responder {
+pub async fn create(
+    state: web::Data<RwLock<State>>,
+    params: web::Json<CreateOfertaDto>,
+) -> impl Responder {
     let oferta_params: CreateOfertaDto = params.into_inner();
 
-    let infrastructure = MariaDbRepository::new(state.db.clone());
+    let infrastructure = MariaDbRepository::new(state.read().unwrap().db.clone());
     let niveles_infrastructure = MariaDbNivelesRepository;
 
     let application = Create::new(infrastructure, niveles_infrastructure);

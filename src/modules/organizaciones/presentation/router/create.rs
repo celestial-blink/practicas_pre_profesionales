@@ -1,17 +1,19 @@
+use std::sync::RwLock;
+
 use actix_web::{HttpResponse, Responder, post, web};
 
 use crate::{
     general_types::State,
     modules::organizaciones::{
-        application::create::Create, domain::dtos::create_dto::CreateParams, infrastructure::{
+        application::create::Create,
+        domain::dtos::create_dto::CreateParams,
+        infrastructure::{
             mariadb_repository::MariadbRepository, storage::file_storage::FileStorage,
-        }
+        },
     },
 };
 
 use actix_multipart::form::{MultipartForm, json::Json as MpJson, tempfile::TempFile};
-
-
 
 #[derive(MultipartForm)]
 pub struct CreateRequest {
@@ -22,16 +24,15 @@ pub struct CreateRequest {
 
 #[post("/")]
 pub async fn create(
-    state: web::Data<State>,
+    state: web::Data<RwLock<State>>,
     MultipartForm(params): MultipartForm<CreateRequest>,
 ) -> impl Responder {
     let logo = params.logo_file;
     let params = params.params.into_inner();
 
-
     let organizacion_params = params.into();
 
-    let infrastructure = MariadbRepository::new(state.db.clone());
+    let infrastructure = MariadbRepository::new(state.read().unwrap().db.clone());
     let storage_infrastructure = FileStorage;
 
     let application = Create::new(infrastructure, storage_infrastructure);

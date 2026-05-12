@@ -1,3 +1,5 @@
+use std::sync::RwLock;
+
 use actix_web::{HttpResponse, Responder, put, web};
 
 use crate::{
@@ -11,14 +13,14 @@ use crate::{
 
 #[put("/{id}")]
 pub async fn update(
-    state: web::Data<State>,
+    state: web::Data<RwLock<State>>,
     path: web::Path<i32>,
     params: web::Json<UpdateOfertaDto>,
 ) -> impl Responder {
     let mut oferta_params: UpdateOfertaDto = params.into_inner();
     oferta_params.id = path.into_inner();
 
-    let infrastructure = MariaDbRepository::new(state.db.clone());
+    let infrastructure = MariaDbRepository::new(state.read().unwrap().db.clone());
     let niveles_infrastructure = MariaDbRepositoryNiveles;
 
     let application = Update::new(infrastructure, niveles_infrastructure);

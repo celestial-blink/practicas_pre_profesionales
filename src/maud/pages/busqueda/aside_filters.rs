@@ -1,6 +1,12 @@
 use maud::{Markup, html};
 
-pub fn aside_filters() -> Markup {
+use crate::modules::organizaciones::domain::organizacion::Organizacion;
+
+pub struct AsideFiltersProps<'t> {
+    pub organizaciones: &'t Vec<Organizacion>,
+}
+
+pub fn aside_filters<'t>(props: AsideFiltersProps<'t>) -> Markup {
     html!(
         div class="flex-col gap-4 hidden lg:flex" {
             div class="space-y-8" {
@@ -17,37 +23,14 @@ pub fn aside_filters() -> Markup {
                             name="search"
                             placeholder="Buscar organización..."
                             autocomplete="off"
+                            oninput="handle_search_org(event)"
                             onfocus="handle_search_org_focus(event)";
-
                         menu class="hidden flex-col border border-slate-700/50 rounded-xl p-3 bg-slate-900" id="search_org_list" {
-                            li {
-                                button type="button" class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1" onclick="handle_set_org_item(event)" {
-                                    "Organizacion 1"
-                                }
-                            }
-                            li {
-                                button type="button" class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1" onclick="handle_set_org_item(event)" {
-                                    "Organizacion 2"
-                                }
-                            }
-                            li {
-                                button type="button" class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1" onclick="handle_set_org_item(event)" {
-                                    "Organizacion 3"
-                                }
-                            }
-                            li {
-                                button type="button" class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1" onclick="handle_set_org_item(event)" {
-                                    "Organizacion 4"
-                                }
-                            }
-                            li {
-                                button type="button" class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1" onclick="handle_set_org_item(event)" {
-                                    "Organizacion 5"
-                                }
-                            }
-                            li {
-                                button type="button" class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1" onclick="handle_set_org_item(event)" {
-                                    "Organizacion 5"
+                            @for organizacion in props.organizaciones {
+                                li {
+                                    button type="button" class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1" onclick="handle_set_org_item(event)" {
+                                        (organizacion.nombre_comercial)
+                                    }
                                 }
                             }
                         }

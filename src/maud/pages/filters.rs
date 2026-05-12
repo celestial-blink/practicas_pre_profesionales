@@ -34,6 +34,7 @@ pub async fn page_filters() -> AwResult<Markup> {
             css_extra: None,
             include_analytics: true,
             include_ads: true,
+            text_extra: None,
         }))
         body class="bg-dark-background" {
             (home_layout(left_home(Some(menu)), right_home() ))

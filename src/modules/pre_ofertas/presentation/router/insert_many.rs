@@ -1,7 +1,18 @@
-use actix_web::{HttpResponse, Responder, post, web::{self, Data}};
+use std::sync::RwLock;
+
+use actix_web::{
+    HttpResponse, Responder, post,
+    web::{self, Data},
+};
 use serde::Deserialize;
 
-use crate::{general_types::State, modules::pre_ofertas::{application::create_many::CreateMany, domain::pre_ofertas::PreOfertas, infrastructure::mariadb_repository::MariadbRepository}};
+use crate::{
+    general_types::State,
+    modules::pre_ofertas::{
+        application::create_many::CreateMany, domain::pre_ofertas::PreOfertas,
+        infrastructure::mariadb_repository::MariadbRepository,
+    },
+};
 
 #[derive(Deserialize)]
 struct PreOfertasRequest {
@@ -19,12 +30,13 @@ struct PreOfertasRequest {
 
 #[post("/insert-many")]
 pub async fn insert_many(
-    state: Data<State>,
+    state: Data<RwLock<State>>,
     pre_ofertas: web::Json<Vec<PreOfertasRequest>>,
 ) -> impl Responder {
     let pre_ofertas = pre_ofertas.into_inner();
-    let pre_ofertas = pre_ofertas.iter().map(|pre_oferta| {
-        PreOfertas {
+    let pre_ofertas = pre_ofertas
+        .iter()
+        .map(|pre_oferta| PreOfertas {
             id: 0,
             titulo: pre_oferta.titulo.clone(),
             id_organizacion: pre_oferta.id_organizacion,
@@ -37,13 +49,12 @@ pub async fn insert_many(
             hash_oferta: pre_oferta.hash_oferta.clone(),
             estado: pre_oferta.estado,
             creado_en: None,
-        }
-    }).collect::<Vec<PreOfertas>>();
+        })
+        .collect::<Vec<PreOfertas>>();
 
-    let infrastructure = MariadbRepository::new(state.db.clone());
+    let infrastructure = MariadbRepository::new(state.read().unwrap().db.clone());
     let application = CreateMany::new(infrastructure);
     let result = application.execute(pre_ofertas).await;
-
 
     match result {
         Ok(_) => HttpResponse::Ok().body("PreOfertas inserted successfully"),

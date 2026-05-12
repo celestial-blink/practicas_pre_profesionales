@@ -1,17 +1,22 @@
 mod config;
+mod data;
 mod general_types;
 mod helpers;
+mod macros;
 mod maud;
 mod middleware;
 mod modules;
 mod t_logs;
 mod types;
-mod macros;
-mod data;
 
+use std::sync::RwLock;
+
+use crate::general_types::CacheState;
 use crate::middleware::api_auth_middleware::api_auth_middleware;
 use crate::modules::convocatorias::presentation::router as convocatoria_router;
 use crate::modules::ofertas::presentation::router as oferta_router;
+use crate::modules::organizaciones::application::find_all::FindAll;
+use crate::modules::organizaciones::infrastructure::mariadb_query_repository::MariadbQueryRepository;
 use crate::modules::organizaciones::presentation::router as organizacion_router;
 use crate::{general_types::State, maud::pages::filters::page_filters};
 
@@ -47,6 +52,19 @@ async fn main() -> std::io::Result<()> {
     let temp_dir = std::env::var("TEMP_DIR").expect("TEMP_DIR must be set");
     let storage_dir = std::env::var("STORAGE_DIR").expect("STORAGE_DIR must be set");
 
+    // carga datos de organizaciones solo una vez por ejecucion
+    let infrastructure = MariadbQueryRepository::new(pool.clone());
+    let get_all_organizaciones = FindAll::new(infrastructure);
+    let organizaciones = get_all_organizaciones
+        .execute()
+        .await
+        .expect("Error al obtener organizaciones");
+
+    let general_state = web::Data::new(RwLock::new(State {
+        db: pool.clone(),
+        cache: CacheState { organizaciones },
+    }));
+
     let _ = HttpServer::new(move || {
         App::new()
             .service(
@@ -62,7 +80,7 @@ async fn main() -> std::io::Result<()> {
             .service(maud::pages::organizaciones::index::organizaciones_view)
             .service(maud::pages::busqueda::index::busqueda_view)
             .service(page_filters)
-            .app_data(web::Data::new(State { db: pool.clone() }))
+            .app_data(general_state.clone())
             .app_data(TempFileConfig::default().directory(&temp_dir))
             .service(
                 web::scope("/api/v1")

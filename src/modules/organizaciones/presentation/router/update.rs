@@ -1,3 +1,5 @@
+use std::sync::RwLock;
+
 use actix_web::{HttpResponse, Responder, put, web};
 
 use crate::{
@@ -21,7 +23,7 @@ pub struct UpdateRequest {
 
 #[put("/{id}")]
 pub async fn update(
-    state: web::Data<State>,
+    state: web::Data<RwLock<State>>,
     path: web::Path<i32>,
     MultipartForm(params): MultipartForm<UpdateRequest>,
 ) -> impl Responder {
@@ -33,8 +35,7 @@ pub async fn update(
     let mut organizacion_params: Organizacion = params.into();
     organizacion_params.id = id;
 
-
-    let infrastructure = MariadbRepository::new(state.db.clone());
+    let infrastructure = MariadbRepository::new(state.read().unwrap().db.clone());
     let storage_infrastructure = FileStorage;
 
     let application = Update::new(infrastructure, storage_infrastructure);

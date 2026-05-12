@@ -1,3 +1,5 @@
+use std::sync::RwLock;
+
 use actix_web::{get, web::Data};
 use maud::{Markup, html};
 
@@ -18,9 +20,12 @@ use crate::{
 };
 
 #[get("/organizaciones")]
-pub async fn organizaciones_view(state: Data<State>) -> Markup {
+pub async fn organizaciones_view(state: Data<RwLock<State>>) -> Markup {
     let infrastructure = MariaDbQuery;
     let get_count_ofertas = GetCountOfertasByOrganizacion::new(infrastructure);
+
+    let state = state.read().unwrap();
+
     let ofertas = get_count_ofertas.execute(&state.db).await;
 
     let organizaciones = match ofertas {
@@ -37,6 +42,7 @@ pub async fn organizaciones_view(state: Data<State>) -> Markup {
             css_extra: None,
             include_analytics: true,
             include_ads: true,
+            text_extra: None,
         }))
         (header(header_items()))
         (hero::hero())

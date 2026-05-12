@@ -22,6 +22,35 @@ const handle_search_org_focus = () => {
     search_org_list.classList.replace('hidden', 'flex');
 }
 
+let timeout_search_org;
+const handle_search_org = (event) => {
+    clearTimeout(timeout_search_org);
+    timeout_search_org = setTimeout(() => {
+        // limpia los caracteres especiales como tildes u pongo todo en minusculas
+        const value = event.target.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const search_pattern = new RegExp(value, 'i');
+        const search_org_list = document.getElementById('search_org_list');
+        search_org_list.innerHTML = '';
+        // usa organizaciones, es una variable global
+        const filter = organizaciones.filter(organizacion => {
+            return search_pattern
+                .test(organizacion.nombre_comercial
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .toLowerCase())
+        }).slice(0, 10);
+        filter.forEach(organizacion => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <button type="button" class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1" onclick="handle_set_org_item(event)">
+                    ${organizacion.nombre_comercial}
+                </button>
+            `;
+            search_org_list.appendChild(li);
+        });
+    }, 5e2);
+}
+
 // solo si org_selected_container no tiene mas de 3 items
 const handle_set_org_item = (event) => {
     const org_selected_container = document.getElementById('org_selected_container');

@@ -1,3 +1,5 @@
+use std::sync::RwLock;
+
 use actix_web::{HttpResponse, Responder, get, web};
 
 use crate::{
@@ -8,9 +10,12 @@ use crate::{
 };
 
 #[get("/ruc/{ruc}")]
-pub async fn find_by_ruc(state: web::Data<State>, params: web::Path<String>) -> impl Responder {
+pub async fn find_by_ruc(
+    state: web::Data<RwLock<State>>,
+    params: web::Path<String>,
+) -> impl Responder {
     let ruc = params.into_inner();
-    let infrastructure = MariadbRepository::new(state.db.clone());
+    let infrastructure = MariadbRepository::new(state.read().unwrap().db.clone());
     let application = FindByRuc::new(infrastructure);
     let result = application.execute(ruc).await;
     match result {

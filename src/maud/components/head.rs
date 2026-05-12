@@ -1,6 +1,6 @@
-use std::{collections::HashMap};
+use std::collections::HashMap;
 
-use maud::{DOCTYPE, Markup, html};
+use maud::{DOCTYPE, Markup, PreEscaped, html};
 
 use crate::config::IS_DEV;
 
@@ -12,6 +12,7 @@ pub struct HeadProps {
     pub css_extra: Option<Vec<String>>,
     pub include_analytics: bool,
     pub include_ads: bool,
+    pub text_extra: Option<Vec<String>>,
 }
 
 pub fn head_component(props: HeadProps) -> Markup {
@@ -42,12 +43,10 @@ pub fn head_component(props: HeadProps) -> Markup {
                 meta name="color-scheme" id="color-scheme" content="dark";
                 link rel="stylesheet" href=(format!("{}{}", css, css_version.clone().unwrap_or_default()));
                 link rel="icon" href="/public/images/favicon.ico" type="image/x-icon";
-
                 // font iter
                 link rel="preconnect" href="https://fonts.googleapis.com";
                 link rel="preconnect" href="https://fonts.gstatic.com" crossorigin;
                 link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet";
-
                 @if let Some(canonical) = props.canonical {
                     link rel="canonical" href=(canonical);
                 }
@@ -60,6 +59,11 @@ pub fn head_component(props: HeadProps) -> Markup {
                 title {
                     (props.title)
                 }
+                @if let Some(text_extra) = props.text_extra {
+                    @for text in text_extra {
+                        (PreEscaped(text))
+                    }
+                }
                 @if let Some(scripts_extra) = props.scripts_extra {
                     @for script in scripts_extra {
                         script src=(format!("{}{}{}.js", script, if IS_DEV { "" } else { ".prod" }, css_version.clone().unwrap_or_default())) {}
@@ -70,7 +74,6 @@ pub fn head_component(props: HeadProps) -> Markup {
                         link rel="stylesheet" href=(format!("{}{}{}.css", css, if IS_DEV { "" } else { ".prod" }, css_version.clone().unwrap_or_default())) {}
                     }
                 }
-
                 @if props.include_analytics && !IS_DEV {
                     script async src="https://www.googletagmanager.com/gtag/js?id=G-B286837127" {}
                     script {

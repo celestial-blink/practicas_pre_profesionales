@@ -1,7 +1,6 @@
-use actix_web::{
-    Result as AwResult, get,
-    web::Data,
-};
+use std::sync::RwLock;
+
+use actix_web::{Result as AwResult, get, web::Data};
 use maud::{Markup, html};
 
 use crate::{
@@ -33,7 +32,7 @@ use crate::{
 };
 
 #[get("/")]
-pub async fn home_index(state: Data<State>) -> AwResult<Markup> {
+pub async fn home_index(state: Data<RwLock<State>>) -> AwResult<Markup> {
     let convocatoria_query_port = MariaDbQuery;
     let get_all_actives = GetAllActives::new(convocatoria_query_port);
 
@@ -42,6 +41,8 @@ pub async fn home_index(state: Data<State>) -> AwResult<Markup> {
         limit: 100,
         include_texto: false,
     };
+
+    let state = state.read().unwrap();
 
     let convocatorias = get_all_actives.execute(&state.db, params).await;
 
@@ -131,6 +132,7 @@ pub async fn home_index(state: Data<State>) -> AwResult<Markup> {
                 css_extra: None,
                 include_analytics: true,
                 include_ads: true,
+                text_extra: None,
             }
         ))
         (header(header_items()))

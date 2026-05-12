@@ -1,3 +1,5 @@
+use std::sync::RwLock;
+
 use actix_web::{get, web::Data};
 use maud::{Markup, html};
 
@@ -25,10 +27,13 @@ struct DepartamentosResult {
 }
 
 #[get("/departamentos")]
-pub async fn departamentos_view(state: Data<State>) -> Markup {
+pub async fn departamentos_view(state: Data<RwLock<State>>) -> Markup {
     let infrastructure = MariaDbQuery;
     let get_count_ofertas =
         get_count_ofertas_by_departamento::GetCountOfertasByDepartamento::new(infrastructure);
+
+    let state = state.read().unwrap();
+
     let ofertas = get_count_ofertas.execute(&state.db).await;
 
     let departamentos: Vec<DepartamentosResult> = match ofertas {
@@ -56,8 +61,16 @@ pub async fn departamentos_view(state: Data<State>) -> Markup {
     };
 
     let total_vacantes: rust_decimal::Decimal = departamentos.iter().map(|d| d.vacantes).sum();
-    let total_vacantes_lima: rust_decimal::Decimal = departamentos.iter().filter(|d| d.alias == "lima").map(|d| d.vacantes).sum();
-    let total_vacantes_provincias: rust_decimal::Decimal = departamentos.iter().filter(|d| d.alias != "lima").map(|d| d.vacantes).sum();
+    let total_vacantes_lima: rust_decimal::Decimal = departamentos
+        .iter()
+        .filter(|d| d.alias == "lima")
+        .map(|d| d.vacantes)
+        .sum();
+    let total_vacantes_provincias: rust_decimal::Decimal = departamentos
+        .iter()
+        .filter(|d| d.alias != "lima")
+        .map(|d| d.vacantes)
+        .sum();
 
     html! {
         (head_component(HeadProps {
@@ -68,6 +81,7 @@ pub async fn departamentos_view(state: Data<State>) -> Markup {
             css_extra: None,
             include_analytics: true,
             include_ads: true,
+            text_extra: None,
         }))
         (header(header_items()))
         (hero::hero())
