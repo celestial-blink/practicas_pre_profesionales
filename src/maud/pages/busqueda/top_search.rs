@@ -1,10 +1,12 @@
 use maud::html;
 
 use crate::data::static_data::DEPARTAMENTOS;
+use crate::modules::organizaciones::domain::organizacion::Organizacion;
 
-pub struct TopSearchProps {
+pub struct TopSearchProps<'t> {
     pub search: Option<String>,
     pub departamento: u8,
+    pub organizaciones: &'t Vec<Organizacion>,
 }
 
 pub fn top_search(props: TopSearchProps) -> maud::Markup {
@@ -48,6 +50,32 @@ pub fn top_search(props: TopSearchProps) -> maud::Markup {
                 br;
                 div class="flex flex-col gap-4" {
                     div class="space-y-8" {
+                        div {
+                            h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4" {
+                                "Organización (Máximo 3)"
+                            }
+                            div class="space-y-3" data-id="input_search_customized" {
+                                input type="hidden" name="organizacion" data-ref="query_params";
+                                div class="flex items-center flex-wrap gap-2 cursor-pointer group" data-selected="selected_container" onclick="handle_unset_item(event)" { }
+                                input
+                                    type="text"
+                                    class="w-full bg-slate-900 border border-slate-700/50 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-rose-500 transition"
+                                    name="search"
+                                    placeholder="Buscar organización..."
+                                    autocomplete="off"
+                                    oninput="handle_search(event)"
+                                    onfocus="handle_search_focus(event)";
+                                menu class="hidden flex-col border border-slate-700/50 rounded-xl p-3 bg-slate-900" data-menu="search_list" onclick="handle_set_item(event)" {
+                                    @for organizacion in props.organizaciones {
+                                        li {
+                                            button type="button" class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1" {
+                                                (organizacion.nombre_comercial)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         div {
                             h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4" {
                                 "Modalidad de prácticas"
@@ -100,19 +128,6 @@ pub fn top_search(props: TopSearchProps) -> maud::Markup {
                                     input type="checkbox" class="w-4 h-4 rounded border-slate-700";
                                     span class="text-slate-400 group-hover:text-white transition" {
                                         "Bachilleres"
-                                    }
-                                }
-                            }
-                        }
-                        div {
-                            h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4" {
-                                "Organización"
-                            }
-                            div class="space-y-3" {
-                                label class="flex items-center space-x-3 cursor-pointer group" {
-                                    input type="checkbox" class="w-4 h-4 rounded border-slate-700";
-                                    span class="text-slate-400 group-hover:text-white transition" {
-                                        "SUNARP"
                                     }
                                 }
                             }

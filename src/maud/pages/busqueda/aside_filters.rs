@@ -14,21 +14,25 @@ pub fn aside_filters<'t>(props: AsideFiltersProps<'t>) -> Markup {
                     h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4" {
                         "Organización (Máximo 3)"
                     }
-                    div class="space-y-3" id="search_org_container" {
+                    div class="space-y-3" data-id="input_search_customized" {
                         input type="hidden" name="organizacion" data-ref="query_params";
-                        div class="flex items-center flex-wrap gap-2 cursor-pointer group" id="org_selected_container" onclick="handle_unset_org_item(event)" { }
+                        div class="flex items-center flex-wrap gap-2 cursor-pointer group" data-selected="selected_container" onclick="handle_unset_item(event)" { }
                         input
                             type="text"
                             class="w-full bg-slate-900 border border-slate-700/50 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-rose-500 transition"
                             name="search"
                             placeholder="Buscar organización..."
                             autocomplete="off"
-                            oninput="handle_search_org(event)"
-                            onfocus="handle_search_org_focus(event)";
-                        menu class="hidden flex-col border border-slate-700/50 rounded-xl p-3 bg-slate-900" id="search_org_list" {
+                            oninput="handle_search(event)"
+                            onfocus="handle_search_focus(event)";
+                        menu class="hidden flex-col border border-slate-700/50 rounded-xl p-3 bg-slate-900" data-menu="search_list" onclick="handle_set_item(event)" {
                             @for organizacion in props.organizaciones {
                                 li {
-                                    button type="button" class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1" onclick="handle_set_org_item(event)" {
+                                    button
+                                    type="button"
+                                    class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1"
+                                    data-id=(organizacion.id)
+                                    {
                                         (organizacion.nombre_comercial)
                                     }
                                 }

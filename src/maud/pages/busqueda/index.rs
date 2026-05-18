@@ -76,6 +76,7 @@ pub async fn busqueda_view(
                 (top_search(TopSearchProps {
                     search: search_param,
                     departamento: departamento_param as u8,
+                    organizaciones: &state.cache.organizaciones,
                 }))
                 div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4" {
                     aside class="flex-1" {
