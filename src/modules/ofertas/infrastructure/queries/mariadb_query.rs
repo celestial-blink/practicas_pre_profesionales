@@ -71,7 +71,7 @@ impl QueryRepository for MariaDbQuery {
             String::from("ofertas.estado = 1 AND ofertas.fecha_fin_oferta >= CURRENT_TIMESTAMP");
 
         if params.id_organizacion.is_some() {
-            active_conditional_str.push_str(" AND ofertas.id_organizacion = ?");
+            active_conditional_str.push_str(" AND ofertas.id_organizacion IN (?)");
         }
 
         if params.modalidad_practicas.is_some() {
@@ -93,14 +93,21 @@ impl QueryRepository for MariaDbQuery {
         }
 
         let query_string = format!(
-            "SELECT * FROM {} WHERE {} LIMIT ? OFFSET ?",
+            "SELECT SQL_CALC_FOUND_ROWS * FROM {} WHERE {} LIMIT ? OFFSET ?",
             table_name, active_conditional_str
         );
 
         let mut actives_ofertas = sqlx::query_as::<_, Oferta>(&query_string);
 
         if params.id_organizacion.is_some() {
-            actives_ofertas = actives_ofertas.bind(params.id_organizacion.unwrap());
+            let id_organizacion_str = params
+                .id_organizacion
+                .unwrap()
+                .iter()
+                .map(|id| id.to_string())
+                .collect::<Vec<String>>()
+                .join(", ");
+            actives_ofertas = actives_ofertas.bind(id_organizacion_str);
         }
 
         if params.modalidad_practicas.is_some() {
@@ -151,10 +158,7 @@ impl QueryRepository for MariaDbQuery {
         // obtiene el total de ofertas activas sin limit solo si el total de activas es igual o mayor a limit
         let mut total_actives_ofertas = actives_ofertas.len() as i32;
         if actives_ofertas.len() >= params.limit as usize {
-            let query_string = format!(
-                "SELECT COUNT(*) as total FROM {} WHERE {}",
-                table_name, active_conditional_str
-            );
+            let query_string = String::from("SELECT FOUND_ROWS() as total");
 
             let total = sqlx::query_as::<_, Total>(&query_string)
                 .fetch_one(pool)

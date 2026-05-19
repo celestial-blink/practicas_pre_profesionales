@@ -42,3 +42,9 @@ const handle_close_header_dialog = (event, id_dialog = '') => {
         handle_open_dialog(id_dialog, false);
     }
 }
+
+// se usa en eventos onkeydown
+const handle_prevent_submit_on_key_enter = (event) => {
+    const { tagName } = event.target;
+    if (tagName === "INPUT" && event.keyCode === 13) event.preventDefault();
+}

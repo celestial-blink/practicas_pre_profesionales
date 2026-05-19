@@ -1,15 +1,9 @@
 const query_params = new URLSearchParams(window.location.search);
-
-// escribe en params el valor del select de departamento
-const set_params = (key = '', value) => {
-    const allow_keys = ['departamento', 'modalidad', 'nivel_academico', 'organizacion'];
-    if (allow_keys.includes(key)) {
-        query_params.set(key, value);
-    }
-}
+// query params keys = search, id_organizacion[], modalidad_practicas, id_region, niveles[]
 
 const query_params_set_init = () => {
     const query_params_elements = document.querySelectorAll('[data-ref="query_params"]');
+    const selected_container = document.querySelectorAll('[data-selected="selected_container"]');
     //TODO:  rehacer la parte de seleccionar organizaciones
     query_params_elements.forEach(element => {
         if (element.type === 'checkbox') {
@@ -25,8 +19,11 @@ const handle_search_focus = (event) => {
 
 let timeout_search_org;
 const handle_search = (event) => {
+    const org_selected_container = event.target.closest('[data-id="input_search_customized"]');
     clearTimeout(timeout_search_org);
     timeout_search_org = setTimeout(() => {
+        let checkbox_selected = org_selected_container.querySelectorAll('[data-selected="selected_container"] input[type="checkbox"]');
+        checkbox_selected = [...checkbox_selected].map(checkbox => checkbox.value);
         // limpia los caracteres especiales como tildes u pongo todo en minusculas
         const value = event.target.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         const search_pattern = new RegExp(value, 'i');
@@ -38,7 +35,7 @@ const handle_search = (event) => {
                 .test(organizacion.nombre_comercial
                     .normalize("NFD")
                     .replace(/[\u0300-\u036f]/g, "")
-                    .toLowerCase())
+                    .toLowerCase()) && !checkbox_selected.includes(organizacion.id)
         }).slice(0, 10);
         filter.forEach(organizacion => {
             const li = document.createElement('li');
@@ -56,15 +53,21 @@ const handle_search = (event) => {
 const handle_set_item = (event) => {
     const search_list = event.target.closest('[data-id="input_search_customized"]');
     const org_selected_container = search_list.querySelector('[data-selected="selected_container"]');
-    const input_hidden_element = search_list.querySelector('input[type="hidden"]');
     if (org_selected_container.children.length >= 3) {
         event.preventDefault();
         return;
     }
     search_list.classList.replace('flex', 'hidden');
-    const prepare_item = document.createElement('span');
+    const prepare_item = document.createElement('label');
+    const prepare_checkbox = document.createElement('input');
+    prepare_checkbox.type = 'checkbox';
+    prepare_checkbox.name = 'organizacion';
+    prepare_checkbox.classList.add('hidden');
+    prepare_checkbox.value = event.target.dataset.id;
+    prepare_checkbox.checked = true;
     prepare_item.className = 'flex gap-1 text-sm items-center bg-rose-950 px-2 rounded-full text-rose-200 group-hover:text-white transition';
     prepare_item.innerHTML = `
+        ${prepare_checkbox.outerHTML}
         ${event.target.textContent}
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -74,24 +77,16 @@ const handle_set_item = (event) => {
     `;
 
     org_selected_container.appendChild(prepare_item);
-    const input_hidden_array_value = JSON.parse(input_hidden_element?.value || '[]');
-    input_hidden_array_value.push(event.target.dataset.id);
-    input_hidden_element.value = JSON.stringify(input_hidden_array_value);
 
     // elimina el item seleccionado de la lista
     event.target.remove();
 }
 
 const handle_unset_item = (event) => {
-    const search_list = event.target.closest('[data-id="input_search_customized"]');
-    const span_child_element = event.target.closest('span');
-    if (span_child_element) {
+    const label_child_element = event.target.closest('label');
+    if (label_child_element) {
         const org_selected_container = event.currentTarget;
-        org_selected_container.removeChild(span_child_element);
-        const input_hidden_element = search_list.querySelector('input[type="hidden"]');
-        const input_hidden_array_value = JSON.parse(input_hidden_element?.value || '[]');
-        input_hidden_array_value.splice(input_hidden_array_value.indexOf(span_child_element.dataset.id), 1);
-        input_hidden_element.value = JSON.stringify(input_hidden_array_value);
+        org_selected_container.removeChild(label_child_element);
     }
 }
 
