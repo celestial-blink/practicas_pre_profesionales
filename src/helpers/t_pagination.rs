@@ -12,23 +12,9 @@ impl TPaginationCore {
 }
 
 impl TPaginationCore {
-    pub fn pages_to_vec(&self) -> Vec<i32> {
-        let mut pages: Vec<i32> = vec![];
-        pages.extend(self.previus_generate().iter().map(|x| *x as i32));
-        pages.extend(self.next_generate().iter().map(|x| *x as i32));
-        pages
-    }
-
-    pub fn previus_generate(&self) -> Vec<u32> {
-        if self.page <= 4 {
-            return (1..self.page).filter(|x| *x > 0).collect();
-        }
-        (self.page - 4..self.page).filter(|x| *x > 0).collect()
-    }
-
-    pub fn next_generate(&self) -> Vec<u32> {
-        (self.page + 1..=self.page + 4)
-            .filter(|x| *x <= self.total_pages)
+    pub fn pages_to_vec(&self) -> Vec<u32> {
+        (self.page.checked_sub(3).unwrap_or(0)..=self.page + 3)
+            .filter(|x| *x <= self.total_pages && *x > 0)
             .collect()
     }
 }
