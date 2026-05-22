@@ -1,5 +1,3 @@
-use std::ops::Sub;
-
 pub struct TPaginationCore {
     pub total_pages: u32,
     pub page: u32,
@@ -13,8 +11,13 @@ impl TPaginationCore {
 
 impl TPaginationCore {
     pub fn pages_to_vec(&self) -> Vec<u32> {
-        (self.page.checked_sub(3).unwrap_or(0)..=self.page + 3)
+        let mut result = (self.page.checked_sub(1).unwrap_or(0)..=self.page + 1)
             .filter(|x| *x <= self.total_pages && *x > 0)
-            .collect()
+            .collect::<Vec<u32>>();
+
+        result.extend_from_slice(&[1, self.total_pages]);
+        result.sort();
+        result.dedup();
+        result
     }
 }

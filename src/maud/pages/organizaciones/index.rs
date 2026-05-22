@@ -21,7 +21,7 @@ use crate::{
 
 #[get("/organizaciones")]
 pub async fn organizaciones_view(state: Data<RwLock<State>>) -> Markup {
-    let infrastructure = MariaDbQuery;
+    let infrastructure = MariaDbQuery {};
     let get_count_ofertas = GetCountOfertasByOrganizacion::new(infrastructure);
 
     let state = state.read().unwrap();

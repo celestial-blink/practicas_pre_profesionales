@@ -28,7 +28,7 @@ struct DepartamentosResult {
 
 #[get("/departamentos")]
 pub async fn departamentos_view(state: Data<RwLock<State>>) -> Markup {
-    let infrastructure = MariaDbQuery;
+    let infrastructure = MariaDbQuery {};
     let get_count_ofertas =
         get_count_ofertas_by_departamento::GetCountOfertasByDepartamento::new(infrastructure);
 

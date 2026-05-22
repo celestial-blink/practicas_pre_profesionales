@@ -18,7 +18,7 @@ use crate::{
     },
 };
 
-pub struct MariaDbQuery;
+pub struct MariaDbQuery {}
 
 impl QueryRepository for MariaDbQuery {
     async fn get_one_by_alias(&self, pool: &MySqlPool, alias: String) -> Option<Oferta> {
@@ -61,6 +61,10 @@ impl QueryRepository for MariaDbQuery {
         pool: &MySqlPool,
         params: OfertasFilterParamsDto,
     ) -> Result<OfertasFilterResultDto, String> {
+        let mut conn = pool
+            .acquire()
+            .await
+            .map_err(|e| format!("Error en obtener ofertas, {}", e.to_string()))?;
         let table_name = if params.niveles.is_some() {
             "ofertas LEFT JOIN oferta_niveles ON ofertas.id = oferta_niveles.id_oferta"
         } else {
@@ -151,29 +155,29 @@ impl QueryRepository for MariaDbQuery {
         actives_ofertas = actives_ofertas.bind(params.limit).bind(params.offset);
 
         let actives_ofertas = actives_ofertas
-            .fetch_all(pool)
+            .fetch_all(&mut *conn)
             .await
             .map_err(|e| format!("Error en obtener ofertas, {}", e.to_string()))?;
 
-        // obtiene el total de ofertas activas sin limit solo si el total de activas es igual o mayor a limit
-        let mut total_actives_ofertas = actives_ofertas.len() as i32;
-        if actives_ofertas.len() >= params.limit as usize {
-            let query_string = String::from("SELECT FOUND_ROWS() as total");
+        // obtiene el total de ofertas activas sin limit solo si el total de activas es igual a limit
+        let mut total_actives_ofertas = actives_ofertas.len();
 
-            let total = sqlx::query_as::<_, Total>(&query_string)
-                .fetch_one(pool)
+        if total_actives_ofertas == params.limit as usize {
+            let query_string = "SELECT FOUND_ROWS() as total";
+
+            let total = sqlx::query_as::<_, Total>(query_string)
+                .fetch_one(&mut *conn)
                 .await
                 .map_err(|e| format!("Error en obtener ofertas, {}", e.to_string()))?;
-            total_actives_ofertas = total.total;
+
+            total_actives_ofertas = total.total as usize;
         }
 
         // optine 30 ofertas vencidas solo con el filtro de estao y fin_convocatoria, solo si total_actives_ofertas es igual a 0,
         let vencidas_ofertas = match total_actives_ofertas {
             0 => {
-                let query_string = format!(
-                    "SELECT * FROM ofertas WHERE ofertas.estado = 1 AND ofertas.fecha_fin_oferta < CURRENT_TIMESTAMP LIMIT 30"
-                );
-                sqlx::query_as::<_, Oferta>(&query_string)
+                let query_string = "SELECT * FROM ofertas WHERE ofertas.estado = 1 AND ofertas.fecha_fin_oferta < CURRENT_TIMESTAMP LIMIT 30";
+                sqlx::query_as::<_, Oferta>(query_string)
                     .fetch_all(pool)
                     .await
                     .map_err(|e| format!("Error en obtener ofertas, {}", e.to_string()))?
@@ -184,7 +188,7 @@ impl QueryRepository for MariaDbQuery {
         Ok(OfertasFilterResultDto {
             ofertas_activas: actives_ofertas,
             ofertas_vencidas: vencidas_ofertas,
-            total_activas: total_actives_ofertas,
+            total_activas: total_actives_ofertas as i32,
         })
     }
 }

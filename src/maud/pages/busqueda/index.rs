@@ -39,10 +39,11 @@ pub async fn busqueda_view(
 ) -> HttpResponse {
     let query_clone = query.clone();
     let query = query.into_inner();
+
     let departamento_param = query.id_region.unwrap_or(0);
     let search_param = query.search;
-
-    let infrastructure = MariaDbQuery;
+    let limit = query.limit as u32;
+    let infrastructure = MariaDbQuery {};
     let oferta_filter = OfertasFilter::new(&infrastructure);
 
     let state = state.read().unwrap();
@@ -89,6 +90,7 @@ pub async fn busqueda_view(
                             total_ofertas: oferta_result.total_activas as u32,
                             ofertas: oferta_result.ofertas_activas,
                             ofertas_vencidas: oferta_result.ofertas_vencidas,
+                            per_page: limit,
                         }))
                     }
                 }

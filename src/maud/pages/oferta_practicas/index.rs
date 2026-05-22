@@ -40,7 +40,7 @@ pub async fn oferta_practicas(
     state: Data<RwLock<State>>,
     alias: web::Path<String>,
 ) -> HttpResponse {
-    let mariadb_oferta_query = MariaDbQueryOfertas;
+    let mariadb_oferta_query = MariaDbQueryOfertas {};
     let get_one_by_alias = GetOneByAlias::new(&mariadb_oferta_query);
 
     let state = state.read().unwrap();
