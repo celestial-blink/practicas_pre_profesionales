@@ -35,21 +35,21 @@ use crate::{
 #[get("/busqueda")]
 pub async fn busqueda_view(
     state: Data<RwLock<State>>,
-    query: web::Query<OfertasFilterParamsDto>,
+    query: serde_qs::actix::QsQuery<OfertasFilterParamsDto>,
 ) -> HttpResponse {
     let query_clone = query.clone();
     let query = query.into_inner();
 
     let departamento_param = query.id_region.unwrap_or(0);
     let search_param = query.search;
-    let limit = query.limit as u32;
+    let limit = query.limit;
     let infrastructure = MariaDbQuery {};
     let oferta_filter = OfertasFilter::new(&infrastructure);
 
     let state = state.read().unwrap();
 
     let oferta_result = oferta_filter
-        .execute(&state.db, query_clone.into_inner())
+        .execute(&state.db, query_clone.clone().into_inner())
         .await;
 
     if oferta_result.is_err() {
@@ -90,7 +90,8 @@ pub async fn busqueda_view(
                             total_ofertas: oferta_result.total_activas as u32,
                             ofertas: oferta_result.ofertas_activas,
                             ofertas_vencidas: oferta_result.ofertas_vencidas,
-                            per_page: limit,
+                            per_page: limit as u32,
+                            query_params: query_clone.into_inner(),
                         }))
                     }
                 }

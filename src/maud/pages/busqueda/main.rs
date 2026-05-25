@@ -5,14 +5,19 @@ use crate::{
         components::oferta::oferta_item::oferta_item,
         pages::busqueda::pagination::{PaginationProps, pagination},
     },
-    modules::ofertas::domain::oferta::Oferta,
+    modules::ofertas::{
+        application::dtos::ofertas_filter_params_dto::OfertasFilterParamsDto,
+        domain::oferta::Oferta,
+    },
 };
 
+#[derive(Debug)]
 pub struct MainProps {
     pub total_ofertas: u32,
     pub ofertas: Vec<Oferta>,
     pub ofertas_vencidas: Vec<Oferta>,
     pub per_page: u32,
+    pub query_params: OfertasFilterParamsDto,
 }
 
 pub fn main(props: MainProps) -> Markup {
@@ -38,8 +43,9 @@ pub fn main(props: MainProps) -> Markup {
             }
         }
         (pagination(PaginationProps {
-            total_pages: total_pages,
+            total_pages,
             page,
+            query_params: props.query_params,
         }))
     )
 }
