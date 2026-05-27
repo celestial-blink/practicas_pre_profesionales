@@ -4,7 +4,7 @@ use crate::data::static_data::DEPARTAMENTOS;
 
 pub struct TopSearchProps {
     pub search: Option<String>,
-    pub departamento: u8,
+    pub id_departamento: u8,
 }
 
 pub fn top_search(props: TopSearchProps) -> maud::Markup {
@@ -17,12 +17,13 @@ pub fn top_search(props: TopSearchProps) -> maud::Markup {
                     path d="M21 21l-6 -6" { }
                 }
                 input
-                type="text"
-                class="w-full bg-slate-950 border border-slate-700/50 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-rose-500 transition"
-                name="search"
-                id="search"
-                value=[props.search]
-                placeholder="Palabras clave (ej. Backend, Finanzas...)";
+                    type="text"
+                    class="w-full bg-slate-950 border border-slate-700/50 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-rose-500 transition"
+                    name="search"
+                    id="search"
+                    value=[props.search]
+                    data-ref="query_params"
+                    placeholder="Palabras clave (ej. Backend, Finanzas...)";
             }
             div class="lg:w-64 relative" {
                 svg class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {
@@ -31,19 +32,20 @@ pub fn top_search(props: TopSearchProps) -> maud::Markup {
                     path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0" { }
                 }
                 select
-                class="w-full bg-slate-950 border border-slate-700/50 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-rose-500 appearance-none text-slate-400"
-                name="departamento"
-                id="departamento"
-                onchange="set_departamento('departamento',this.value)" {
-                    option value="" selected[props.departamento == 0] { "Todos" }
-                    @for departamento in DEPARTAMENTOS.iter() {
-                        option value=(departamento.id) selected[props.departamento == departamento.id as u8] {
-                            (departamento.nombre)
+                    class="w-full bg-slate-950 border border-slate-700/50 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-rose-500 appearance-none text-slate-400"
+                    name="id_region"
+                    id="id_region"
+                    data-ref="query_params"
+                    {
+                        option value="" selected[props.id_departamento == 0] { "Todos" }
+                        @for departamento in DEPARTAMENTOS.iter() {
+                            option value=(departamento.id) selected[props.id_departamento == departamento.id as u8] {
+                                (departamento.nombre)
+                            }
                         }
                     }
-                }
             }
-            button type="button" class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 px-8 rounded-xl transition" {
+            button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 px-8 rounded-xl transition" {
                 "Buscar"
             }
         }

@@ -1,9 +1,6 @@
 use std::sync::RwLock;
 
-use actix_web::{
-    HttpResponse, get,
-    web::{self, Data},
-};
+use actix_web::{HttpResponse, get, web::Data};
 use maud::html;
 use rust_decimal::prelude::ToPrimitive;
 
@@ -38,24 +35,27 @@ pub async fn busqueda_view(
     query: serde_qs::actix::QsQuery<OfertasFilterParamsDto>,
 ) -> HttpResponse {
     let query_clone = query.clone();
+    dbg!(&query_clone);
     let query = query.into_inner();
 
     let departamento_param = query.id_region.unwrap_or(0);
     let search_param = query.search;
-    let limit = query.limit;
-    let infrastructure = MariaDbQuery {};
+    let limit = 2;
+    let infrastructure = MariaDbQuery;
     let oferta_filter = OfertasFilter::new(&infrastructure);
 
     let state = state.read().unwrap();
 
     let oferta_result = oferta_filter
-        .execute(&state.db, query_clone.clone().into_inner())
+        .execute(&state.db, query_clone.clone().into_inner(), limit)
         .await;
 
     if oferta_result.is_err() {
         return HttpResponse::InternalServerError().body(oferta_result.err().unwrap());
     }
     let oferta_result = oferta_result.unwrap();
+
+    let id_departamento = departamento_param.to_u8().unwrap_or(0);
 
     let markup = html!(
             (head_component(HeadProps {
@@ -76,13 +76,17 @@ pub async fn busqueda_view(
                 br;
                 br;
                 (top_search(TopSearchProps {
-                    search: search_param,
-                    departamento: departamento_param.to_u8().unwrap_or(0),
+                    search: search_param.clone(),
+                    id_departamento,
                 }))
                 div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4" {
                     aside class="flex-1" {
                         (aside_filters(AsideFiltersProps {
                             organizaciones: &state.cache.organizaciones,
+                            props_top_search: TopSearchProps {
+                                search: search_param,
+                                id_departamento,
+                            }
                         }))
                     }
                     main class="flex-1" {
@@ -92,6 +96,7 @@ pub async fn busqueda_view(
                             ofertas_vencidas: oferta_result.ofertas_vencidas,
                             per_page: limit as u32,
                             query_params: query_clone.into_inner(),
+                            limit,
                         }))
                     }
                 }

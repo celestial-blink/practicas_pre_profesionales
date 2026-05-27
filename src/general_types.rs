@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
 use crate::modules::organizaciones::domain::organizacion::Organizacion;
@@ -190,4 +190,19 @@ pub mod datetime_no_z_option {
 #[derive(Debug, Serialize, FromRow)]
 pub struct Total {
     pub total: i32,
+}
+
+// todo:
+fn deserialize_empty_as_none<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+    T: std::str::FromStr,
+    T::Err: std::fmt::Display,
+{
+    let s: Option<String> = Option::deserialize(deserializer)?;
+
+    match s {
+        None | Some(ref v) if v.is_empty() => Ok(None),
+        Some(v) => v.parse::<T>().map(Some).map_err(serde::de::Error::custom),
+    }
 }

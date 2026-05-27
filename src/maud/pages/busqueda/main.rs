@@ -1,4 +1,5 @@
 use maud::{Markup, html};
+use rust_decimal::prelude::ToPrimitive;
 
 use crate::{
     maud::{
@@ -18,11 +19,14 @@ pub struct MainProps {
     pub ofertas_vencidas: Vec<Oferta>,
     pub per_page: u32,
     pub query_params: OfertasFilterParamsDto,
+    pub limit: u32,
 }
 
 pub fn main(props: MainProps) -> Markup {
-    let total_pages = (props.total_ofertas as f64 / props.per_page as f64).ceil() as u32;
-    let page = props.total_ofertas / props.per_page + 1;
+    let total_pages = (props.total_ofertas as f64 / props.per_page as f64)
+        .ceil()
+        .to_u32()
+        .unwrap_or(0);
 
     html!(
         section class="flex flex-col gap-6" {
@@ -44,8 +48,8 @@ pub fn main(props: MainProps) -> Markup {
         }
         (pagination(PaginationProps {
             total_pages,
-            page,
             query_params: props.query_params,
+            limit: props.limit,
         }))
     )
 }

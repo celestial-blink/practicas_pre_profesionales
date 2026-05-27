@@ -1,13 +1,72 @@
 const query_params = new URLSearchParams(window.location.search);
 // query params keys = search, id_organizacion[], modalidad_practicas, id_region, niveles[]
 
+let proxy_values = {};
+
+query_params.forEach((value, key) => {
+    if (query_params.get(key) === '') return;
+    proxy_values[key] = value;
+});
+
+const query_params_proxy = new Proxy(proxy_values, {
+    set: (target, key, value) => {
+        target[key] = value;
+        query_params.set(key, value);
+        return true;
+    },
+    get: (target, key) => {
+        if (key === 'search') {
+            return target[key] ?? '';
+        } else if (key === 'id_region') {
+            return target[key] ?? '';
+        } else if (key === 'modalidad_practicas') {
+            return target[key] ?? '';
+        } else if (key === 'id_organizacion[]') {
+            return target[key] ?? [];
+        } else if (key === 'niveles[]') {
+            return target[key] ?? [];
+        }
+        return target[key] ?? '';
+    }
+});
+
 const query_params_set_init = () => {
     const query_params_elements = document.querySelectorAll('[data-ref="query_params"]');
     const selected_container = document.querySelectorAll('[data-selected="selected_container"]');
-    //TODO:  rehacer la parte de seleccionar organizaciones
+
     query_params_elements.forEach(element => {
-        if (element.type === 'checkbox') {
-            element.checked = query_params.get(element.name) === element.value;
+        if (element.name === 'search') {
+            element.value = query_params_proxy.search;
+        } else if (element.name === 'id_organizacion[]') {
+            query_params_proxy.id_organizacion.forEach(id_organizacion => {
+                const target_org = organizaciones.find(organizacion => organizacion.id == id_organizacion);
+                selected_container.forEach(container => {
+                    const prepare_item = document.createElement('label');
+                    const prepare_checkbox = document.createElement('input');
+                    prepare_checkbox.type = 'checkbox';
+                    prepare_checkbox.name = 'id_organizacion[]';
+                    prepare_checkbox.classList.add('hidden');
+                    prepare_checkbox.value = id_organizacion;
+                    prepare_checkbox.checked = true;
+                    prepare_item.className = 'flex gap-1 text-sm items-center bg-rose-950 px-2 rounded-full text-rose-200 group-hover:text-white transition';
+                    prepare_item.innerHTML = `
+                    ${prepare_checkbox.outerHTML}
+                    ${target_org?.nombre_comercial ?? ''}
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M18 6l-12 12" />
+                            <path d="M6 6l12 12" />
+                        </svg>
+                    `;
+                    container.appendChild(prepare_item);
+                })
+            });
+        } else if (element.name === 'modalidad_practicas') {
+            element.value = query_params_proxy.modalidad_practicas;
+        } else if (element.name === 'id_region') {
+            element.value = query_params_proxy.id_region;
+        } else if (element.name === 'niveles[]') {
+            element.checked = query_params_proxy.niveles.includes(element.value);
         }
     });
 };
@@ -61,7 +120,7 @@ const handle_set_item = (event) => {
     const prepare_item = document.createElement('label');
     const prepare_checkbox = document.createElement('input');
     prepare_checkbox.type = 'checkbox';
-    prepare_checkbox.name = 'organizacion';
+    prepare_checkbox.name = 'id_organizacion[]';
     prepare_checkbox.classList.add('hidden');
     prepare_checkbox.value = event.target.dataset.id;
     prepare_checkbox.checked = true;
@@ -101,6 +160,6 @@ document.addEventListener('click', (event) => {
     });
 });
 
-// document.addEventListener('DOMContentLoaded', () => {
-//     query_params_set_init();
-// });
+document.addEventListener('DOMContentLoaded', () => {
+    query_params_set_init();
+});

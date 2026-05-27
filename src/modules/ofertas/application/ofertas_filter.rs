@@ -21,7 +21,10 @@ impl<'t, T: QueryRepository> OfertasFilter<'t, T> {
         &self,
         pool: &MySqlPool,
         params: OfertasFilterParamsDto,
+        limit: u32,
     ) -> Result<OfertasFilterResultDto, String> {
-        self.query_repository.ofertas_filter(pool, params).await
+        self.query_repository
+            .ofertas_filter(pool, params, limit)
+            .await
     }
 }

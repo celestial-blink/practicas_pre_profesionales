@@ -3,7 +3,9 @@ use sqlx::MySqlPool;
 use crate::modules::ofertas::{
     application::dtos::{
         count_ofertas_by_departamento_result_dto::CountOfertasByDepartamentoResultDto,
-        count_ofertas_by_organizacion_result_dto::CountOfertasByOrganizacionResultDto, ofertas_filter_params_dto::OfertasFilterParamsDto, ofertas_filter_result_dto::OfertasFilterResultDto,
+        count_ofertas_by_organizacion_result_dto::CountOfertasByOrganizacionResultDto,
+        ofertas_filter_params_dto::OfertasFilterParamsDto,
+        ofertas_filter_result_dto::OfertasFilterResultDto,
     },
     domain::oferta::Oferta,
 };
@@ -22,5 +24,6 @@ pub trait QueryRepository {
         &self,
         pool: &MySqlPool,
         params: OfertasFilterParamsDto,
+        limit: u32,
     ) -> Result<OfertasFilterResultDto, String>;
 }

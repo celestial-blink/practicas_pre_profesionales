@@ -18,7 +18,7 @@ use crate::{
     },
 };
 
-pub struct MariaDbQuery {}
+pub struct MariaDbQuery;
 
 impl QueryRepository for MariaDbQuery {
     async fn get_one_by_alias(&self, pool: &MySqlPool, alias: String) -> Option<Oferta> {
@@ -60,6 +60,7 @@ impl QueryRepository for MariaDbQuery {
         &self,
         pool: &MySqlPool,
         params: OfertasFilterParamsDto,
+        limit: u32,
     ) -> Result<OfertasFilterResultDto, String> {
         let mut conn = pool
             .acquire()
@@ -152,17 +153,17 @@ impl QueryRepository for MariaDbQuery {
             actives_ofertas = actives_ofertas.bind(niveles_str);
         }
 
-        actives_ofertas = actives_ofertas.bind(params.limit).bind(params.offset);
+        actives_ofertas = actives_ofertas.bind(limit).bind(params.offset);
 
         let actives_ofertas = actives_ofertas
             .fetch_all(&mut *conn)
             .await
             .map_err(|e| format!("Error en obtener ofertas, {}", e.to_string()))?;
 
-        // obtiene el total de ofertas activas sin limit solo si el total de activas es igual a limit
+        // obtiene el total de ofertas activas si hay resultados
         let mut total_actives_ofertas = actives_ofertas.len();
 
-        if total_actives_ofertas == params.limit as usize {
+        if total_actives_ofertas > 0 {
             let query_string = "SELECT FOUND_ROWS() as total";
 
             let total = sqlx::query_as::<_, Total>(query_string)

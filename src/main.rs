@@ -60,10 +60,12 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("Error al obtener organizaciones");
 
-    let general_state = web::Data::new(RwLock::new(State {
+    let state = State {
         db: pool.clone(),
         cache: CacheState { organizaciones },
-    }));
+    };
+
+    let general_state = web::Data::new(RwLock::new(state));
 
     let _ = HttpServer::new(move || {
         App::new()

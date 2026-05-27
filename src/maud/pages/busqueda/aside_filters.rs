@@ -1,15 +1,21 @@
 use maud::{Markup, html};
 
-use crate::modules::organizaciones::domain::organizacion::Organizacion;
+use crate::{
+    maud::pages::busqueda::top_search::TopSearchProps,
+    modules::organizaciones::domain::organizacion::Organizacion,
+};
 
 pub struct AsideFiltersProps<'t> {
     pub organizaciones: &'t Vec<Organizacion>,
+    pub props_top_search: TopSearchProps,
 }
 
 pub fn aside_filters<'t>(props: AsideFiltersProps<'t>) -> Markup {
     html!(
         div class="hidden lg:flex flex-col gap-4" {
             form class="space-y-8" onkeydown="handle_prevent_submit_on_key_enter(event)" {
+                input type="hidden" name="search" value=[&props.props_top_search.search];
+                input type="hidden" name="id_region" value=(&props.props_top_search.id_departamento);
                 div {
                     h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4" {
                         "Organización (Máximo 3)"
@@ -24,37 +30,46 @@ pub fn aside_filters<'t>(props: AsideFiltersProps<'t>) -> Markup {
                             autocomplete="off"
                             oninput="handle_search(event)"
                             onfocus="handle_search_focus(event)";
-                        menu class="hidden flex-col border border-slate-700/50 rounded-xl p-3 bg-slate-900" data-menu="search_list" onclick="handle_set_item(event)" {
-                            @for organizacion in props.organizaciones {
-                                li {
-                                    button
-                                    type="button"
-                                    class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1"
-                                    data-id=(organizacion.id)
-                                    {
-                                        (organizacion.nombre_comercial)
+                        menu
+                            class="hidden flex-col border border-slate-700/50 rounded-xl p-3 bg-slate-900"
+                            data-menu="search_list"
+                            onclick="handle_set_item(event)"
+                            {
+                                @for organizacion in props.organizaciones {
+                                    li {
+                                        button
+                                        type="button"
+                                        class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1"
+                                        data-id=(organizacion.id)
+                                        {
+                                            (organizacion.nombre_comercial)
+                                        }
                                     }
                                 }
                             }
-                        }
                     }
                 }
                 div {
-                    h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4" {
+                    label class="block text-sm font-bold text-slate-300 uppercase tracking-widest mb-4" for="modalidad_practicas" {
                         "Modalidad de prácticas"
                     }
-                    div class="space-y-3" {
-                        label class="flex items-center space-x-3 cursor-pointer group" {
-                            input type="checkbox" class="w-4 h-4 rounded border-slate-700" data-ref="query_params";
-                            span class="text-slate-400 group-hover:text-white transition" {
-                                "Pre profesionales"
-                            }
-                        }
-                        label class="flex items-center space-x-3 cursor-pointer group" {
-                            input type="checkbox" class="w-4 h-4 rounded border-slate-700" data-ref="query_params";
-                            span class="text-slate-400 group-hover:text-white transition" {
-                                "Profesionales"
-                            }
+                    div {
+                        select
+                            class="w-full bg-slate-900 border border-slate-700/50 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-rose-500 transition"
+                            name="modalidad_practicas"
+                            data-ref="query_params" {
+                                option value="" {
+                                    "Seleccionar"
+                                }
+                                option value="0" {
+                                    "Pre profesionales"
+                                }
+                                option value="1" {
+                                    "Profesionales"
+                                }
+                                option value="2" {
+                                    "Pre y profesionales"
+                                }
                         }
                     }
                 }
@@ -64,31 +79,56 @@ pub fn aside_filters<'t>(props: AsideFiltersProps<'t>) -> Markup {
                     }
                     div class="space-y-3" {
                         label class="flex items-center space-x-3 cursor-pointer group" {
-                            input type="checkbox" class="w-4 h-4 rounded border-slate-700" name="nivel_academico" value="1" data-ref="query_params";
+                            input
+                                type="checkbox"
+                                class="w-4 h-4 rounded border-slate-700"
+                                name="niveles[]"
+                                value="1"
+                                data-ref="query_params";
                             span class="text-slate-400 group-hover:text-white transition" {
                                 "Estudiantes técnicos"
                             }
                         }
                         label class="flex items-center space-x-3 cursor-pointer group" {
-                            input type="checkbox" class="w-4 h-4 rounded border-slate-700" name="nivel_academico" value="2" data-ref="query_params";
+                            input
+                                type="checkbox"
+                                class="w-4 h-4 rounded border-slate-700"
+                                name="niveles[]"
+                                value="2"
+                                data-ref="query_params";
                             span class="text-slate-400 group-hover:text-white transition" {
                                 "Egresados técnicos"
                             }
                         }
                         label class="flex items-center space-x-3 cursor-pointer group" {
-                            input type="checkbox" class="w-4 h-4 rounded border-slate-700" name="nivel_academico" value="3" data-ref="query_params";
+                            input
+                                type="checkbox"
+                                class="w-4 h-4 rounded border-slate-700"
+                                name="niveles[]"
+                                value="3"
+                                data-ref="query_params";
                             span class="text-slate-400 group-hover:text-white transition" {
                                 "Estudiantes universitarios"
                             }
                         }
                         label class="flex items-center space-x-3 cursor-pointer group" {
-                            input type="checkbox" class="w-4 h-4 rounded border-slate-700" name="nivel_academico" value="4" data-ref="query_params";
+                            input
+                                type="checkbox"
+                                class="w-4 h-4 rounded border-slate-700"
+                                name="niveles[]"
+                                value="4"
+                                data-ref="query_params";
                             span class="text-slate-400 group-hover:text-white transition" {
                                 "Egresados universitarios"
                             }
                         }
                         label class="flex items-center space-x-3 cursor-pointer group" {
-                            input type="checkbox" class="w-4 h-4 rounded border-slate-700" name="nivel_academico" value="5" data-ref="query_params";
+                            input
+                                type="checkbox"
+                                class="w-4 h-4 rounded border-slate-700"
+                                name="niveles[]"
+                                value="5"
+                                data-ref="query_params";
                             span class="text-slate-400 group-hover:text-white transition" {
                                 "Bachilleres"
                             }
@@ -126,19 +166,22 @@ pub fn aside_filters<'t>(props: AsideFiltersProps<'t>) -> Markup {
                             autocomplete="off"
                             oninput="handle_search(event)"
                             onfocus="handle_search_focus(event)";
-                        menu class="hidden flex-col border border-slate-700/50 rounded-xl p-3 bg-slate-950" data-menu="search_list" onclick="handle_set_item(event)" {
-                            @for organizacion in props.organizaciones {
-                                li {
-                                    button
-                                    type="button"
-                                    class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1"
-                                    data-id=(organizacion.id)
-                                    {
-                                        (organizacion.nombre_comercial)
+                        menu
+                            class="hidden flex-col border border-slate-700/50 rounded-xl p-3 bg-slate-950"
+                            data-menu="search_list"
+                            onclick="handle_set_item(event)"{
+                                @for organizacion in props.organizaciones {
+                                    li {
+                                        button
+                                        type="button"
+                                        class="flex items-center cursor-pointer text-slate-400 hover:text-white transition w-full p-1"
+                                        data-id=(organizacion.id)
+                                        {
+                                            (organizacion.nombre_comercial)
+                                        }
                                     }
                                 }
                             }
-                        }
                     }
                 }
                 div {
