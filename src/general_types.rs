@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize};
 use sqlx::prelude::FromRow;
 
 use crate::modules::organizaciones::domain::organizacion::Organizacion;
@@ -192,17 +192,11 @@ pub struct Total {
     pub total: i32,
 }
 
-// todo:
-fn deserialize_empty_as_none<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
+pub fn default_on_error<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
 where
-    D: serde::Deserializer<'de>,
-    T: std::str::FromStr,
-    T::Err: std::fmt::Display,
+    D: Deserializer<'de>,
+    T: Deserialize<'de>,
 {
-    let s: Option<String> = Option::deserialize(deserializer)?;
-
-    match s {
-        None | Some(ref v) if v.is_empty() => Ok(None),
-        Some(v) => v.parse::<T>().map(Some).map_err(serde::de::Error::custom),
-    }
+    let opt = Option::<T>::deserialize(deserializer);
+    Ok(opt.unwrap_or(None))
 }

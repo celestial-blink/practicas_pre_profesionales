@@ -35,7 +35,6 @@ pub async fn busqueda_view(
     query: serde_qs::actix::QsQuery<OfertasFilterParamsDto>,
 ) -> HttpResponse {
     let query_clone = query.clone();
-    dbg!(&query_clone);
     let query = query.into_inner();
 
     let departamento_param = query.id_region.unwrap_or(0);

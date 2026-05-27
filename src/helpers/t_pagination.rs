@@ -11,7 +11,11 @@ impl TPaginationCore {
 
 impl TPaginationCore {
     pub fn pages_to_vec(&self) -> Vec<u32> {
-        let mut result = (self.page.checked_sub(1).unwrap_or(0)..=self.page + 1)
+        if self.total_pages == 0 {
+            return vec![1];
+        }
+
+        let mut result = (self.page.checked_sub(1).unwrap_or(1)..=self.page + 1)
             .filter(|x| *x <= self.total_pages && *x > 0)
             .collect::<Vec<u32>>();
 

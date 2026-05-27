@@ -46,10 +46,12 @@ pub fn main(props: MainProps) -> Markup {
                 (oferta_item(oferta.into()))
             }
         }
-        (pagination(PaginationProps {
-            total_pages,
-            query_params: props.query_params,
-            limit: props.limit,
-        }))
+        @if props.total_ofertas > 0 {
+            (pagination(PaginationProps {
+                total_pages,
+                query_params: props.query_params,
+                limit: props.limit,
+            }))
+        }
     )
 }

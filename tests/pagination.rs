@@ -19,4 +19,10 @@ fn pagination_test_pages_vec() {
 
     let pagination = TPaginationCore::new(6, 2);
     assert_eq!(pagination.pages_to_vec(), vec![1, 2, 3, 6]);
+
+    let pagination = TPaginationCore::new(1, 1);
+    assert_eq!(pagination.pages_to_vec(), vec![1]);
+
+    let pagination = TPaginationCore::new(0, 1);
+    assert_eq!(pagination.pages_to_vec(), vec![1]);
 }
