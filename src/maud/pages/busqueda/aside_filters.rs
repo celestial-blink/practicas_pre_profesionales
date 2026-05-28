@@ -197,7 +197,7 @@ pub fn aside_filters<'t>(props: AsideFiltersProps<'t>) -> Markup {
                 }
             }
         }
-        dialog class="md:hidden! bg-slate-900 backdrop:bg-black/50 h-max max-h-4/5 w-full max-w-full m-auto mb-0" id="aside_filters_mobile" onclick="handle_close_header_dialog(event, 'aside_filters_mobile')" data-evref="handle_close_header_dialog" {
+        dialog class="lg:hidden! bg-slate-900 backdrop:bg-black/50 h-max max-h-4/5 w-full max-w-full m-auto mb-0" id="aside_filters_mobile" onclick="handle_close_header_dialog(event, 'aside_filters_mobile')" data-evref="handle_close_header_dialog" {
             form class="flex justify-end p-4 md:p-6 sticky top-0 bg-slate-900" method="dialog" {
                 button type="submit" class="text-white" onclick="handle_open_dialog('aside_filters_mobile', false)" {
                     svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {

@@ -9,7 +9,6 @@ pub struct MenuItem {
 }
 
 pub fn header(list_menu: Vec<MenuItem>) -> Markup {
-
     html! {
         nav class="fixed top-0 w-full z-50 bg-theme-glass border-b border-slate-800" {
             div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" {
@@ -71,7 +70,7 @@ pub fn header(list_menu: Vec<MenuItem>) -> Markup {
             }
         }
 
-        dialog class="md:hidden! bg-slate-800 backdrop:bg-black/50 h-max max-h-4/5 w-full max-w-full m-auto mb-0" id="menu-header" onclick="handle_close_header_dialog(event, 'menu-header')" data-evref="handle_close_header_dialog" {
+        dialog class="lg:hidden! bg-slate-800 backdrop:bg-black/50 h-max max-h-4/5 w-full max-w-full m-auto mb-0" id="menu-header" onclick="handle_close_header_dialog(event, 'menu-header')" data-evref="handle_close_header_dialog" {
             form class="flex justify-end p-4 md:p-6 sticky top-0 bg-slate-800" method="dialog" {
                 button type="submit" class="text-white" onclick="handle_open_dialog('menu-header', false)" {
                     svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" {

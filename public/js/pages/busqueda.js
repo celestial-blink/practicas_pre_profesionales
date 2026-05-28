@@ -81,12 +81,21 @@ const query_params = new URLSearchParams(window.location.search);
 const handle_remove_filter = (event) => {
     if (event.target.tagName === "BUTTON") {
         if (event.target.dataset.key === 'id_organizacion') {
-            const new_org = query_params.get('id_organizacion').split(',').filter(org => org !== event.target.dataset.id);
-            query_params.set('id_organizacion', new_org.join(','));
-            // window.location.href = `${window.location.pathname}?${query_params.toString()}`;
-            console.log(query_params.toString());
+            const new_org = query_params.getAll('id_organizacion').filter(org => org !== event.target.dataset.id);
+            query_params.delete('id_organizacion');
+            new_org.forEach(org => {
+                query_params.append('id_organizacion', org);
+            });
+        } else if (event.target.dataset.key === 'modalidad_practicas') {
+            query_params.delete('modalidad_practicas');
+        } else if (event.target.dataset.key === 'niveles') {
+            const new_nivel = query_params.getAll('niveles').filter(nivel => nivel !== event.target.dataset.id);
+            query_params.delete('niveles');
+            new_nivel.forEach(nivel => {
+                query_params.append('niveles', nivel);
+            });
         }
-
+        window.location.href = `${window.location.pathname}?${query_params.toString()}`;
     }
 }
 

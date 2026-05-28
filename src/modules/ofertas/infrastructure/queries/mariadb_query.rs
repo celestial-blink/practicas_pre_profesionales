@@ -182,7 +182,7 @@ impl QueryRepository for MariaDbQuery {
         // dbg!(&table_name);
         // dbg!(&active_conditional_str);
         // dbg!(&query_string, params.offset, limit);
-        dbg!(&query_string);
+        // dbg!(&query_string);
 
         // obtiene el total de ofertas activas si hay resultados
         let mut total_actives_ofertas = actives_ofertas.len();
