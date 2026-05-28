@@ -35,12 +35,8 @@ pub async fn busqueda_view(
     query: serde_qs::actix::QsQuery<OfertasFilterParamsDto>,
 ) -> HttpResponse {
     let query_clone = query.clone();
-    let query = query.into_inner();
-
-    let departamento_param = query.id_region.unwrap_or(0);
-    let search_param = query.search;
     let limit = 2;
-    let infrastructure = MariaDbQuery;
+    let infrastructure = MariaDbQuery::new();
     let oferta_filter = OfertasFilter::new(&infrastructure);
 
     let state = state.read().unwrap();
@@ -53,8 +49,6 @@ pub async fn busqueda_view(
         return HttpResponse::InternalServerError().body(oferta_result.err().unwrap());
     }
     let oferta_result = oferta_result.unwrap();
-
-    let id_departamento = departamento_param.to_u8().unwrap_or(0);
 
     let markup = html!(
             (head_component(HeadProps {
@@ -75,17 +69,13 @@ pub async fn busqueda_view(
                 br;
                 br;
                 (top_search(TopSearchProps {
-                    search: search_param.clone(),
-                    id_departamento,
+                    query_params: &query_clone,
                 }))
                 div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4" {
                     aside class="flex-1" {
                         (aside_filters(AsideFiltersProps {
                             organizaciones: &state.cache.organizaciones,
-                            props_top_search: TopSearchProps {
-                                search: search_param,
-                                id_departamento,
-                            }
+                            query_params: &query_clone,
                         }))
                     }
                     main class="flex-1" {
@@ -94,8 +84,9 @@ pub async fn busqueda_view(
                             ofertas: oferta_result.ofertas_activas,
                             ofertas_vencidas: oferta_result.ofertas_vencidas,
                             per_page: limit as u32,
-                            query_params: query_clone.into_inner(),
+                            query_params: &query_clone,
                             limit,
+                            organizaciones: &state.cache.organizaciones,
                         }))
                     }
                 }

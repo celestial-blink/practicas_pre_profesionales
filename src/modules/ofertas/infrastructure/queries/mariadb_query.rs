@@ -18,7 +18,13 @@ use crate::{
     },
 };
 
-pub struct MariaDbQuery;
+pub struct MariaDbQuery {}
+
+impl MariaDbQuery {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
 
 impl QueryRepository for MariaDbQuery {
     async fn get_one_by_alias(&self, pool: &MySqlPool, alias: String) -> Option<Oferta> {
@@ -75,25 +81,40 @@ impl QueryRepository for MariaDbQuery {
         let mut active_conditional_str =
             String::from("ofertas.estado = 1 AND ofertas.fecha_fin_oferta >= CURRENT_TIMESTAMP");
 
-        if params.id_organizacion.is_some() {
-            active_conditional_str.push_str(" AND ofertas.id_organizacion IN (?)");
+        let id_organizacion = params.id_organizacion.unwrap_or(vec![]);
+        if id_organizacion.len() > 0 {
+            let prepare_id_organizacion = format!(
+                " AND ofertas.id_organizacion IN ({})",
+                vec!["?"; id_organizacion.len()].join(",")
+            );
+            active_conditional_str.push_str(&prepare_id_organizacion);
         }
 
-        if params.modalidad_practicas.is_some() {
-            active_conditional_str.push_str(" AND ofertas.modalidad_practicas = ?");
+        if let Some(modalidad) = params.modalidad_practicas {
+            if modalidad == 2 {
+                active_conditional_str.push_str(" AND ofertas.modalidad_practicas = ?");
+            } else {
+                active_conditional_str.push_str(" AND ofertas.modalidad_practicas != ?");
+            }
         }
 
         if params.id_region.is_some() {
             active_conditional_str.push_str(" AND ofertas.id_region = ?");
         }
 
-        if params.niveles.is_some() {
-            active_conditional_str.push_str(" AND oferta_niveles.id_nivel_academico IN (?)");
+        let niveles = params.niveles.unwrap_or(vec![]);
+        if !niveles.is_empty() {
+            let prepare_niveles = format!(
+                " AND oferta_niveles.id_nivel_academico IN ({})",
+                vec!["?"; niveles.len()].join(",")
+            );
+            active_conditional_str.push_str(&prepare_niveles);
         }
 
-        if params.search.is_some() {
+        let search = params.search.unwrap_or("".to_string());
+        if search.trim().len() > 0 {
             active_conditional_str.push_str(
-                " AND MATCH(ofertas.titulo, ofertas.carreras) AGAINST ('?' IN BOOLEAN MODE)",
+                " AND MATCH(ofertas.titulo, ofertas.carreras) AGAINST (? IN BOOLEAN MODE)",
             );
         }
 
@@ -104,53 +125,50 @@ impl QueryRepository for MariaDbQuery {
 
         let mut actives_ofertas = sqlx::query_as::<_, Oferta>(&query_string);
 
-        if params.id_organizacion.is_some() {
-            let id_organizacion_str = params
-                .id_organizacion
-                .unwrap()
-                .iter()
-                .map(|id| id.to_string())
-                .collect::<Vec<String>>()
-                .join(", ");
-            actives_ofertas = actives_ofertas.bind(id_organizacion_str);
+        if id_organizacion.len() > 0 {
+            for id_org in id_organizacion {
+                actives_ofertas = actives_ofertas.bind(id_org);
+            }
         }
 
-        if params.modalidad_practicas.is_some() {
-            actives_ofertas = actives_ofertas.bind(params.modalidad_practicas.unwrap());
+        if let Some(modalidad) = params.modalidad_practicas {
+            let prepare_modalidad = match modalidad {
+                0 => 1,
+                1 => 0,
+                _ => 2,
+            };
+            actives_ofertas = actives_ofertas.bind(prepare_modalidad);
         }
 
         if params.id_region.is_some() {
             actives_ofertas = actives_ofertas.bind(params.id_region.unwrap());
         }
 
-        if params.search.is_some() {
+        if !niveles.is_empty() {
+            for nivel in niveles {
+                actives_ofertas = actives_ofertas.bind(nivel);
+            }
+        }
+
+        if search.trim().len() > 0 {
             // solo agrega + a caracteres que sea igual o mas de 3
-            let search_str = params
-                .search
-                .unwrap()
+            let search_str = search
                 .split_whitespace()
                 .map(|word| {
-                    if word.len() >= 3 {
+                    let word = word.trim();
+                    if word.len() > 7 {
+                        format!(">{} +{}*", word, &word[..3])
+                    } else if word.len() >= 3 {
                         format!("+{}", word)
                     } else {
                         word.to_string()
                     }
                 })
+                .filter(|word| word.len() > 0)
                 .collect::<Vec<String>>()
                 .join(" ");
 
             actives_ofertas = actives_ofertas.bind(search_str);
-        }
-
-        if params.niveles.is_some() {
-            let niveles_str = params
-                .niveles
-                .unwrap()
-                .iter()
-                .map(|id| id.to_string())
-                .collect::<Vec<String>>()
-                .join(", ");
-            actives_ofertas = actives_ofertas.bind(niveles_str);
         }
 
         actives_ofertas = actives_ofertas.bind(limit).bind(params.offset);
@@ -159,6 +177,12 @@ impl QueryRepository for MariaDbQuery {
             .fetch_all(&mut *conn)
             .await
             .map_err(|e| format!("Error en obtener ofertas, {}", e.to_string()))?;
+
+        // debug consulta y params
+        // dbg!(&table_name);
+        // dbg!(&active_conditional_str);
+        // dbg!(&query_string, params.offset, limit);
+        dbg!(&query_string);
 
         // obtiene el total de ofertas activas si hay resultados
         let mut total_actives_ofertas = actives_ofertas.len();

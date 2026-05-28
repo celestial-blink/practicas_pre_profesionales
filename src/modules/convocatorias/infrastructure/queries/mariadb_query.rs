@@ -1,8 +1,16 @@
 use tracing_log::log::error;
 
-use crate::modules::convocatorias::{application::repository::query_repository::QueryRepository, domain::convocatoria::Convocatoria};
+use crate::modules::convocatorias::{
+    application::repository::query_repository::QueryRepository, domain::convocatoria::Convocatoria,
+};
 
-pub struct MariaDbQuery;
+pub struct MariaDbQuery {}
+
+impl MariaDbQuery {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
 
 impl QueryRepository for MariaDbQuery {
     async fn get_all_actives(
@@ -36,7 +44,10 @@ impl QueryRepository for MariaDbQuery {
             true => "*".to_string(),
             false => data_columns.join(", "),
         };
-        let query = format!("SELECT {} FROM convocatorias WHERE estado = 1 AND fin_convocatoria >= CURDATE() ORDER BY id DESC LIMIT {}, {}", columns, params.offset, params.limit);
+        let query = format!(
+            "SELECT {} FROM convocatorias WHERE estado = 1 AND fin_convocatoria >= CURDATE() ORDER BY id DESC LIMIT {}, {}",
+            columns, params.offset, params.limit
+        );
 
         let result = sqlx::query_as::<_, Convocatoria>(&query)
             .fetch_all(pool)
@@ -47,7 +58,7 @@ impl QueryRepository for MariaDbQuery {
             Err(e) => {
                 error!("Error al obtener las convocatorias: {}", e);
                 Err(e.to_string())
-            },
+            }
         }
     }
 
@@ -69,7 +80,7 @@ impl QueryRepository for MariaDbQuery {
             Err(e) => {
                 error!("Error al obtener la convocatoria: {}", e);
                 Err(e.to_string())
-            },
+            }
         }
     }
 }

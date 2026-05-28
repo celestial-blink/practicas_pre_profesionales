@@ -5,9 +5,9 @@ use crate::{
     modules::ofertas::application::dtos::ofertas_filter_params_dto::OfertasFilterParamsDto,
 };
 
-pub struct PaginationProps {
+pub struct PaginationProps<'t> {
     pub total_pages: u32,
-    pub query_params: OfertasFilterParamsDto,
+    pub query_params: &'t OfertasFilterParamsDto,
     pub limit: u32,
 }
 

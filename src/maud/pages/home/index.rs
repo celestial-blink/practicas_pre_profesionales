@@ -33,7 +33,7 @@ use crate::{
 
 #[get("/")]
 pub async fn home_index(state: Data<RwLock<State>>) -> AwResult<Markup> {
-    let convocatoria_query_port = MariaDbQuery;
+    let convocatoria_query_port = MariaDbQuery::new();
     let get_all_actives = GetAllActives::new(convocatoria_query_port);
 
     let params = GetAllActivesParamsDto {

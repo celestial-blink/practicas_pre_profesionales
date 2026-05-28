@@ -1,7 +1,7 @@
 use crate::general_types::default_on_error;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone, Default)]
 pub struct OfertasFilterParamsDto {
     #[serde(default = "get_default_offset")]
     pub offset: i32,

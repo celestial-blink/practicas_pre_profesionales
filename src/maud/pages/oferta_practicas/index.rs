@@ -49,7 +49,7 @@ pub async fn oferta_practicas(
         .execute(&state.db, alias.into_inner())
         .await;
 
-    let mariadb_convocatoria_query = MariaDbQuery;
+    let mariadb_convocatoria_query = MariaDbQuery::new();
     let get_last_convocatoria = GetAllActives::new(mariadb_convocatoria_query);
     let last_convocatorias = get_last_convocatoria
         .execute(

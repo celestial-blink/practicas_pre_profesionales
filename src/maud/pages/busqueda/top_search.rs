@@ -1,10 +1,12 @@
 use maud::html;
 
-use crate::data::static_data::DEPARTAMENTOS;
+use crate::{
+    data::static_data::DEPARTAMENTOS,
+    modules::ofertas::application::dtos::ofertas_filter_params_dto::OfertasFilterParamsDto,
+};
 
-pub struct TopSearchProps {
-    pub search: Option<String>,
-    pub id_departamento: u8,
+pub struct TopSearchProps<'t> {
+    pub query_params: &'t OfertasFilterParamsDto,
 }
 
 pub fn top_search(props: TopSearchProps) -> maud::Markup {
@@ -17,11 +19,11 @@ pub fn top_search(props: TopSearchProps) -> maud::Markup {
                     path d="M21 21l-6 -6" { }
                 }
                 input
-                    type="text"
+                    type="search"
                     class="w-full bg-slate-950 border border-slate-700/50 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-rose-500 transition"
                     name="search"
                     id="search"
-                    value=[props.search]
+                    value=[&props.query_params.search]
                     data-ref="query_params"
                     placeholder="Palabras clave (ej. Backend, Finanzas...)";
             }
@@ -37,9 +39,9 @@ pub fn top_search(props: TopSearchProps) -> maud::Markup {
                     id="id_region"
                     data-ref="query_params"
                     {
-                        option value="" selected[props.id_departamento == 0] { "Todos" }
+                        option value="" selected[props.query_params.id_region.unwrap_or(0) == 0] { "Todos" }
                         @for departamento in DEPARTAMENTOS.iter() {
-                            option value=(departamento.id) selected[props.id_departamento == departamento.id as u8] {
+                            option value=(departamento.id) selected[props.query_params.id_region.unwrap_or(0) == departamento.id as i8] {
                                 (departamento.nombre)
                             }
                         }

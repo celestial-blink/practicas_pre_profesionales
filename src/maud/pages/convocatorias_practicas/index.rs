@@ -34,7 +34,7 @@ pub async fn convocatorias_practicas(
     state: Data<RwLock<State>>,
     alias: web::Path<String>,
 ) -> HttpResponse {
-    let query_repository = MariaDbQuery;
+    let query_repository = MariaDbQuery::new();
     let get_one_by_alias = GetOneByAlias::new(&query_repository);
 
     let state = state.read().unwrap();

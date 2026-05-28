@@ -4,22 +4,29 @@ use rust_decimal::prelude::ToPrimitive;
 use crate::{
     maud::{
         components::oferta::oferta_item::oferta_item,
-        pages::busqueda::pagination::{PaginationProps, pagination},
+        pages::busqueda::{
+            pagination::{PaginationProps, pagination},
+            result_filters::{ResultFiltersProps, result_filters},
+        },
     },
-    modules::ofertas::{
-        application::dtos::ofertas_filter_params_dto::OfertasFilterParamsDto,
-        domain::oferta::Oferta,
+    modules::{
+        ofertas::{
+            application::dtos::ofertas_filter_params_dto::OfertasFilterParamsDto,
+            domain::oferta::Oferta,
+        },
+        organizaciones::domain::organizacion::Organizacion,
     },
 };
 
 #[derive(Debug)]
-pub struct MainProps {
+pub struct MainProps<'t> {
     pub total_ofertas: u32,
     pub ofertas: Vec<Oferta>,
     pub ofertas_vencidas: Vec<Oferta>,
     pub per_page: u32,
-    pub query_params: OfertasFilterParamsDto,
+    pub query_params: &'t OfertasFilterParamsDto,
     pub limit: u32,
+    pub organizaciones: &'t Vec<Organizacion>,
 }
 
 pub fn main(props: MainProps) -> Markup {
@@ -30,6 +37,10 @@ pub fn main(props: MainProps) -> Markup {
 
     html!(
         section class="flex flex-col gap-6" {
+            (result_filters(ResultFiltersProps {
+                organizaciones: props.organizaciones,
+                query_params: props.query_params
+            }))
             @if props.total_ofertas == 0 {
                 p class="text-slate-400 text-sm" {
                     "No se encontraron ofertas de practicas"
