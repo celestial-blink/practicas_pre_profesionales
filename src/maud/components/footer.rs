@@ -1,16 +1,16 @@
-use maud::{html, Markup};
+use maud::{Markup, html};
 
 pub fn footer() -> Markup {
     html! {
         footer class="bg-dark-card rounded-xl flex flex-col gap-4 p-8" {
             ul class="flex flex-wrap gap-2 justify-center" {
                 li {
-                    a href="#" class="text-white block p-2 rounded-md hover:text-rose-500 transition-colors duration-300" {
+                    a href=(format!("{}/politicas-privacidad", crate::config::DOMAIN)) class="text-white block p-2 rounded-md hover:text-rose-500 transition-colors duration-300" {
                         "Politicas de Privacidad"
                     }
                 }
                 li {
-                    a href="#" class="text-white block p-2 rounded-md hover:text-rose-500 transition-colors duration-300" {
+                    a href=(format!("{}/terminos-condiciones", crate::config::DOMAIN)) class="text-white block p-2 rounded-md hover:text-rose-500 transition-colors duration-300" {
                         "Terminos y Condiciones"
                     }
                 }

@@ -1,9 +1,11 @@
-pub mod filters;
-pub mod home;
+pub mod busqueda;
 pub mod convocatorias_practicas;
+pub mod departamentos;
+pub mod filters;
 pub mod general;
+pub mod home;
 pub mod not_found;
 pub mod oferta_practicas;
-pub mod departamentos;
 pub mod organizaciones;
-pub mod busqueda;
+pub mod politicas_privacidad;
+pub mod terminos_condiciones;

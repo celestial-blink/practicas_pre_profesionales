@@ -53,7 +53,7 @@ pub async fn organizaciones_view(state: Data<RwLock<State>>) -> Markup {
                         @for (index, organizacion) in organizaciones.iter().enumerate() {
                             a href=(format!("/organizacion/{}", organizacion.alias)) class="bg-theme-glass p-6 rounded-2xl flex flex-col relative hover:-translate-y-1 hover:bg-rose-500/10 hover:outline-2 outline-rose-500/30 outline-offset-2 transition-all duration-300" target="_blank" {
                                 @if index < 3 {
-                                    div class="absolute top-4 right-4 w-3 h-3 bg-purple-500 rounded-full animate-pulse" { }
+                                    div class="absolute top-4 right-4 w-3 h-3 bg-rose-500 rounded-full animate-pulse" { }
                                 }
                                 h3 class="font-bold text-lg" {
                                     (organizacion.organizacion)

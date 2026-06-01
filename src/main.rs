@@ -81,6 +81,8 @@ async fn main() -> std::io::Result<()> {
             .service(maud::pages::departamentos::index::departamentos_view)
             .service(maud::pages::organizaciones::index::organizaciones_view)
             .service(maud::pages::busqueda::index::busqueda_view)
+            .service(maud::pages::terminos_condiciones::index::terminos_condiciones)
+            .service(maud::pages::politicas_privacidad::index::politicas_privacidad)
             .service(page_filters)
             .app_data(general_state.clone())
             .app_data(TempFileConfig::default().directory(&temp_dir))

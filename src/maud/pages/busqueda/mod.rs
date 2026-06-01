@@ -1,4 +1,5 @@
 pub mod aside_filters;
+pub mod empty_result;
 pub mod index;
 pub mod main;
 pub mod pagination;

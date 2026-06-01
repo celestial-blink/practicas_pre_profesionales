@@ -5,6 +5,7 @@ use crate::{
     maud::{
         components::oferta::oferta_item::oferta_item,
         pages::busqueda::{
+            empty_result::empty_result,
             pagination::{PaginationProps, pagination},
             result_filters::{ResultFiltersProps, result_filters},
         },
@@ -42,9 +43,7 @@ pub fn main(props: MainProps) -> Markup {
                 query_params: props.query_params
             }))
             @if props.total_ofertas == 0 {
-                p class="text-slate-400 text-sm" {
-                    "No se encontraron ofertas de practicas"
-                }
+                (empty_result())
             } @else {
                 p class="text-slate-400 text-sm" {
                     "Mostrando " span class="text-white font-bold" { (props.total_ofertas) } " oportunidades de practicas encontradas"

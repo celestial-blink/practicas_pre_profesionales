@@ -2,7 +2,6 @@ use std::sync::RwLock;
 
 use actix_web::{HttpResponse, get, web::Data};
 use maud::html;
-use rust_decimal::prelude::ToPrimitive;
 
 use crate::{
     general_types::State,
