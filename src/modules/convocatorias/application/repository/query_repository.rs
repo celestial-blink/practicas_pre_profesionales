@@ -5,6 +5,7 @@ use crate::modules::convocatorias::{
     domain::convocatoria::Convocatoria,
 };
 
+#[allow(async_fn_in_trait)]
 pub trait QueryRepository {
     async fn get_all_actives(
         &self,

@@ -1,5 +1,6 @@
 use super::oferta_niveles::OfertaNiveles;
 
+#[allow(async_fn_in_trait)]
 pub trait OfertaNivelesRepository {
     async fn remove_by_nivel_academico(
         &self,

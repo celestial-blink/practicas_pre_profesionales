@@ -2,6 +2,7 @@ use crate::modules::convocatorias::domain::{
     convocatoria::Convocatoria, dtos::search_params::SearchParams,
 };
 
+#[allow(async_fn_in_trait)]
 pub trait ConvocatoriaRepository {
     async fn create(&self, convocatoria: Convocatoria) -> Result<(), String>;
     async fn update(&self, convocatoria: Convocatoria) -> Result<(), String>;
