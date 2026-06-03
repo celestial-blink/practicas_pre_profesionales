@@ -9,3 +9,12 @@ pub fn get_departamento_by_id(id: u32) -> Option<Departamento> {
     }
     None
 }
+
+pub fn get_departamento_by_alias(alias: &str) -> Option<Departamento> {
+    for departamento in DEPARTAMENTOS.iter() {
+        if departamento.alias.to_lowercase() == alias.to_lowercase() {
+            return Some(departamento.clone());
+        }
+    }
+    None
+}

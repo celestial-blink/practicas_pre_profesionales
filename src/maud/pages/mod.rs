@@ -1,5 +1,6 @@
 pub mod busqueda;
 pub mod convocatorias_practicas;
+pub mod departamento;
 pub mod departamentos;
 pub mod filters;
 pub mod general;

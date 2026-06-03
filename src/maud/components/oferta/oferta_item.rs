@@ -3,7 +3,7 @@ use rust_decimal::prelude::ToPrimitive;
 use time::{OffsetDateTime, PrimitiveDateTime};
 
 use crate::{
-    config::DOMAIN, helpers::t_get_departamento_by_id::get_departamento_by_id,
+    config::DOMAIN, helpers::t_get_departamento::get_departamento_by_id,
     modules::ofertas::domain::oferta::Oferta,
 };
 

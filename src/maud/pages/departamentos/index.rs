@@ -5,7 +5,7 @@ use maud::{Markup, html};
 
 use crate::{
     general_types::State,
-    helpers::t_get_departamento_by_id::get_departamento_by_id,
+    helpers::t_get_departamento::get_departamento_by_id,
     maud::{
         components::{
             footer::footer,

@@ -9,7 +9,7 @@ pub fn header_items() -> Vec<MenuItem> {
         .into_iter()
         .map(|item| MenuItem {
             title: item.nombre,
-            url: format!("/departamentos/{}", item.alias),
+            url: format!("/departamento/{}", item.alias),
             is_call_to_action: false,
             sub_menu: None,
             target: None,
