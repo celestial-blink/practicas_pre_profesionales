@@ -1,0 +1,69 @@
+use maud::{Markup, html};
+use rust_decimal::prelude::ToPrimitive;
+
+use crate::{
+    maud::{
+        components::oferta::oferta_item::oferta_item,
+        pages::{
+            busqueda::{
+                empty_result::empty_result,
+                pagination::{PaginationProps, pagination},
+            },
+            formacion::result_filters::{ResultFiltersProps, result_filters},
+        },
+    },
+    modules::{
+        ofertas::{
+            application::dtos::ofertas_filter_params_dto::OfertasFilterParamsDto,
+            domain::oferta::Oferta,
+        },
+        organizaciones::domain::organizacion::Organizacion,
+    },
+};
+
+#[derive(Debug)]
+pub struct MainProps<'t> {
+    pub total_ofertas: u32,
+    pub ofertas: Vec<Oferta>,
+    pub ofertas_vencidas: Vec<Oferta>,
+    pub per_page: u32,
+    pub query_params: &'t OfertasFilterParamsDto,
+    pub limit: u32,
+    pub organizaciones: &'t Vec<Organizacion>,
+}
+
+pub fn main(props: MainProps) -> Markup {
+    let total_pages = (props.total_ofertas as f64 / props.per_page as f64)
+        .ceil()
+        .to_u32()
+        .unwrap_or(0);
+
+    html!(
+        section class="flex flex-col gap-6" {
+            (result_filters(ResultFiltersProps {
+                organizaciones: props.organizaciones,
+                query_params: props.query_params
+            }))
+            @if props.total_ofertas == 0 {
+                (empty_result())
+            } @else {
+                p class="text-slate-400 text-sm" {
+                    "Mostrando " span class="text-white font-bold" { (props.total_ofertas) } " oportunidades de practicas encontradas"
+                }
+            }
+            @for oferta in props.ofertas {
+                (oferta_item(oferta.into()))
+            }
+            @for oferta in props.ofertas_vencidas {
+                (oferta_item(oferta.into()))
+            }
+        }
+        @if props.total_ofertas > 0 {
+            (pagination(PaginationProps {
+                total_pages,
+                query_params: props.query_params,
+                limit: props.limit,
+            }))
+        }
+    )
+}
