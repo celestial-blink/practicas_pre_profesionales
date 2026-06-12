@@ -1,7 +1,6 @@
 pub mod convocatoria;
 pub mod convocatoria_item;
 pub mod convocatoria_section;
-pub mod filters;
 pub mod footer;
 pub mod head;
 pub mod header;

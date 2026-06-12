@@ -86,6 +86,7 @@ async fn main() -> std::io::Result<()> {
             .service(maud::pages::departamento::index::departamento_view)
             .service(maud::pages::formacion::index::formacion_view)
             .service(page_filters)
+            .default_service(web::route().to(maud::pages::not_found::index::not_found_view))
             .app_data(general_state.clone())
             .app_data(TempFileConfig::default().directory(&temp_dir))
             .service(

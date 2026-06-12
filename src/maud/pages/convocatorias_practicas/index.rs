@@ -18,6 +18,7 @@ use crate::{
         pages::{
             convocatorias_practicas::convocatoria_item::convocatoria_item_view,
             general::header_items::header_items,
+            not_found::component::{NotFoundComponentProps, not_found_component},
         },
     },
     modules::convocatorias::{
@@ -43,25 +44,25 @@ pub async fn convocatorias_practicas(
         .execute(&state.db, alias.into_inner())
         .await;
 
-    let params = GetAllActivesParamsDto {
-        offset: 0,
-        limit: 10,
-        include_texto: false,
-    };
-
-    let get_all_actives = GetAllActives::new(query_repository);
-    let convocatorias = get_all_actives.execute(&state.db, params).await;
-
-    let convocatorias = match convocatorias {
-        Ok(convocatorias) => convocatorias
-            .into_iter()
-            .filter(|conv| conv.id != convocatoria.as_ref().unwrap().id)
-            .map(|conv| conv.into())
-            .collect(),
-        Err(_) => vec![],
-    };
-
     if convocatoria.is_ok() {
+        let params = GetAllActivesParamsDto {
+            offset: 0,
+            limit: 10,
+            include_texto: false,
+        };
+
+        let get_all_actives = GetAllActives::new(query_repository);
+        let convocatorias = get_all_actives.execute(&state.db, params).await;
+
+        let convocatorias = match convocatorias {
+            Ok(convocatorias) => convocatorias
+                .into_iter()
+                .filter(|conv| conv.id != convocatoria.as_ref().unwrap().id)
+                .map(|conv| conv.into())
+                .collect(),
+            Err(_) => vec![],
+        };
+
         let content = html! {
             (head_component(HeadProps {
                 title: convocatoria.as_ref().unwrap().titulo.clone(),
@@ -102,26 +103,16 @@ pub async fn convocatorias_practicas(
                 include_ads: true,
                 text_extra: None,
             }))
-
-            section class="py-20 bg-slate-950/50" {
-                div class="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" {
-                    main class="flex flex-col gap-4" {
-                        h1 class="text-2xl font-bold text-white mb-4" {
-                            "Convocatoria no encontrada"
-                        }
-                        p class="text-white" {
-                            "La convocatoria que buscas no existe o ha sido eliminada."
-                        }
-                        a class="text-blue-500 hover:underline mt-4 inline-block" href="/convocatorias-practicas" {
-                            "Volver a la lista de convocatorias"
-                        }
-                    }
-                    aside class="flex flex-col gap-4" {
-                        "Asides"
-                    }
-                }
+            br;
+            br;
+            main {
+                (
+                    not_found_component(NotFoundComponentProps {
+                        title: "Convocatoria no encontrada",
+                        description: "La convocatoria que buscas no existe o ha sido eliminada.",
+                    })
+                )
             }
-
             (header(header_items()))
             (footer())
         };
