@@ -25,6 +25,7 @@ use crate::{
                 top_search::{TopSearchProps, top_search},
             },
             general::header_items::header_items,
+            not_found::component::{NotFoundComponentProps, not_found_component},
         },
     },
     modules::ofertas::{
@@ -45,7 +46,33 @@ pub async fn departamento_view(
     let target_departamento = get_departamento_by_alias(&alias);
 
     if target_departamento.is_none() {
-        return HttpResponse::NotFound().finish();
+        let content = html! {
+            (head_component(HeadProps {
+                title: "Departamento no encontrado".to_string(),
+                metadata: None,
+                canonical: Some(format!("https://www.practicasperu.com/departamento/{}", alias.into_inner())),
+                scripts_extra: None,
+                css_extra: None,
+                include_analytics: true,
+                include_ads: true,
+                text_extra: None,
+            }))
+            br;
+            br;
+            main {
+                (
+                    not_found_component(NotFoundComponentProps {
+                        title: "Departamento no encontrado",
+                        description: "El departamento que estás buscando no existe o ha sido eliminado.",
+                    })
+                )
+            }
+            (header(header_items()))
+            (footer())
+        };
+        return HttpResponse::NotFound()
+            .content_type("text/html")
+            .body(content.into_string());
     }
 
     let Departamento { id, nombre, .. } = target_departamento.unwrap();

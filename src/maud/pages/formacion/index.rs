@@ -23,6 +23,7 @@ use crate::{
                 main::{MainProps, main},
             },
             general::header_items::header_items,
+            not_found::component::{NotFoundComponentProps, not_found_component},
         },
     },
     modules::ofertas::{
@@ -43,7 +44,33 @@ pub async fn formacion_view(
     let target_formacion = get_formacion_by_alias(&alias);
 
     if target_formacion.is_none() {
-        return HttpResponse::NotFound().finish();
+        let content = html! {
+            (head_component(HeadProps {
+                title: "Formacion no encontrada".to_string(),
+                metadata: None,
+                canonical: Some(format!("https://www.practicasperu.com/formacion/{}", alias.into_inner())),
+                scripts_extra: None,
+                css_extra: None,
+                include_analytics: true,
+                include_ads: true,
+                text_extra: None,
+            }))
+            br;
+            br;
+            main {
+                (
+                    not_found_component(NotFoundComponentProps {
+                        title: "Formacion no encontrada",
+                        description: "La formacion que estás buscando no existe o ha sido eliminada.",
+                    })
+                )
+            }
+            (header(header_items()))
+            (footer())
+        };
+        return HttpResponse::NotFound()
+            .content_type("text/html")
+            .body(content.into_string());
     }
 
     let FormacionAcademica { id, nombre, .. } = target_formacion.unwrap();
