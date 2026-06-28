@@ -15,6 +15,7 @@ use crate::{
             busqueda::{
                 aside_filters::{AsideFiltersProps, aside_filters},
                 main::{MainProps, main},
+                meta::meta,
                 top_search::{TopSearchProps, top_search},
             },
             general::header_items::header_items,
@@ -51,8 +52,9 @@ pub async fn busqueda_view(
 
     let markup = html!(
             (head_component(HeadProps {
-            title: "Busqueda de practicas".to_owned(),
-            metadata: None,
+            title: "Busqueda de practicas pre y profesionales".to_owned(),
+            metadata: Some(meta()),
+            alternative_metadata: None,
             canonical: Some("https://www.practicasperupro.com/busqueda".to_owned()),
             scripts_extra: Some(vec!["/public/js/pages/busqueda.js".to_owned()]),
             css_extra: None,

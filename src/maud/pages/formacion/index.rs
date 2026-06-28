@@ -21,6 +21,7 @@ use crate::{
                 aside_filters::{AsideFiltersProps, aside_filters},
                 hero::{HeroProps, hero},
                 main::{MainProps, main},
+                meta::meta,
             },
             general::header_items::header_items,
             not_found::component::{NotFoundComponentProps, not_found_component},
@@ -48,6 +49,7 @@ pub async fn formacion_view(
             (head_component(HeadProps {
                 title: "Formacion no encontrada".to_string(),
                 metadata: None,
+                alternative_metadata: None,
                 canonical: Some(format!("https://www.practicasperu.com/formacion/{}", alias.into_inner())),
                 scripts_extra: None,
                 css_extra: None,
@@ -93,10 +95,20 @@ pub async fn formacion_view(
     }
     let oferta_result = oferta_result.unwrap();
 
+    let mut meta = meta();
+    meta.insert(
+        "og:title".to_owned(),
+        format!(
+            "Practicas pre y profesionales para {} - Practicas Pre y Profesionales en Perú",
+            nombre
+        ),
+    );
+
     let markup = html!(
             (head_component(HeadProps {
-            title: format!("Practicas pre profesionales para {}", nombre),
+            title: format!("Practicas pre y profesionales para {} - Practicas Pre y Profesionales en Perú", nombre),
             metadata: None,
+            alternative_metadata: Some(meta),
             canonical: Some(format!("https://www.practicasperupro.com/formacion/{}", alias)),
             scripts_extra: Some(vec!["/public/js/pages/busqueda.js".to_owned()]),
             css_extra: None,

@@ -5,22 +5,22 @@ pub fn meta() -> HashMap<&'static str, &'static str> {
         // General
         (
             "description",
-            "Encuentra convocatorias de prácticas pre profesionales y profesionales en entidades del Estado peruano. Busca por región, tipo de formación u organización y postula fácilmente desde un solo lugar.",
+            "Busca prácticas en el sector público según tu departamento. Lima, Arequipa, Cusco y más: consulta cuántas convocatorias hay en cada región y accede directamente a ellas.",
         ),
         (
             "keywords",
-            "prácticas pre profesionales Perú, prácticas profesionales sector público, convocatorias prácticas Perú, prácticas en entidades del Estado, practicas preprofesionales Peru",
+            "prácticas por departamento Perú, prácticas Lima sector público, prácticas Arequipa entidades públicas, prácticas por región Perú, convocatorias por departamento gobierno",
         ),
         ("robots", "index, follow"),
         ("author", "Practicasperupro"),
         ("canonical", "https://www.practicasperupro.com"),
         // Open Graph
-        ("og:title", "Practicas Pre y Profesionales Perú"),
+        ("og:title", "Lista de organizaciones"),
         ("og:type", "website"),
         ("og:site_name", "Practicas Pre y Profesionales Perú"),
         (
             "og:description",
-            "Encuentra convocatorias de prácticas pre profesionales y profesionales en entidades del Estado peruano. Busca por región, tipo de formación u organización y postula fácilmente desde un solo lugar.",
+            "Busca prácticas en el sector público según tu departamento. Lima, Arequipa, Cusco y más: consulta cuántas convocatorias hay en cada región y accede directamente a ellas.",
         ),
         ("og:url", "https://www.practicasperupro.com"),
         (

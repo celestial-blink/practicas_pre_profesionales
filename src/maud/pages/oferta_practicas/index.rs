@@ -18,7 +18,7 @@ use crate::{
         pages::{
             general::header_items::header_items,
             not_found::component::{NotFoundComponentProps, not_found_component},
-            oferta_practicas::oferta_item_view::oferta_item_view,
+            oferta_practicas::{meta::meta, oferta_item_view::oferta_item_view},
         },
     },
     modules::{
@@ -68,10 +68,13 @@ pub async fn oferta_practicas(
 
     match oferta {
         Some(oferta) => {
+            let mut meta = meta();
+            meta.insert("og:title".to_owned(), oferta.titulo.clone());
             let html = html! {
                 (head_component(HeadProps {
                     title: oferta.titulo.clone(),
                     metadata: None,
+                    alternative_metadata: Some(meta),
                     canonical: Some(format!("https://www.practicasperu.com/oferta_practicas/{}", oferta.alias.clone())),
                     scripts_extra: None,
                     css_extra: None,
@@ -101,6 +104,7 @@ pub async fn oferta_practicas(
                 (head_component(HeadProps {
                     title: "Convocatoria no encontrada".to_string(),
                     metadata: None,
+                    alternative_metadata: None,
                     canonical: Some(format!("https://www.practicasperu.com/oferta_practicas/{}", alias.into_inner())),
                     scripts_extra: None,
                     css_extra: None,

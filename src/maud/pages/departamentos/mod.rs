@@ -1,2 +1,3 @@
-pub mod index;
 pub mod hero;
+pub mod index;
+pub mod meta;

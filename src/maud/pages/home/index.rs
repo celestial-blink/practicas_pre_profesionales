@@ -127,6 +127,7 @@ pub async fn home_index(state: Data<RwLock<State>>) -> AwResult<Markup> {
             HeadProps {
                 title: "Practicas Pre y Profesionales Perú".to_string(),
                 metadata: Some(meta()),
+                alternative_metadata: None,
                 canonical: Some("https://www.practicasperupro.com/".to_string()),
                 scripts_extra: None,
                 css_extra: None,

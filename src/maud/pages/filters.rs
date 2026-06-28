@@ -29,6 +29,7 @@ pub async fn page_filters() -> AwResult<Markup> {
         (head_component(HeadProps {
             title: "Practicas Pre y Profesionales Peru".to_string(),
             metadata: None,
+            alternative_metadata: None,
             canonical: Some("https://www.practicasperupro.com/practicas-peru".to_string()),
             scripts_extra: None,
             css_extra: None,

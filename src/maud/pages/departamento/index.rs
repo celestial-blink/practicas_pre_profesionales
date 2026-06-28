@@ -22,6 +22,7 @@ use crate::{
             },
             departamento::{
                 hero::{HeroProps, hero},
+                meta::meta,
                 top_search::{TopSearchProps, top_search},
             },
             general::header_items::header_items,
@@ -50,6 +51,7 @@ pub async fn departamento_view(
             (head_component(HeadProps {
                 title: "Departamento no encontrado".to_string(),
                 metadata: None,
+                alternative_metadata: None,
                 canonical: Some(format!("https://www.practicasperu.com/departamento/{}", alias.into_inner())),
                 scripts_extra: None,
                 css_extra: None,
@@ -95,10 +97,20 @@ pub async fn departamento_view(
     }
     let oferta_result = oferta_result.unwrap();
 
+    let mut meta = meta();
+    meta.insert(
+        "og:title".to_owned(),
+        format!(
+            "Practicas pre profesionales en {} - Practicas Pre y Profesionales en Perú",
+            nombre
+        ),
+    );
+
     let markup = html!(
             (head_component(HeadProps {
-            title: format!("Practicas pre profesionales en {}", nombre),
+            title: format!("Practicas pre profesionales en {} - Practicas Pre y Profesionales en Perú", nombre),
             metadata: None,
+            alternative_metadata: Some(meta),
             canonical: Some(format!("https://www.practicasperupro.com/departamento/{}", alias)),
             scripts_extra: Some(vec!["/public/js/pages/busqueda.js".to_owned()]),
             css_extra: None,
@@ -110,7 +122,7 @@ pub async fn departamento_view(
         }))
         (header(header_items()))
         (hero(HeroProps {
-            title: format!("Prácticas pre y profesionales en {}", nombre),
+            title: format!("Prácticas pre y profesionales en {} - Practicas Pre y Profesionales en Perú", nombre),
             description: format!("Encuentra las mejores prácticas pre y profesionales en {}", nombre),
         }))
         section class="py-20 bg-slate-950/50" {

@@ -11,7 +11,10 @@ use crate::{
             head::{HeadProps, head_component},
             header::header,
         },
-        pages::{general::header_items::header_items, organizaciones::hero},
+        pages::{
+            general::header_items::header_items,
+            organizaciones::{hero, meta::meta},
+        },
     },
     modules::ofertas::{
         application::get_count_ofertas_by_organizacion::GetCountOfertasByOrganizacion,
@@ -36,7 +39,8 @@ pub async fn organizaciones_view(state: Data<RwLock<State>>) -> Markup {
     html! {
         (head_component(HeadProps {
             title: "Lista de organizaciones".to_owned(),
-            metadata: None,
+            metadata: Some(meta()),
+            alternative_metadata: None,
             canonical: Some("https://www.practicasperupro.com/organizaciones".to_owned()),
             scripts_extra: None,
             css_extra: None,

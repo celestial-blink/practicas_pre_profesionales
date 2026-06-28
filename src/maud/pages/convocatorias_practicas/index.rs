@@ -16,7 +16,7 @@ use crate::{
             header::header,
         },
         pages::{
-            convocatorias_practicas::convocatoria_item::convocatoria_item_view,
+            convocatorias_practicas::{convocatoria_item::convocatoria_item_view, meta::meta},
             general::header_items::header_items,
             not_found::component::{NotFoundComponentProps, not_found_component},
         },
@@ -63,10 +63,18 @@ pub async fn convocatorias_practicas(
             Err(_) => vec![],
         };
 
+        let mut meta = meta();
+        let og_title = format!(
+            "{} - Practicas Pre y Profesionales Perú",
+            convocatoria.as_ref().unwrap().titulo
+        );
+        meta.insert("og:title".to_owned(), og_title.clone());
+
         let content = html! {
             (head_component(HeadProps {
-                title: convocatoria.as_ref().unwrap().titulo.clone(),
+                title: og_title,
                 metadata: None,
+                alternative_metadata: Some(meta),
                 canonical: Some(format!("https://practicasperu.com/convocatorias_practicas/{}", convocatoria.as_ref().unwrap().alias)),
                 scripts_extra: None,
                 css_extra: None,
@@ -96,6 +104,7 @@ pub async fn convocatorias_practicas(
             (head_component(HeadProps {
                 title: "Convocatoria no encontrada".to_string(),
                 metadata: None,
+                alternative_metadata: None,
                 canonical: Some("https://practicasperu.com/convocatorias_practicas".to_string()),
                 scripts_extra: None,
                 css_extra: None,

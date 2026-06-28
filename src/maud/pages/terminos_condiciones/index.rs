@@ -7,13 +7,15 @@ use crate::maud::components::{
     header::header,
 };
 use crate::maud::pages::general::header_items::header_items;
+use crate::maud::pages::terminos_condiciones::meta::meta;
 
 #[get("/terminos-condiciones")]
 pub async fn terminos_condiciones() -> Markup {
     html! {
         (head_component(HeadProps {
             title: "Términos y Condiciones - Prácticas Perú Pro".to_owned(),
-            metadata: None,
+            metadata: Some(meta()),
+            alternative_metadata: None,
             canonical: Some("https://www.practicasperupro.com/terminos-condiciones".to_owned()),
             scripts_extra: None,
             css_extra: None,

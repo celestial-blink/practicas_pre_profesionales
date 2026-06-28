@@ -7,6 +7,7 @@ use crate::config::IS_DEV;
 pub struct HeadProps {
     pub title: String,
     pub metadata: Option<HashMap<&'static str, &'static str>>,
+    pub alternative_metadata: Option<HashMap<String, String>>,
     pub canonical: Option<String>,
     pub scripts_extra: Option<Vec<String>>,
     pub css_extra: Option<Vec<String>>,
@@ -53,6 +54,13 @@ pub fn head_component(props: HeadProps) -> Markup {
                 @if let Some(metadata) = props.metadata {
                     @for (key, value) in metadata {
                         meta name=(key) content=(value);
+                    }
+                }
+                @else {
+                    @if let Some(alternative_metadata) = props.alternative_metadata {
+                        @for (key, value) in alternative_metadata {
+                            meta property=(key) content=(value);
+                        }
                     }
                 }
                 script src=(common_js) {}

@@ -1,19 +1,23 @@
 use actix_web::get;
 use maud::{Markup, html};
 
-use crate::maud::components::{
-    footer::footer,
-    head::{HeadProps, head_component},
-    header::header,
-};
 use crate::maud::pages::general::header_items::header_items;
+use crate::maud::{
+    components::{
+        footer::footer,
+        head::{HeadProps, head_component},
+        header::header,
+    },
+    pages::politicas_privacidad::meta::meta,
+};
 
 #[get("/politicas-privacidad")]
 pub async fn politicas_privacidad() -> Markup {
     html! {
         (head_component(HeadProps {
             title: "Politicas de Privacidad - Prácticas Perú Pro".to_owned(),
-            metadata: None,
+            metadata: Some(meta()),
+            alternative_metadata: None,
             canonical: Some("https://www.practicasperupro.com/politicas-privacidad".to_owned()),
             scripts_extra: None,
             css_extra: None,
@@ -33,11 +37,11 @@ pub async fn politicas_privacidad() -> Markup {
                     p class="text-sm text-slate-400 mb-8" {
                         "Última actualización: 31 de mayo de 2026"
                     }
-                    
+
                     p class="leading-relaxed text-slate-300 mb-8" {
                         "En Prácticas Perú Pro (en adelante, \"la Plataforma\") respetamos tu privacidad. Esta Política de Privacidad describe cómo tratamos la información cuando visitas nuestro sitio web, en cumplimiento de la Ley N° 29733, Ley de Protección de Datos Personales del Perú y su Reglamento aprobado mediante D.S. N° 003-2013-JUS."
                     }
-                    
+
                     div class="flex flex-col gap-8" {
                         // Section 1
                         div class="flex flex-col gap-3" {

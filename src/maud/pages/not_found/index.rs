@@ -17,6 +17,7 @@ pub async fn not_found_view() -> impl Responder {
         (head_component(HeadProps {
             title: "Página no encontrada".to_string(),
             metadata: None,
+            alternative_metadata: None,
             canonical: Some("https://practicasperu.com/not_found/".to_string()),
             scripts_extra: None,
             css_extra: None,
