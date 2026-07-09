@@ -12,7 +12,10 @@ use crate::{
             head::{HeadProps, head_component},
             header::header,
         },
-        pages::{departamentos::hero, general::header_items::header_items},
+        pages::{
+            departamentos::{hero, meta::meta},
+            general::header_items::header_items,
+        },
     },
     modules::ofertas::{
         application::get_count_ofertas_by_departamento,
@@ -75,7 +78,7 @@ pub async fn departamentos_view(state: Data<RwLock<State>>) -> Markup {
     html! {
         (head_component(HeadProps {
             title: "Lista de departamentos en el Perú - Practicas Pre y Profesionales en Perú".to_owned(),
-            metadata: None,
+            metadata: Some(meta()),
             alternative_metadata: None,
             canonical: Some("https://www.practicasperupro.com/departamentos".to_owned()),
             scripts_extra: None,

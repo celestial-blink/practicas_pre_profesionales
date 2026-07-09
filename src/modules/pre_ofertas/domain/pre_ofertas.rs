@@ -1,5 +1,8 @@
-use time::{format_description::modifier::UnixTimestamp};
+use serde::Serialize;
+use sqlx::FromRow;
+use time::OffsetDateTime;
 
+#[derive(Debug, FromRow, Serialize)]
 pub struct PreOfertas {
     pub id: i32,
     pub titulo: String,
@@ -12,5 +15,6 @@ pub struct PreOfertas {
     pub url_oferta: String,
     pub hash_oferta: String,
     pub estado: u8,
-    pub creado_en: Option<UnixTimestamp>,
+    #[serde(with = "crate::general_types::datetime_no_z_option")]
+    pub creado_en: Option<OffsetDateTime>,
 }

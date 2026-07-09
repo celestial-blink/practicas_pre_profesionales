@@ -1,9 +1,0 @@
-/srv/practicasperupro/logs/app.log.* {
-    daily
-    rotate 14
-    compress
-    delaycompress
-    missingok
-    notifempty
-    nocreate
-}

@@ -1,9 +1,11 @@
-use crate::modules::pre_ofertas::domain::pre_ofertas::PreOfertas;
+use crate::modules::pre_ofertas::domain::{
+    dto::search_params::SearchParams, pre_ofertas::PreOfertas,
+};
 
 #[allow(async_fn_in_trait)]
 pub trait PreOfertasRepository {
     async fn find_by_id(&self, id: i32) -> Option<PreOfertas>;
-    async fn find_all(&self) -> Vec<PreOfertas>;
+    async fn find_by_search(&self, params: SearchParams) -> Result<Vec<PreOfertas>, String>;
     async fn create(&self, pre_ofertas: PreOfertas) -> Result<(), String>;
     async fn create_many(&self, pre_ofertas: Vec<PreOfertas>) -> Result<(), String>;
     async fn update(&self, pre_ofertas: PreOfertas) -> Result<(), String>;

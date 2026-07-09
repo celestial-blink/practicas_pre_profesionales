@@ -31,7 +31,7 @@ use tracing_actix_web::TracingLogger;
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
 
-    let port = std::env::var("PORT").expect("PORT must be set");
+    let port = std::env::var("PORT").unwrap_or("8083".to_owned());
     let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
     let _ = t_logs::init();
@@ -93,9 +93,14 @@ async fn main() -> std::io::Result<()> {
                 web::scope("/api/v1")
                     .wrap(from_fn(api_auth_middleware))
                     .route("/validate-auth", web::get().to(|| async { "Is valid" }))
-                    .service(web::scope("/pre-ofertas").service(
-                        modules::pre_ofertas::presentation::router::insert_many::insert_many
-                    ))
+                    .service(
+                        web::scope("/pre-ofertas")
+                            .service(modules::pre_ofertas::presentation::router::insert_many::insert_many)
+                            .service(modules::pre_ofertas::presentation::router::find_by_search::find_by_search)
+                            .service(modules::pre_ofertas::presentation::router::create::create)
+                            .service(modules::pre_ofertas::presentation::router::update::update)
+                            .service(modules::pre_ofertas::presentation::router::find_by_id::find_by_id)
+                    )
                     .service(
                         web::scope("/organizaciones")
                             .service(organizacion_router::find_by_search::find_by_search)
