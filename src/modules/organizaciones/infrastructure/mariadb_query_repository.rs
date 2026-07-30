@@ -1,19 +1,17 @@
+use tracing::error;
+
 use crate::modules::organizaciones::application::repository::query_respository::QueryRepository;
 use crate::modules::organizaciones::domain::dto::SearchParams;
 use crate::modules::organizaciones::domain::organizacion::Organizacion;
 
-pub struct MariadbQueryRepository {
-    pool: sqlx::MySqlPool,
-}
-
-impl MariadbQueryRepository {
-    pub fn new(pool: sqlx::MySqlPool) -> Self {
-        Self { pool }
-    }
-}
+pub struct MariadbQueryRepository;
 
 impl QueryRepository for MariadbQueryRepository {
-    async fn find_by_search(&self, params: SearchParams) -> Result<Vec<Organizacion>, String> {
+    async fn find_by_search(
+        &self,
+        pool: &sqlx::MySqlPool,
+        params: SearchParams,
+    ) -> Result<Vec<Organizacion>, String> {
         let mut query_sql = String::from("SELECT * FROM organizaciones");
         // agrega where en search, tipo y estado solo si vienen
 
@@ -55,7 +53,7 @@ impl QueryRepository for MariadbQueryRepository {
         query = query.bind(params.limit);
         query = query.bind(params.offset);
 
-        let result = query.fetch_all(&self.pool).await;
+        let result = query.fetch_all(pool).await;
 
         if let Ok(organizaciones) = result {
             return Ok(organizaciones);
@@ -63,14 +61,34 @@ impl QueryRepository for MariadbQueryRepository {
 
         Err("Error al buscar organizaciones".to_string())
     }
-    async fn find_all(&self) -> Result<Vec<Organizacion>, String> {
+    async fn find_all(&self, pool: &sqlx::MySqlPool) -> Result<Vec<Organizacion>, String> {
         let query_sql =
             "SELECT * FROM organizaciones WHERE estado = 1 ORDER BY nombre_comercial ASC";
         let result = sqlx::query_as::<_, Organizacion>(query_sql)
-            .fetch_all(&self.pool)
+            .fetch_all(pool)
             .await
             .map_err(|e| e.to_string())?;
 
         Ok(result)
+    }
+
+    async fn get_one_by_alias(
+        &self,
+        pool: &sqlx::MySqlPool,
+        alias: String,
+    ) -> Option<Organizacion> {
+        let oferta =
+            sqlx::query_as::<_, Organizacion>("SELECT * FROM organizaciones WHERE alias = ?")
+                .bind(&alias)
+                .fetch_optional(pool)
+                .await;
+
+        match oferta {
+            Ok(Some(oferta)) => Some(oferta),
+            _ => {
+                error!("Oferta no encontrada con el alias: {}", alias);
+                None
+            }
+        }
     }
 }

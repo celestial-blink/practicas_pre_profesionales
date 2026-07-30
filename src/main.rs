@@ -21,11 +21,17 @@ use crate::modules::organizaciones::presentation::router as organizacion_router;
 use crate::{general_types::State, maud::pages::filters::page_filters};
 
 use actix_multipart::form::tempfile::TempFileConfig;
+use actix_web::HttpResponse;
 use actix_web::{App, HttpServer, middleware::from_fn, web};
 use dotenvy::dotenv;
 use sqlx::MySqlPool;
 
 use tracing_actix_web::TracingLogger;
+
+#[actix_web::get("/health")]
+async fn health_check() -> impl actix_web::Responder {
+    HttpResponse::Ok().body("Ok")
+}
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -52,20 +58,20 @@ async fn main() -> std::io::Result<()> {
     let temp_dir = std::env::var("TEMP_DIR").expect("TEMP_DIR must be set");
     let storage_dir = std::env::var("STORAGE_DIR").expect("STORAGE_DIR must be set");
 
-    // carga datos de organizaciones solo una vez por ejecucion
-    let infrastructure = MariadbQueryRepository::new(pool.clone());
-    let get_all_organizaciones = FindAll::new(infrastructure);
-    let organizaciones = get_all_organizaciones
-        .execute()
-        .await
-        .expect("Error al obtener organizaciones");
-
     let state = State {
         db: pool.clone(),
         cache: CacheState { organizaciones },
     };
 
     let general_state = web::Data::new(RwLock::new(state));
+
+    // carga datos de organizaciones solo una vez por ejecucion
+    let infrastructure = MariadbQueryRepository::new(pool.clone());
+    let get_all_organizaciones = FindAll::new(infrastructure);
+    let organizaciones = get_all_organizaciones
+        .execute(&general_state.read().unwrap().db.clone())
+        .await
+        .expect("Error al obtener organizaciones");
 
     let _ = HttpServer::new(move || {
         App::new()
@@ -75,6 +81,7 @@ async fn main() -> std::io::Result<()> {
                     .use_last_modified(true),
             )
             .wrap(TracingLogger::default())
+            .service(health_check)
             .service(maud::pages::home::index::home_index)
             .service(maud::pages::convocatorias_practicas::index::convocatorias_practicas)
             .service(maud::pages::oferta_practicas::index::oferta_practicas)

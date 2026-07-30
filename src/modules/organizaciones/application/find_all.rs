@@ -1,3 +1,5 @@
+use sqlx::MySqlPool;
+
 use crate::modules::organizaciones::{
     application::repository::query_respository::QueryRepository, domain::organizacion::Organizacion,
 };
@@ -11,7 +13,7 @@ impl<T: QueryRepository> FindAll<T> {
         Self { repository }
     }
 
-    pub async fn execute(&self) -> Result<Vec<Organizacion>, String> {
-        self.repository.find_all().await
+    pub async fn execute(&self, pool: &MySqlPool) -> Result<Vec<Organizacion>, String> {
+        self.repository.find_all(pool).await
     }
 }

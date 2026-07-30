@@ -8,6 +8,7 @@ pub mod general;
 pub mod home;
 pub mod not_found;
 pub mod oferta_practicas;
+pub mod organizacion;
 pub mod organizaciones;
 pub mod politicas_privacidad;
 pub mod terminos_condiciones;

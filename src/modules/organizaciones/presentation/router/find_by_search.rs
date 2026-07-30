@@ -16,9 +16,10 @@ pub async fn find_by_search(
     params: web::Query<SearchParams>,
 ) -> impl Responder {
     let search_params = params.into_inner();
-    let infrastructure = MariadbQueryRepository::new(state.read().unwrap().db.clone());
+    let infrastructure = MariadbQueryRepository;
     let application = FindBySearch::new(infrastructure);
-    let result = application.execute(search_params).await;
+    let state = state.read().unwrap();
+    let result = application.execute(&state.db.clone(), search_params).await;
     match result {
         Ok(organizaciones) => HttpResponse::Ok().json(organizaciones),
         Err(e) => HttpResponse::InternalServerError().body(e),

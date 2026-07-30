@@ -1,3 +1,5 @@
+use sqlx::MySqlPool;
+
 use crate::modules::organizaciones::{
     application::repository::query_respository::QueryRepository,
     domain::{dto::SearchParams, organizacion::Organizacion},
@@ -12,7 +14,11 @@ impl<T: QueryRepository> FindBySearch<T> {
         Self { repository }
     }
 
-    pub async fn execute(&self, params: SearchParams) -> Result<Vec<Organizacion>, String> {
-        self.repository.find_by_search(params).await
+    pub async fn execute(
+        &self,
+        pool: &MySqlPool,
+        params: SearchParams,
+    ) -> Result<Vec<Organizacion>, String> {
+        self.repository.find_by_search(pool, params).await
     }
 }

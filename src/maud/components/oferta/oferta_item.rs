@@ -44,7 +44,7 @@ impl From<Oferta> for OfertaItem {
 }
 
 pub fn oferta_item(oferta: OfertaItem) -> Markup {
-    let oferta_url = format!("{}/ofertas-practicas/{}", DOMAIN, oferta.alias);
+    let oferta_url = format!("{}/oferta-practicas/{}", DOMAIN, oferta.alias);
     let org_url = format!("{}/organizacion/{}", DOMAIN, oferta.alias_org);
     let image_url = format!(
         "{}/public/images/organizaciones/{}",
@@ -54,7 +54,7 @@ pub fn oferta_item(oferta: OfertaItem) -> Markup {
     let target_region = get_departamento_by_id(oferta.id_region as u32);
     let region_url_element = if target_region.is_some() {
         let region = target_region.unwrap();
-        let region_url = format!("{}/ofertas-practicas?region={}", DOMAIN, region.id);
+        let region_url = format!("{}/oferta-practicas?region={}", DOMAIN, region.id);
         html!(
             a href=(region_url) class="text-blue-400 text-base underline" target="_blank" {
                 (region.nombre)

@@ -38,7 +38,7 @@ pub async fn home_index(state: Data<RwLock<State>>) -> AwResult<Markup> {
 
     let params = GetAllActivesParamsDto {
         offset: 0,
-        limit: 100,
+        limit: 20,
         include_texto: false,
     };
 
@@ -46,10 +46,7 @@ pub async fn home_index(state: Data<RwLock<State>>) -> AwResult<Markup> {
 
     let convocatorias = get_all_actives.execute(&state.db, params).await;
 
-    let convocatorias = match convocatorias {
-        Ok(convocatorias) => convocatorias,
-        Err(_) => vec![],
-    };
+    let convocatorias = convocatorias.unwrap_or(vec![]);
 
     let top_carreras_props = top::TopProps {
         description: "Las carreras con mayor demanda este mes.",
