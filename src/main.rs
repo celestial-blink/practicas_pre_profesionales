@@ -55,6 +55,14 @@ async fn main() -> std::io::Result<()> {
         }
     };
 
+    // carga datos de organizaciones solo una vez por ejecucion
+    let infrastructure = MariadbQueryRepository;
+    let get_all_organizaciones = FindAll::new(infrastructure);
+    let organizaciones = get_all_organizaciones
+        .execute(&pool)
+        .await
+        .expect("Error al obtener organizaciones");
+
     let temp_dir = std::env::var("TEMP_DIR").expect("TEMP_DIR must be set");
     let storage_dir = std::env::var("STORAGE_DIR").expect("STORAGE_DIR must be set");
 
@@ -64,14 +72,6 @@ async fn main() -> std::io::Result<()> {
     };
 
     let general_state = web::Data::new(RwLock::new(state));
-
-    // carga datos de organizaciones solo una vez por ejecucion
-    let infrastructure = MariadbQueryRepository::new(pool.clone());
-    let get_all_organizaciones = FindAll::new(infrastructure);
-    let organizaciones = get_all_organizaciones
-        .execute(&general_state.read().unwrap().db.clone())
-        .await
-        .expect("Error al obtener organizaciones");
 
     let _ = HttpServer::new(move || {
         App::new()
@@ -92,6 +92,7 @@ async fn main() -> std::io::Result<()> {
             .service(maud::pages::politicas_privacidad::index::politicas_privacidad)
             .service(maud::pages::departamento::index::departamento_view)
             .service(maud::pages::formacion::index::formacion_view)
+            .service(maud::pages::organizacion::index::organizacion_view)
             .service(page_filters)
             .default_service(web::route().to(maud::pages::not_found::index::not_found_view))
             .app_data(general_state.clone())

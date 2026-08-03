@@ -43,7 +43,11 @@ pub fn head_component(props: HeadProps) -> Markup {
                 meta name="viewport" content="width=device-width, initial-scale=1.0";
                 meta name="color-scheme" id="color-scheme" content="dark";
                 link rel="stylesheet" href=(format!("{}{}", css, css_version.clone().unwrap_or_default()));
-                link rel="icon" href="/public/images/favicon.ico" type="image/x-icon";
+                link rel="icon" type="image/png" href="/public/images/favicon-96x96.png" sizes="96x96";
+                link rel="icon" type="image/svg+xml" href="/public/images/favicon.svg";
+                link rel="shortcut icon" href="/public/images/favicon.ico";
+                link rel="apple-touch-icon" sizes="180x180" href="/public/images/apple-touch-icon.png";
+                link rel="manifest" href="/public/images/site.webmanifest";
                 // font iter
                 link rel="preconnect" href="https://fonts.googleapis.com";
                 link rel="preconnect" href="https://fonts.gstatic.com" crossorigin;

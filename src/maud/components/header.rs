@@ -14,7 +14,7 @@ pub fn header(list_menu: Vec<MenuItem>) -> Markup {
             div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" {
                 div class="flex justify-between h-16 items-center" {
                     a href="/" class="flex items-center gap-2" {
-                        img src="/public/images/logo.png" alt="Logo" class="size-10" { }
+                        img src="/public/images/favicon.svg" alt="Logo" class="size-10" { }
                         h2 class="text-lg text-white" translate="no" {
                             span class="text-rose-500 font-bold" { "P" } "rácticas " span class="text-rose-500 font-bold" { "P" } "erú Pro"
                         }
