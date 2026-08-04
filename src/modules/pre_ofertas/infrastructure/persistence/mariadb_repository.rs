@@ -3,7 +3,7 @@ use tracing_log::log::error;
 use crate::modules::pre_ofertas::domain::pre_ofertas::PreOfertas;
 use crate::modules::pre_ofertas::domain::repository::PreOfertasRepository;
 
-const CREATE_MANY_QUERY: &str = "INSERT INTO pre_ofertas (titulo, id_organizacion, nombre_organizacion, modalidad_practicas, id_region, region, distrito, url_oferta, hash_oferta, estado) VALUES";
+const CREATE_MANY_QUERY: &str = "INSERT IGNORE INTO pre_ofertas (titulo, id_organizacion, nombre_organizacion, modalidad_practicas, id_region, region, distrito, url_oferta, hash_oferta, estado) VALUES";
 
 pub struct MariadbRepository {
     pool: sqlx::MySqlPool,
