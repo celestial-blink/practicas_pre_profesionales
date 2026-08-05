@@ -24,13 +24,13 @@ impl From<UpdatePreOfertasDto> for PreOfertas {
             titulo: params.titulo,
             id_organizacion: params.id_organizacion,
             nombre_organizacion: params.nombre_organizacion,
-            modalidad_practicas: params.modalidad_practicas,
-            id_region: params.id_region,
+            modalidad_practicas: params.modalidad_practicas.cast_signed(),
+            id_region: params.id_region.cast_signed(),
             region: params.region,
             distrito: params.distrito,
             url_oferta: params.url_oferta,
             hash_oferta: params.hash_oferta,
-            estado: params.estado,
+            estado: params.estado.cast_signed(),
             creado_en: None,
         }
     }

@@ -5,9 +5,8 @@ use actix_web::{HttpResponse, Responder, get, web};
 use crate::{
     general_types::State,
     modules::pre_ofertas::{
-        application::find_by_search::FindBySearch,
-        domain::dto::search_params::SearchParams,
-        infrastructure::persistence::mariadb_repository::MariadbRepository,
+        application::{dto::search_params::SearchParams, find_by_search::FindBySearch},
+        infrastructure::query::mariadb_query_repository::PreOfertasQueryRepository,
     },
 };
 
@@ -17,9 +16,11 @@ pub async fn find_by_search(
     params: web::Query<SearchParams>,
 ) -> impl Responder {
     let search_params = params.into_inner();
-    let infrastructure = MariadbRepository::new(state.read().unwrap().db.clone());
+    let infrastructure = PreOfertasQueryRepository;
     let application = FindBySearch::new(infrastructure);
-    let result = application.execute(search_params).await;
+    let result = application
+        .execute(&state.read().unwrap().db.clone(), search_params)
+        .await;
     match result {
         Ok(pre_ofertas) => HttpResponse::Ok().json(pre_ofertas),
         Err(e) => HttpResponse::InternalServerError().body(e),

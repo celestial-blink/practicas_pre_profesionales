@@ -3,7 +3,7 @@ use sqlx::FromRow;
 use time::OffsetDateTime;
 
 #[derive(Debug, FromRow, Serialize)]
-pub struct PreOfertas {
+pub struct PreOfertasSearchResult {
     pub id: i32,
     pub titulo: String,
     pub id_organizacion: i32,
@@ -17,4 +17,5 @@ pub struct PreOfertas {
     pub estado: i8,
     #[serde(with = "crate::general_types::datetime_no_z_option")]
     pub creado_en: Option<OffsetDateTime>,
+    pub total: i32,
 }
