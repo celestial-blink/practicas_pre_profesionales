@@ -5,7 +5,8 @@ use crate::modules::ofertas::{
         count_ofertas_by_departamento_result_dto::CountOfertasByDepartamentoResultDto,
         count_ofertas_by_organizacion_result_dto::CountOfertasByOrganizacionResultDto,
         ofertas_filter_params_dto::OfertasFilterParamsDto,
-        ofertas_filter_result_dto::OfertasFilterResultDto,
+        ofertas_filter_result_dto::OfertasFilterResultDto, search_params::SearchParams,
+        search_result::SearchResult,
     },
     domain::oferta::Oferta,
 };
@@ -27,4 +28,9 @@ pub trait QueryRepository {
         params: OfertasFilterParamsDto,
         limit: u32,
     ) -> Result<OfertasFilterResultDto, String>;
+    async fn find_by_search(
+        &self,
+        pool: &MySqlPool,
+        params: SearchParams,
+    ) -> Result<Vec<SearchResult>, String>;
 }

@@ -1,7 +1,10 @@
 use sqlx::MySqlPool;
 
 use crate::modules::convocatorias::{
-    application::dtos::get_all_actives_params_dto::GetAllActivesParamsDto,
+    application::dtos::{
+        get_all_actives_params_dto::GetAllActivesParamsDto, search_params::SearchParams,
+        search_result::SearchResult,
+    },
     domain::convocatoria::Convocatoria,
 };
 
@@ -18,4 +21,10 @@ pub trait QueryRepository {
         pool: &MySqlPool,
         alias: String,
     ) -> Result<Convocatoria, String>;
+
+    async fn find_by_search(
+        &self,
+        pool: &MySqlPool,
+        params: SearchParams,
+    ) -> Result<Vec<SearchResult>, String>;
 }

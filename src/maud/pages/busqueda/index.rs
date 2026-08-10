@@ -50,6 +50,9 @@ pub async fn busqueda_view(
     }
     let oferta_result = oferta_result.unwrap();
 
+    let mut header_items = header_items();
+    header_items.pop();
+
     let markup = html!(
             (head_component(HeadProps {
             title: "Busqueda de practicas pre y profesionales".to_owned(),
@@ -64,7 +67,7 @@ pub async fn busqueda_view(
                 format!("<script>const organizaciones = {};</script>", serde_json::to_string(&state.cache.organizaciones).unwrap())
             ])
         }))
-        (header(header_items()))
+        (header(header_items))
         section class="py-20 bg-slate-950/50" {
             div class="flex flex-col gap-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" {
                 br;

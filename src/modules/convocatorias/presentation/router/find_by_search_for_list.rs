@@ -5,8 +5,9 @@ use actix_web::{HttpResponse, Responder, get, web};
 use crate::{
     general_types::State,
     modules::convocatorias::{
-        application::find_by_search_for_list::FindBySearchForList,
-        domain::dtos::search_params::SearchParams,
+        application::{
+            dtos::search_params::SearchParams, find_by_search_for_list::FindBySearchForList,
+        },
         infrastructure::persistence::mariadb_repository::MariaDbRepository,
     },
 };

@@ -1,15 +1,12 @@
 use crate::modules::convocatorias::{
     application::{
-        dtos::search_list_result::SearchListResult,
+        dtos::{search_list_result::SearchListResult, search_params::SearchParams},
         repository::{
             find_by_id_list_repository::FindByIdListRepository,
             search_list_repository::SearchListRepository,
         },
     },
-    domain::{
-        convocatoria::Convocatoria, dtos::search_params::SearchParams,
-        repository::ConvocatoriaRepository,
-    },
+    domain::{convocatoria::Convocatoria, repository::ConvocatoriaRepository},
 };
 use tracing_log::log::error;
 
@@ -139,61 +136,6 @@ impl ConvocatoriaRepository for MariaDbRepository {
             Err(e) => {
                 error!("Error al buscar la convocatoria: {}", e);
                 None
-            }
-        }
-    }
-
-    async fn find_by_search(&self, params: SearchParams) -> Result<Vec<Convocatoria>, String> {
-        let columns = [
-            "id",
-            "titulo",
-            "alias",
-            "id_organizacion",
-            "nombre_org",
-            "logo_org",
-            "alias_org",
-            "fin_convocatoria",
-            "vacantes",
-            "carreras",
-            "NULL as texto",
-            "departamentos",
-            "subvenciones",
-            "modalidades",
-            "nivel_estudios",
-            "finalizan_todos",
-            "estado",
-            "actualizado_en",
-            "creado_en",
-        ];
-
-        let mut query = format!(
-            "SELECT {} FROM convocatorias ORDER BY id DESC LIMIT ? OFFSET ?",
-            columns.join(", ")
-        );
-
-        if params.search.is_some() {
-            query = format!(
-                "SELECT {} FROM convocatorias WHERE CONCAT(convocatorias.titulo, convocatorias.nombre_org) LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?",
-                columns.join(", ")
-            );
-        }
-
-        let mut result = sqlx::query_as::<_, Convocatoria>(&query);
-
-        if let Some(search) = params.search {
-            result = result.bind(format!("%{}%", search));
-        }
-
-        let result = result
-            .bind(params.limit)
-            .bind(params.offset)
-            .fetch_all(&self.pool)
-            .await;
-        match result {
-            Ok(convocatorias) => Ok(convocatorias),
-            Err(e) => {
-                error!("Error al buscar las convocatorias: {}", e);
-                Err(e.to_string())
             }
         }
     }

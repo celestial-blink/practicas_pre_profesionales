@@ -1,8 +1,10 @@
 use sqlx::MySqlPool;
 
 use crate::modules::organizaciones::{
-    application::repository::query_respository::QueryRepository,
-    domain::{dto::SearchParams, organizacion::Organizacion},
+    application::{
+        dto::search_result::SearchResult, repository::query_respository::QueryRepository,
+    },
+    domain::dto::SearchParams,
 };
 
 pub struct FindBySearch<T: QueryRepository> {
@@ -18,7 +20,7 @@ impl<T: QueryRepository> FindBySearch<T> {
         &self,
         pool: &MySqlPool,
         params: SearchParams,
-    ) -> Result<Vec<Organizacion>, String> {
+    ) -> Result<Vec<SearchResult>, String> {
         self.repository.find_by_search(pool, params).await
     }
 }

@@ -1,9 +1,6 @@
-use crate::modules::convocatorias::{
-    application::{
-        dtos::search_list_result::SearchListResult,
-        repository::search_list_repository::SearchListRepository,
-    },
-    domain::dtos::search_params::SearchParams,
+use crate::modules::convocatorias::application::{
+    dtos::{search_list_result::SearchListResult, search_params::SearchParams},
+    repository::search_list_repository::SearchListRepository,
 };
 
 pub struct FindBySearchForList<T: SearchListRepository> {

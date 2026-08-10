@@ -1,6 +1,9 @@
 use sqlx::MySqlPool;
 
-use crate::modules::organizaciones::domain::{dto::SearchParams, organizacion::Organizacion};
+use crate::modules::organizaciones::{
+    application::dto::search_result::SearchResult,
+    domain::{dto::SearchParams, organizacion::Organizacion},
+};
 
 #[allow(async_fn_in_trait)]
 pub trait QueryRepository {
@@ -8,7 +11,7 @@ pub trait QueryRepository {
         &self,
         pool: &MySqlPool,
         params: SearchParams,
-    ) -> Result<Vec<Organizacion>, String>;
+    ) -> Result<Vec<SearchResult>, String>;
     async fn find_all(&self, pool: &MySqlPool) -> Result<Vec<Organizacion>, String>;
     async fn get_one_by_alias(&self, pool: &MySqlPool, alias: String) -> Option<Organizacion>;
 }

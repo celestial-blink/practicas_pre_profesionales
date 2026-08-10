@@ -1,6 +1,5 @@
-use crate::modules::convocatorias::{
-    application::dtos::search_list_result::SearchListResult,
-    domain::dtos::search_params::SearchParams,
+use crate::modules::convocatorias::application::dtos::{
+    search_list_result::SearchListResult, search_params::SearchParams,
 };
 
 #[allow(async_fn_in_trait)]

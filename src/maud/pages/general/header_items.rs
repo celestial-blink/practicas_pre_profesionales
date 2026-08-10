@@ -1,4 +1,5 @@
 use crate::{
+    config::DOMAIN,
     data::static_data::{DEPARTAMENTOS, FORMACION_ACADEMICAS},
     maud::components::header::MenuItem,
 };
@@ -9,7 +10,7 @@ pub fn header_items() -> Vec<MenuItem> {
         .into_iter()
         .map(|item| MenuItem {
             title: item.nombre,
-            url: format!("/departamento/{}", item.alias),
+            url: format!("{}/departamento/{}", DOMAIN, item.alias),
             is_call_to_action: false,
             sub_menu: None,
             target: None,
@@ -21,7 +22,7 @@ pub fn header_items() -> Vec<MenuItem> {
         .into_iter()
         .map(|item| MenuItem {
             title: item.nombre,
-            url: format!("/formacion/{}", item.alias),
+            url: format!("{}/formacion/{}", DOMAIN, item.alias),
             is_call_to_action: false,
             sub_menu: None,
             target: None,
@@ -31,28 +32,28 @@ pub fn header_items() -> Vec<MenuItem> {
     vec![
         MenuItem {
             title: "Departamentos".to_string(),
-            url: "/departamentos".to_string(),
+            url: format!("{}/departamentos", DOMAIN),
             is_call_to_action: false,
             sub_menu: Some(departamentos_sub_menu),
             target: None,
         },
         MenuItem {
             title: "Formación".to_string(),
-            url: "/formacion".to_string(),
+            url: format!("{}/formacion", DOMAIN),
             is_call_to_action: false,
             sub_menu: Some(formacion_academicas_sub_menu),
             target: None,
         },
         MenuItem {
             title: "Organizaciones".to_string(),
-            url: "/organizaciones".to_string(),
+            url: format!("{}/organizaciones", DOMAIN),
             is_call_to_action: false,
             sub_menu: None,
             target: None,
         },
         MenuItem {
             title: "Buscar Prácticas".to_string(),
-            url: "#practicas".to_string(),
+            url: format!("{}/busqueda", DOMAIN),
             is_call_to_action: true,
             sub_menu: None,
             target: None,

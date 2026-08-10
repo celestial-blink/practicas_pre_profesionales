@@ -1,0 +1,17 @@
+use serde::Serialize;
+use sqlx::prelude::FromRow;
+use time::OffsetDateTime;
+
+#[derive(FromRow, Serialize, Debug, Clone)]
+pub struct SearchResult {
+    pub id: i32,
+    pub razon_social: String,
+    pub nombre_comercial: String,
+    pub alias: String,
+    pub ruc: String,
+    pub logo: String,
+    pub tipo: i8,
+    pub estado: i8,
+    pub creado_en: Option<OffsetDateTime>,
+    pub total: i32,
+}

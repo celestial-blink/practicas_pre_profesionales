@@ -1,8 +1,7 @@
 use sqlx::Transaction;
 
 use crate::modules::ofertas::domain::{
-    dtos::{oferta_with_niveles::OfertaWithNivelesDto, search_params::SearchParams},
-    oferta::Oferta,
+    dtos::oferta_with_niveles::OfertaWithNivelesDto, oferta::Oferta,
 };
 
 #[allow(async_fn_in_trait)]
@@ -19,7 +18,6 @@ pub trait OfertaRepository {
     ) -> Result<(), String>;
     async fn find_by_id(&self, id: i32) -> Option<Oferta>;
     async fn find_by_id_with_niveles(&self, id: i32) -> Option<OfertaWithNivelesDto>;
-    async fn find_by_search(&self, params: SearchParams) -> Result<Vec<Oferta>, String>;
     async fn with_transaction<F, R>(&self, f: F) -> Result<R, String>
     where
         F: AsyncFnOnce(&mut Transaction<'_, sqlx::MySql>) -> Result<R, String>;

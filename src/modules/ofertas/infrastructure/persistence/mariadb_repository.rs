@@ -175,36 +175,6 @@ impl OfertaRepository for MariaDbRepository {
         }
     }
 
-    async fn find_by_search(
-        &self,
-        params: crate::modules::ofertas::domain::dtos::search_params::SearchParams,
-    ) -> Result<Vec<Oferta>, String> {
-        let mut query = "SELECT * FROM ofertas ORDER BY id DESC LIMIT ? OFFSET ?";
-        if params.search.is_some() {
-            query = "SELECT * FROM ofertas WHERE CONCAT(ofertas.titulo, ofertas.nombre_org) LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
-        }
-
-        let mut result = sqlx::query_as::<_, Oferta>(query);
-
-        if let Some(search) = params.search {
-            result = result.bind(format!("%{}%", search));
-        }
-
-        let result = result
-            .bind(params.limit)
-            .bind(params.offset)
-            .fetch_all(&self.pool)
-            .await;
-
-        match result {
-            Ok(ofertas) => Ok(ofertas),
-            Err(e) => {
-                error!("Error al buscar la oferta: {}", e);
-                Err(e.to_string())
-            }
-        }
-    }
-
     async fn with_transaction<F, R>(&self, f: F) -> Result<R, String>
     where
         F: AsyncFnOnce(&mut Transaction<'_, sqlx::MySql>) -> Result<R, String>,
@@ -283,7 +253,10 @@ impl OfertaRepository for MariaDbRepository {
         }
     }
 
-    async fn get_all_by_id_convocatoria(&self, id_convocatoria: i32) -> Result<Vec<Oferta>, String> {
+    async fn get_all_by_id_convocatoria(
+        &self,
+        id_convocatoria: i32,
+    ) -> Result<Vec<Oferta>, String> {
         let query = "SELECT * FROM ofertas WHERE id_convocatoria = ?";
         let result = sqlx::query_as::<MySql, Oferta>(query)
             .bind(id_convocatoria)

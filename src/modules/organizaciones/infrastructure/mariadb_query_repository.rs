@@ -1,5 +1,6 @@
 use tracing::error;
 
+use crate::modules::organizaciones::application::dto::search_result::SearchResult;
 use crate::modules::organizaciones::application::repository::query_respository::QueryRepository;
 use crate::modules::organizaciones::domain::dto::SearchParams;
 use crate::modules::organizaciones::domain::organizacion::Organizacion;
@@ -11,8 +12,8 @@ impl QueryRepository for MariadbQueryRepository {
         &self,
         pool: &sqlx::MySqlPool,
         params: SearchParams,
-    ) -> Result<Vec<Organizacion>, String> {
-        let mut query_sql = String::from("SELECT * FROM organizaciones");
+    ) -> Result<Vec<SearchResult>, String> {
+        let mut query_sql = String::from("SELECT *, COUNT(*) OVER() as total FROM organizaciones");
         // agrega where en search, tipo y estado solo si vienen
 
         let mut where_clause = Vec::<String>::new();
@@ -36,7 +37,7 @@ impl QueryRepository for MariadbQueryRepository {
         // agrega limit y offset
         query_sql = format!("{} ORDER BY id DESC LIMIT ? OFFSET ?", query_sql);
 
-        let mut query = sqlx::query_as::<_, Organizacion>(&query_sql);
+        let mut query = sqlx::query_as::<_, SearchResult>(&query_sql);
 
         if let Some(search) = params.search {
             query = query.bind(format!("%{}%", search));
