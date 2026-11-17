@@ -1,5 +1,5 @@
 use serde::Serialize;
-use time::{PrimitiveDateTime};
+use time::PrimitiveDateTime;
 
 #[derive(Debug, Serialize)]
 pub struct GenerateTextoByConvocatoriaDto {

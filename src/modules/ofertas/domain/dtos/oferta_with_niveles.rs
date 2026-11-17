@@ -1,4 +1,3 @@
-
 use rust_decimal::Decimal;
 use serde::Serialize;
 use time::{OffsetDateTime, PrimitiveDateTime};

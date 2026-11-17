@@ -20,7 +20,7 @@ pub async fn update(
     let id = path.into_inner();
     let mut pre_oferta_params: UpdatePreOfertasDto = params.into_inner();
     pre_oferta_params.id = id;
-    
+
     let pre_ofertas: PreOfertas = pre_oferta_params.into();
 
     let infrastructure = MariadbRepository::new(state.read().unwrap().db.clone());

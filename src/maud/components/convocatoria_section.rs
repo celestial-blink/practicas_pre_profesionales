@@ -1,6 +1,5 @@
 use maud::{Markup, html};
 
-
 pub fn convocatoria_section(children: Markup, title: &str) -> Markup {
     html! {
         section class="flex flex-col gap-2 bg-dark-card h-full p-8 rounded-xl relative" {

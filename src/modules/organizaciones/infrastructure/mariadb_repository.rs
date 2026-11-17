@@ -46,7 +46,6 @@ impl OrganizacionRepository for MariadbRepository {
             .map_err(|e| e.to_string())?;
 
         Ok(())
-
     }
 
     async fn find_by_id(&self, id: i32) -> Option<Organizacion> {

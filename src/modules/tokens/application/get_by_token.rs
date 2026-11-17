@@ -1,6 +1,5 @@
 use crate::modules::tokens::domain::{repository::TokensRepository, token::Token};
 
-
 pub struct FindByToken<P: TokensRepository> {
     repository: P,
 }

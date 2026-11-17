@@ -13,7 +13,6 @@ pub struct CreateParams {
     pub estado: i8,
 }
 
-
 impl From<CreateParams> for Organizacion {
     fn from(params: CreateParams) -> Self {
         Self {

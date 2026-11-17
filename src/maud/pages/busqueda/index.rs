@@ -14,6 +14,7 @@ use crate::{
         pages::{
             busqueda::{
                 aside_filters::{AsideFiltersProps, aside_filters},
+                hero::{HeroProps, hero},
                 main::{MainProps, main},
                 meta::meta,
                 top_search::{TopSearchProps, top_search},
@@ -35,6 +36,7 @@ pub async fn busqueda_view(
     query: serde_qs::actix::QsQuery<OfertasFilterParamsDto>,
 ) -> HttpResponse {
     let query_clone = query.clone();
+    let search_q = query.search.clone();
     let limit = 2;
     let infrastructure = MariaDbQuery::new();
     let oferta_filter = OfertasFilter::new(&infrastructure);
@@ -68,10 +70,16 @@ pub async fn busqueda_view(
             ])
         }))
         (header(header_items))
+        (
+                hero(
+                    HeroProps {
+                        description: None,
+                        search: search_q,
+                        total: 100
+                    }
+                ))
         section class="py-20 bg-slate-950/50" {
             div class="flex flex-col gap-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" {
-                br;
-                br;
                 (top_search(TopSearchProps {
                     query_params: &query_clone,
                 }))

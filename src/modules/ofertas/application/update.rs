@@ -38,7 +38,6 @@ impl<T: OfertaRepository, K: OfertaNivelesRepository> Update<T, K> {
                     if delete_result.is_err() {
                         return Err(delete_result.err().unwrap());
                     }
-
                 } else {
                     // elimina que ya no estan en la lista
                     let delete_result = self

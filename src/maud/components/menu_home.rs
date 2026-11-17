@@ -1,8 +1,11 @@
-use maud::{Markup, html, PreEscaped};
+use maud::{Markup, PreEscaped, html};
 
 use crate::types::{departamento::Departamento, formacion_academica::FormacionAcademica};
 
-pub fn menu_home(departamentos: Vec<Departamento>, formacion_academica: Vec<FormacionAcademica>) -> Markup {
+pub fn menu_home(
+    departamentos: Vec<Departamento>,
+    formacion_academica: Vec<FormacionAcademica>,
+) -> Markup {
     html! {
         p class="text-slate-300 font-bold" { "Buscar por:" }
         nav {

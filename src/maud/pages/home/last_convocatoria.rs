@@ -1,8 +1,11 @@
 use maud::{Markup, html};
 
-use crate::{config::DOMAIN, maud::components::convocatoria::convocatoria_min_item::{
-    ConvocatoriaMinItem, convocatoria_min_content_item,
-}};
+use crate::{
+    config::DOMAIN,
+    maud::components::convocatoria::convocatoria_min_item::{
+        ConvocatoriaMinItem, convocatoria_min_content_item,
+    },
+};
 
 pub struct LastConvocatoriaProps {
     pub items: Vec<ConvocatoriaMinItem>,
